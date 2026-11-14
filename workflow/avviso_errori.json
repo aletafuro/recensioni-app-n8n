@@ -1,0 +1,49 @@
+{
+  "id": "appAvvisoErr01",
+  "name": "Recensioni app: avviso errori",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "nodes": [
+    {
+      "id": "n01",
+      "name": "Errore nel giro",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "n02",
+      "name": "Avviso su Telegram",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// AVVISO SE UN GIRO SI ROMPE\n// Workflow di errore: n8n lo avvia da solo quando il workflow di analisi fallisce.\n// Manda su Telegram il nome del nodo che si e' fermato e il messaggio di errore.\nconst token = $env.TELEGRAM_BOT_TOKEN, chat = $env.TELEGRAM_CHAT_ID;\nconst e = $input.first().json;\nconst testo = [\n  'Attenzione: il giro di analisi delle recensioni si e\\' fermato.',\n  `Nodo: ${e.execution?.lastNodeExecuted ?? 'sconosciuto'}`,\n  `Errore: ${String(e.execution?.error?.message ?? 'nessun messaggio').slice(0, 500)}`,\n  `Esecuzione: ${e.execution?.id ?? '-'} (${e.execution?.mode ?? ''})`,\n  'I risultati del giro precedente sono ancora in data/output.',\n].join('\\n');\nif (!token || !chat) return [{ json: { inviato: false, motivo: 'Telegram non configurato', testo } }];\nconst r = await this.helpers.httpRequest({ method: 'POST', url: `https://api.telegram.org/bot${token}/sendMessage`, body: { chat_id: chat, text: testo }, json: true, timeout: 30000 });\nreturn [{ json: { inviato: !!r.ok } }];\n"
+      }
+    }
+  ],
+  "connections": {
+    "Errore nel giro": {
+      "main": [
+        [
+          {
+            "node": "Avviso su Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}

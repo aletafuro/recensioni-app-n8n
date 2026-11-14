@@ -1,0 +1,108 @@
+{
+  "versione": "scoperta del 2026-11-14",
+  "origine": "scoperta dalle recensioni",
+  "aspetti": [
+    {
+      "aspect": "usability",
+      "nome": "usabilità",
+      "descrizione": "Copre la facilità d'uso generale dell'app, inclusa l'interfaccia utente e la personalizzazione, ma non aspetti tecnici come stabilità o performance.",
+      "temi_raggruppati": [
+        "usability",
+        "user interface",
+        "customization",
+        "theme"
+      ]
+    },
+    {
+      "aspect": "billing_and_subscription",
+      "nome": "fatturazione e abbonamento",
+      "descrizione": "Include problemi relativi a pagamenti, prezzi degli abbonamenti e politiche di rimborso, ma non aspetti tecnici o di supporto.",
+      "temi_raggruppati": [
+        "billing",
+        "subscription price",
+        "refund policy"
+      ]
+    },
+    {
+      "aspect": "customer_support",
+      "nome": "assistenza clienti",
+      "descrizione": "Riguarda l'efficacia e la qualità del supporto clienti fornito agli utenti, esclusi altri aspetti tecnici o di prodotto.",
+      "temi_raggruppati": [
+        "customer support"
+      ]
+    },
+    {
+      "aspect": "free_version",
+      "nome": "versione gratuita",
+      "descrizione": "Tratta le funzionalità e i limiti della versione gratuita dell'app, senza includere aspetti a pagamento o abbonamenti.",
+      "temi_raggruppati": [
+        "free version"
+      ]
+    },
+    {
+      "aspect": "sharing_and_collaboration",
+      "nome": "condivisione e collaborazione",
+      "descrizione": "Comprende funzionalità di condivisione e collaborazione tra utenti, ma non aspetti tecnici di sincronizzazione o performance.",
+      "temi_raggruppati": [
+        "sharing feature",
+        "sharing",
+        "collaboration"
+      ]
+    },
+    {
+      "aspect": "synchronization",
+      "nome": "sincronizzazione",
+      "descrizione": "Copre la sincronizzazione dei dati tra dispositivi o account, senza includere altri aspetti tecnici o di condivisione.",
+      "temi_raggruppati": [
+        "synchronization"
+      ]
+    },
+    {
+      "aspect": "app_performance_and_stability",
+      "nome": "performance e stabilità dell'app",
+      "descrizione": "Include la stabilità e le prestazioni tecniche dell'app, escludendo aspetti di usabilità o funzionalità specifiche.",
+      "temi_raggruppati": [
+        "app performance",
+        "app stability",
+        "stability"
+      ]
+    },
+    {
+      "aspect": "account_security_and_access",
+      "nome": "sicurezza e accesso account",
+      "descrizione": "Riguarda la sicurezza e l'accesso agli account utente, senza includere aspetti di privacy o supporto.",
+      "temi_raggruppati": [
+        "account access",
+        "account security"
+      ]
+    },
+    {
+      "aspect": "data_privacy_and_retention",
+      "nome": "privacy e conservazione dati",
+      "descrizione": "Tratta la gestione della privacy e la conservazione dei dati personali degli utenti, esclusi aspetti di sicurezza tecnica o supporto.",
+      "temi_raggruppati": [
+        "data privacy",
+        "data retention"
+      ]
+    },
+    {
+      "aspect": "graphics_and_widgets",
+      "nome": "grafica e widget",
+      "descrizione": "Include aspetti relativi alla grafica dell'app e alle funzionalità dei widget, senza includere usabilità generale o performance.",
+      "temi_raggruppati": [
+        "graphics",
+        "widget",
+        "widget functionality"
+      ]
+    },
+    {
+      "aspect": "usefulness",
+      "nome": "utilità",
+      "descrizione": "Valuta quanto l'app risulti utile agli utenti per i loro scopi, senza entrare nei dettagli tecnici o di funzionalità specifiche.",
+      "temi_raggruppati": [
+        "usefulness",
+        "list updating"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+# Analisi recensioni di un'app (iOS e Android) con n8n - progetto per la produzione
+#
+# Due modi di avviare (vedi README.md):
+#   docker compose run --rm esegui     -> esegue tutto il workflow senza interfaccia
+#   docker compose run --rm verifica   -> metriche di verifica sui risultati
+#   docker compose up -d n8n           -> interfaccia su http://localhost:5679
+#
+# La chiave OpenAI arriva dal file .env (copiato da .env.example) oppure
+# dalla variabile d'ambiente OPENAI_API_KEY del computer.
+
+x-n8n-comune: &n8n-comune
+  image: docker.n8n.io/n8nio/n8n:2.29.10
+  environment:
+    OPENAI_API_KEY: ${OPENAI_API_KEY:?Manca OPENAI_API_KEY - copia .env.example in .env e inserisci la chiave}
+    OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+    LLM_MODEL: ${LLM_MODEL:-gpt-4.1-mini}
+    GUARDRAIL_MODEL: ${GUARDRAIL_MODEL:-gpt-4.1-mini}
+    INPUT_FILE: ${INPUT_FILE:-/files/input/recensioni_inventate.csv}
+    OUTPUT_DIR: ${OUTPUT_DIR:-/files/output}
+    LIMIT: ${LIMIT:-0}
+    # una recensione per chiamata: il giudizio non deve dipendere dalle recensioni vicine (prova del 14/11)
+    BATCH_SIZE: ${BATCH_SIZE:-1}
+    DISCOVERY_SAMPLE: ${DISCOVERY_SAMPLE:-240}
+    MIN_REVIEWS_PER_PERIOD: ${MIN_REVIEWS_PER_PERIOD:-50}
+    GRANULARITA: ${GRANULARITA:-mese}
+    MIN_REVIEWS_PER_VERSION: ${MIN_REVIEWS_PER_VERSION:-30}
+    CONTEXT_FILE: ${CONTEXT_FILE:-/files/contesto/contesto.json}
+    ASPECTS_FILE: ${ASPECTS_FILE:-/files/aspetti/aspetti_fissi.json}
+    RISCOPRI_ASPETTI: ${RISCOPRI_ASPETTI:-false}
+    FORZA_REVISIONE_ELENCO: ${FORZA_REVISIONE_ELENCO:-false}
+    # lettura automatica dallo store (sempre attiva negli avvii programmati del lunedi')
+    SCARICA_STORE: ${SCARICA_STORE:-false}
+    APP_STORE_ID: ${APP_STORE_ID:-}
+    STORE_PAESE: ${STORE_PAESE:-it}
+    # Android (API ufficiale di Google Play): pacchetto dell'app e account di servizio della Play Console,
+    # il file JSON dell'account va nel .env codificato in base64 (vedi README)
+    GOOGLE_PLAY_PACKAGE: ${GOOGLE_PLAY_PACKAGE:-}
+    GOOGLE_PLAY_CREDENZIALI_B64: ${GOOGLE_PLAY_CREDENZIALI_B64:-}
+    PLAY_LINGUE: ${PLAY_LINGUE:-it}
+    # Telegram: token del bot e chat di destinazione (nel file .env, mai nel workflow)
+    TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+    TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+    TELEGRAM_ANCHE_PROVE: ${TELEGRAM_ANCHE_PROVE:-false}
+    PREZZO_INPUT_USD_PER_MILIONE: ${PREZZO_INPUT_USD_PER_MILIONE:-0.4}
+    PREZZO_OUTPUT_USD_PER_MILIONE: ${PREZZO_OUTPUT_USD_PER_MILIONE:-1.6}
+    # i nodi Code leggono la configurazione qui sopra con $env
+    N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+    # i nodi di lettura/scrittura file lavorano solo dentro /files (= cartella data/)
+    N8N_RESTRICT_FILE_ACCESS_TO: /files
+    # sha1 per l'identificativo stabile delle recensioni
+    NODE_FUNCTION_ALLOW_BUILTIN: crypto
+    GENERIC_TIMEZONE: Europe/Rome
+    TZ: Europe/Rome
+    N8N_DIAGNOSTICS_ENABLED: "false"
+    N8N_PERSONALIZATION_ENABLED: "false"
+    N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "false"
+  volumes:
+    - ./data:/files
+    - ./workflow:/workflow:ro
+    - ./docker:/avvio:ro
+    - n8n_recensioni_app:/home/node/.n8n
+
+services:
+  # interfaccia grafica, con credenziale e workflow gia' importati; il workflow di analisi viene
+  # pubblicato (attivo), cosi' l'avvio programmato del lunedi' alle 8 parte da solo finche' n8n e' acceso
+  n8n:
+    <<: *n8n-comune
+    ports:
+      - "${N8N_PORT:-5679}:5678"
+    entrypoint: ["/bin/sh", "-c", "mkdir -p \"$$OUTPUT_DIR\" && node /avvio/crea_credenziale.js && n8n import:credentials --input=/tmp/credenziale.json && rm -f /tmp/credenziale.json && n8n import:workflow --separate --input=/workflow && n8n publish:workflow --id=appRecensioni001 && n8n publish:workflow --id=appAvvisoErr01 && exec n8n start"]
+
+  # esecuzione completa senza interfaccia: prepara e lancia il workflow
+  esegui:
+    <<: *n8n-comune
+    profiles: ["esegui"]
+    entrypoint: ["/bin/sh", "-c", "mkdir -p \"$$OUTPUT_DIR\" && node /avvio/crea_credenziale.js && n8n import:credentials --input=/tmp/credenziale.json && rm -f /tmp/credenziale.json && n8n import:workflow --separate --input=/workflow && n8n execute --id=appRecensioni001"]
+
+  # verifica del sistema: metriche sviluppo/test e gold set sui risultati gia' prodotti
+  verifica:
+    <<: *n8n-comune
+    profiles: ["verifica"]
+    entrypoint: ["/bin/sh", "-c", "mkdir -p \"$$OUTPUT_DIR\" && node /avvio/crea_credenziale.js && n8n import:credentials --input=/tmp/credenziale.json && rm -f /tmp/credenziale.json && n8n import:workflow --separate --input=/workflow && n8n execute --id=appVerifica00001"]
+
+volumes:
+  n8n_recensioni_app:

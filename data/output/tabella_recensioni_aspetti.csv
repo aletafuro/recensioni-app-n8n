@@ -1,0 +1,39 @@
+review_id,data_pubblicazione,anno,mese,voto,lingua,piattaforma,versione,sentiment_complessivo,da_segnalare,priorita,nei_conteggi,aspetto,nome_aspetto,sentiment_aspetto
+Ra36d644a91,2026-09-02,2026,2026-09,5,it,ios,3.1.0,positive,false,,true,usability,usabilità,positive
+Ra36d644a91,2026-09-02,2026,2026-09,5,it,ios,3.1.0,positive,false,,true,usefulness,utilità,positive
+R3d3fafe48d,2026-09-03,2026,2026-09,4,it,ios,3.1.0,positive,false,,true,graphics_and_widgets,grafica e widget,positive
+R3d3fafe48d,2026-09-03,2026,2026-09,4,it,ios,3.1.0,positive,false,,true,usability,usabilità,negative
+R7668cfc413,2026-09-04,2026,2026-09,5,it,android,3.1.0,positive,false,,true,usability,usabilità,positive
+R5def8d1939,2026-09-05,2026,2026-09,1,it,ios,3.1.0,negative,true,alta,true,billing_and_subscription,fatturazione e abbonamento,negative
+R5def8d1939,2026-09-05,2026,2026-09,1,it,ios,3.1.0,negative,true,alta,true,customer_support,assistenza clienti,negative
+Rd18aa1f91a,2026-09-07,2026,2026-09,5,it,ios,3.1.0,positive,false,,true,,,
+R2cb8eb7cea,2026-09-09,2026,2026-09,2,it,ios,3.1.0,negative,true,media,true,synchronization,sincronizzazione,negative
+R28bbe5bf0d,2026-09-10,2026,2026-09,2,it,android,3.1.0,negative,true,media,true,graphics_and_widgets,grafica e widget,negative
+Re11e12dddb,2026-09-12,2026,2026-09,4,it,ios,3.1.0,positive,false,,true,usefulness,utilità,positive
+Re11e12dddb,2026-09-12,2026,2026-09,4,it,ios,3.1.0,positive,false,,true,graphics_and_widgets,grafica e widget,positive
+R4c4f7817dc,2026-09-15,2026,2026-09,3,it,ios,3.1.0,neutral,false,,true,free_version,versione gratuita,negative
+Rbf40997718,2026-09-16,2026,2026-09,1,it,android,3.1.0,negative,true,media,true,,,
+R0cac49d7ab,2026-09-18,2026,2026-09,5,it,ios,3.1.0,positive,false,,true,sharing_and_collaboration,condivisione e collaborazione,positive
+R7267fe2309,2026-09-25,2026,2026-09,1,it,ios,3.2.0,negative,true,media,true,sharing_and_collaboration,condivisione e collaborazione,negative
+R7267fe2309,2026-09-25,2026,2026-09,1,it,ios,3.2.0,negative,true,media,true,app_performance_and_stability,performance e stabilità dell'app,negative
+R62a08af42a,2026-09-26,2026,2026-09,1,it,ios,3.2.0,negative,true,media,true,app_performance_and_stability,performance e stabilità dell'app,negative
+R5453a2c047,2026-09-27,2026,2026-09,2,it,ios,3.2.0,negative,true,bassa,true,sharing_and_collaboration,condivisione e collaborazione,negative
+Ra4c1785c7e,2026-09-28,2026,2026-09,1,it,android,3.2.0,negative,true,media,true,app_performance_and_stability,performance e stabilità dell'app,negative
+Rdd1c325aa6,2026-09-30,2026,2026-09,4,it,ios,3.2.0,mixed,false,,true,billing_and_subscription,fatturazione e abbonamento,negative
+Rdd1c325aa6,2026-09-30,2026,2026-09,4,it,ios,3.2.0,mixed,false,,true,usefulness,utilità,positive
+Rcabd93ecc9,2026-10-02,2026,2026-10,4,it,android,3.2.0,mixed,false,,true,graphics_and_widgets,grafica e widget,positive
+Rcabd93ecc9,2026-10-02,2026,2026-10,4,it,android,3.2.0,mixed,false,,true,app_performance_and_stability,performance e stabilità dell'app,negative
+Rc529eec6f7,2026-10-03,2026,2026-10,5,it,ios,3.2.0,positive,false,,true,,,
+R107b66f0ac,2026-10-06,2026,2026-10,1,it,ios,3.2.0,negative,true,alta,true,data_privacy_and_retention,privacy e conservazione dati,negative
+R11fb2b844b,2026-10-08,2026,2026-10,5,it,android,3.2.0,positive,false,,true,,,
+R29b9949269,2026-10-10,2026,2026-10,4,it,ios,3.2.1,positive,false,,true,sharing_and_collaboration,condivisione e collaborazione,positive
+R2af47557d0,2026-10-12,2026,2026-10,5,it,ios,3.2.1,positive,false,,true,usability,usabilità,positive
+R2af47557d0,2026-10-12,2026,2026-10,5,it,ios,3.2.1,positive,false,,true,synchronization,sincronizzazione,positive
+R3e56fd8a9e,2026-10-14,2026,2026-10,3,it,android,3.2.1,neutral,false,,true,free_version,versione gratuita,negative
+R875cc122c4,2026-10-15,2026,2026-10,3,it,ios,3.2.1,mixed,false,,true,usefulness,utilità,negative
+Rd9156eb1ca,2026-10-20,2026,2026-10,2,it,ios,3.2.1,negative,true,alta,true,billing_and_subscription,fatturazione e abbonamento,negative
+R4b8cfc1e33,2026-10-22,2026,2026-10,5,it,android,3.2.1,positive,false,,true,usefulness,utilità,positive
+R39699c4484,2026-10-25,2026,2026-10,5,it,ios,3.2.1,positive,false,,true,,,
+Rfe5d2c08d6,2026-10-28,2026,2026-10,1,it,android,3.2.1,negative,true,alta,true,,,
+R40eacafad9,2026-10-30,2026,2026-10,4,it,ios,3.2.1,positive,false,,true,usability,usabilità,positive
+R84570ccff5,2026-11-02,2026,2026-11,4,it,android,3.2.1,positive,false,,true,usability,usabilità,positive

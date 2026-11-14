@@ -1,0 +1,774 @@
+{
+  "configurazione": {
+    "avvio": "manuale",
+    "scarica_store": false,
+    "app_store_id": "",
+    "store_paese": "it",
+    "play_package": "",
+    "play_lingue": [
+      "it"
+    ],
+    "input_file": "/files/input/recensioni_inventate.csv",
+    "context_file": "/files/contesto/contesto.json",
+    "output_dir": "/files/output",
+    "model": "gpt-4.1-mini",
+    "base_url": "https://api.openai.com/v1",
+    "limit": 0,
+    "batch_size": 1,
+    "discovery_sample": 240,
+    "min_reviews_per_period": 50,
+    "aspects_file": "/files/aspetti/aspetti_fissi.json",
+    "forza_revisione_elenco": false,
+    "riscopri_aspetti": false,
+    "granularita": "mese",
+    "min_reviews_per_version": 30,
+    "min_mentions_rate_ranking": 30,
+    "prezzo_input_usd_per_milione": 0.4,
+    "prezzo_output_usd_per_milione": 1.6,
+    "seed": 42,
+    "started_at": "2026-11-14T15:27:50.024Z"
+  },
+  "terminata_il": "2026-11-14T15:28:41.612Z",
+  "file": "30 righe lette da /files/input/recensioni_inventate.csv",
+  "anomalie_del_file": [],
+  "guardrail_ingresso": {
+    "dati_oscurati_prima_del_modello": {},
+    "recensioni_con_dati_oscurati": [],
+    "recensioni_sospette_di_manipolazione": [],
+    "errori_del_guardrail": []
+  },
+  "scoperta_aspetti": {
+    "origine": "scoperta dalle recensioni",
+    "versione": "scoperta del 2026-11-14",
+    "recensioni_nel_campione": 30,
+    "campione": [
+      "R2cb8eb7cea",
+      "R7267fe2309",
+      "Ra4c1785c7e",
+      "Rfe5d2c08d6",
+      "R28bbe5bf0d",
+      "Rbf40997718",
+      "R5453a2c047",
+      "R5def8d1939",
+      "Rd9156eb1ca",
+      "R875cc122c4",
+      "R3e56fd8a9e",
+      "R4c4f7817dc",
+      "R40eacafad9",
+      "R11fb2b844b",
+      "Rc529eec6f7",
+      "R4b8cfc1e33",
+      "Rd18aa1f91a",
+      "R29b9949269",
+      "Rcabd93ecc9",
+      "Rdd1c325aa6",
+      "R2af47557d0",
+      "R3d3fafe48d",
+      "R39699c4484",
+      "R7668cfc413",
+      "Re11e12dddb",
+      "Ra36d644a91",
+      "R62a08af42a",
+      "R84570ccff5",
+      "R107b66f0ac",
+      "R0cac49d7ab"
+    ],
+    "temi_liberi_distinti": 27,
+    "temi_piu_frequenti": [
+      {
+        "label": "usability",
+        "recensioni": 4,
+        "positive": 4,
+        "negative": 0,
+        "neutral": 0
+      },
+      {
+        "label": "billing",
+        "recensioni": 2,
+        "positive": 0,
+        "negative": 2,
+        "neutral": 0
+      },
+      {
+        "label": "customer support",
+        "recensioni": 2,
+        "positive": 0,
+        "negative": 2,
+        "neutral": 0
+      },
+      {
+        "label": "free version",
+        "recensioni": 2,
+        "positive": 0,
+        "negative": 2,
+        "neutral": 0
+      },
+      {
+        "label": "sharing feature",
+        "recensioni": 2,
+        "positive": 1,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "synchronization",
+        "recensioni": 2,
+        "positive": 1,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "usefulness",
+        "recensioni": 2,
+        "positive": 2,
+        "negative": 0,
+        "neutral": 0
+      },
+      {
+        "label": "user interface",
+        "recensioni": 2,
+        "positive": 2,
+        "negative": 0,
+        "neutral": 0
+      },
+      {
+        "label": "account access",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "account security",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "advertising",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "app performance",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "app stability",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "collaboration",
+        "recensioni": 1,
+        "positive": 1,
+        "negative": 0,
+        "neutral": 0
+      },
+      {
+        "label": "customization",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "data privacy",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "data retention",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "feature availability",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "graphics",
+        "recensioni": 1,
+        "positive": 1,
+        "negative": 0,
+        "neutral": 0
+      },
+      {
+        "label": "list updating",
+        "recensioni": 1,
+        "positive": 1,
+        "negative": 0,
+        "neutral": 0
+      },
+      {
+        "label": "refund policy",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "sharing",
+        "recensioni": 1,
+        "positive": 1,
+        "negative": 0,
+        "neutral": 0
+      },
+      {
+        "label": "stability",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "subscription price",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "theme",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "widget",
+        "recensioni": 1,
+        "positive": 1,
+        "negative": 0,
+        "neutral": 0
+      },
+      {
+        "label": "widget functionality",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      }
+    ],
+    "copertura_temi_pct": 94.6,
+    "soglia_temi_frequenti": 3,
+    "giri_di_consolidamento": [
+      {
+        "giro": 1,
+        "fine_risposta": "stop",
+        "aspetti": 11,
+        "temi_frequenti_fuori": [],
+        "temi_in_piu_aspetti": []
+      }
+    ],
+    "temi_tolti_perche_doppi": [],
+    "temi_non_coperti": [
+      {
+        "label": "advertising",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      },
+      {
+        "label": "feature availability",
+        "recensioni": 1,
+        "positive": 0,
+        "negative": 1,
+        "neutral": 0
+      }
+    ]
+  },
+  "analisi": {
+    "richieste_primo_giro": 30,
+    "uso_token_ritentativi": [],
+    "risposte_non_valide": 0,
+    "recensioni_ritentate": [],
+    "recensioni_fallite": [],
+    "aspetti_non_ammessi_scartati": 0,
+    "segnalazioni_scartate_senza_prova": [],
+    "recensioni_con_temi_fuori_elenco": 10,
+    "temi_fuori_elenco_piu_frequenti": [
+      {
+        "tema": "general praise",
+        "recensioni": 1
+      },
+      {
+        "tema": "advertising",
+        "recensioni": 1
+      },
+      {
+        "tema": "account blocked",
+        "recensioni": 1
+      },
+      {
+        "tema": "startup speed",
+        "recensioni": 1
+      },
+      {
+        "tema": "speed",
+        "recensioni": 1
+      },
+      {
+        "tema": "lists",
+        "recensioni": 1
+      },
+      {
+        "tema": "categories",
+        "recensioni": 1
+      },
+      {
+        "tema": "shopping list",
+        "recensioni": 1
+      },
+      {
+        "tema": "account breach",
+        "recensioni": 1
+      },
+      {
+        "tema": "data loss",
+        "recensioni": 1
+      },
+      {
+        "tema": "work use",
+        "recensioni": 1
+      },
+      {
+        "tema": "dark theme request",
+        "recensioni": 1
+      }
+    ]
+  },
+  "digest": {
+    "origine": "modello",
+    "guardrail_uscita": "superato",
+    "verifica": {
+      "tentativi": [
+        {
+          "tentativo": 1,
+          "ok": false,
+          "problemi": [
+            "la citazione per \"apprezzati\" indica un identificativo inesistente ()",
+            "nel campo commento_criticati la frase «La condivisione e collaborazione è un tema più divisivo: alcune recensioni la apprezzano, altre la criticano, mostrando opinioni contrastant» dice che condivisione e collaborazione e' tra gli aspetti piu' divisivi, ma nei fatti non e' cosi': togli quell'aspetto dalla frase o riformula senza quell'affermazione"
+          ]
+        },
+        {
+          "tentativo": 2,
+          "ok": false,
+          "problemi": [
+            "nel campo commento_criticati la frase «La condivisione e collaborazione riceve sia giudizi positivi che negativi, ma non è tra gli aspetti più divisivi secondo i dati.» dice che condivisione e collaborazione, privacy e conservazione dati e' tra gli aspetti piu' divisivi, ma nei fatti non e' cosi': togli quell'aspetto dalla frase o riformula senza quell'affermazione"
+          ]
+        },
+        {
+          "tentativo": 3,
+          "ok": true,
+          "problemi": []
+        }
+      ],
+      "esito_finale": {
+        "ok": true,
+        "problemi": []
+      }
+    },
+    "testo_del_modello_scartato": null
+  },
+  "fatti_dati_al_modello_per_il_digest": {
+    "frase_sintesi": "Sono state analizzate 30 recensioni pubblicate tra il 02/09/2026 e il 02/11/2026. Il voto medio e' 3,23 su 5. Il 47% delle recensioni e' positivo, il 10% misto, il 37% negativo e il 7% neutro.",
+    "recensioni_analizzate": "30",
+    "dal_anno": "2026",
+    "al_anno": "2026",
+    "escluse_dai_conteggi": {
+      "duplicati": 0,
+      "vuote": 0,
+      "analisi_fallita": 0,
+      "sospette_di_manipolazione": 0
+    },
+    "aspetti_piu_apprezzati": [
+      {
+        "aspetto": "usabilità",
+        "frase_numeri": "5 recensioni su 30 ne danno un giudizio positivo (il 17% del totale); tra le 6 recensioni che ne parlano, i giudizi positivi sono l'83%"
+      },
+      {
+        "aspetto": "utilità",
+        "frase_numeri": "4 recensioni su 30 ne danno un giudizio positivo (il 13% del totale); tra le 5 recensioni che ne parlano, i giudizi positivi sono l'80%"
+      },
+      {
+        "aspetto": "grafica e widget",
+        "frase_numeri": "3 recensioni su 30 ne danno un giudizio positivo (il 10% del totale); tra le 4 recensioni che ne parlano, i giudizi positivi sono il 75%"
+      },
+      {
+        "aspetto": "condivisione e collaborazione",
+        "frase_numeri": "2 recensioni su 30 ne danno un giudizio positivo (il 7% del totale); tra le 4 recensioni che ne parlano, i giudizi positivi sono il 50%"
+      },
+      {
+        "aspetto": "sincronizzazione",
+        "frase_numeri": "1 recensioni su 30 ne danno un giudizio positivo (il 3% del totale); tra le 2 recensioni che ne parlano, i giudizi positivi sono il 50%"
+      }
+    ],
+    "aspetti_piu_criticati": [
+      {
+        "aspetto": "performance e stabilità dell'app",
+        "frase_numeri": "4 recensioni su 30 ne danno un giudizio negativo (il 13% del totale); tra le 4 recensioni che ne parlano, i giudizi negativi sono il 100%"
+      },
+      {
+        "aspetto": "fatturazione e abbonamento",
+        "frase_numeri": "3 recensioni su 30 ne danno un giudizio negativo (il 10% del totale); tra le 3 recensioni che ne parlano, i giudizi negativi sono il 100%"
+      },
+      {
+        "aspetto": "condivisione e collaborazione",
+        "frase_numeri": "2 recensioni su 30 ne danno un giudizio negativo (il 7% del totale); tra le 4 recensioni che ne parlano, i giudizi negativi sono il 50%"
+      },
+      {
+        "aspetto": "versione gratuita",
+        "frase_numeri": "2 recensioni su 30 ne danno un giudizio negativo (il 7% del totale); tra le 2 recensioni che ne parlano, i giudizi negativi sono il 100%"
+      },
+      {
+        "aspetto": "usabilità",
+        "frase_numeri": "1 recensioni su 30 ne danno un giudizio negativo (il 3% del totale); tra le 6 recensioni che ne parlano, i giudizi negativi sono il 17%"
+      }
+    ],
+    "lingue_confrontate": false,
+    "frasi_piattaforme": [
+      "Android: 10 recensioni, voto medio 3,1, il 40% positive e il 40% negative; l'aspetto piu' criticato e' performance e stabilità dell'app",
+      "iOS: 20 recensioni, voto medio 3,3, il 50% positive e il 35% negative; l'aspetto piu' criticato e' fatturazione e abbonamento"
+    ],
+    "aspetti_piu_divisivi": [],
+    "periodi": [
+      {
+        "periodo": "2026-09 / 2026-11",
+        "frase_numeri": "nel periodo 2026-09 / 2026-11 (30 recensioni) il voto medio e' 3,23 su 5, con il 47% di recensioni positive e il 37% di negative",
+        "piu_apprezzati": [
+          "usabilità",
+          "utilità",
+          "grafica e widget"
+        ],
+        "piu_criticati": [
+          "performance e stabilità dell'app",
+          "fatturazione e abbonamento",
+          "condivisione e collaborazione"
+        ]
+      }
+    ],
+    "cambiamenti_significativi": [],
+    "confronti_nel_tempo_eseguiti": "0",
+    "confronti_nel_tempo_significativi": "0",
+    "frase_segnalate": "Le recensioni segnalate sono 11 (il 37% del totale): 4 con priorita' alta, 6 media e 1 bassa.",
+    "frase_campagne": "Controllo delle campagne coordinate: nessun gruppo di testi lunghi quasi identici e nessun picco anomalo di recensioni da 1 stella.",
+    "segnalate_da_mostrare": [
+      {
+        "review_id": "Rfe5d2c08d6",
+        "data": "2026-10-28",
+        "voto": "1 su 5",
+        "priorita": "alta",
+        "motivo": "privacy e dati personali: L'utente dice che qualcuno è entrato nel suo account e ha cancellato tutte le liste.; voto molto basso (1 su 5)",
+        "prova": "Qualcuno e' entrato nel mio account e ha cancellato tutte le liste."
+      },
+      {
+        "review_id": "Rd9156eb1ca",
+        "data": "2026-10-20",
+        "voto": "2 su 5",
+        "priorita": "alta",
+        "motivo": "addebiti e abbonamenti: L'utente dice che ha pagato due volte l'abbonamento e il rimborso è stato negato.; voto molto basso (2 su 5)",
+        "prova": "Abbonamento pagato due volte, ho chiesto il rimborso e me l'hanno negato."
+      },
+      {
+        "review_id": "R107b66f0ac",
+        "data": "2026-10-06",
+        "voto": "1 su 5",
+        "priorita": "alta",
+        "motivo": "privacy e dati personali: L'utente dice che ha chiesto di cancellare account e dati ma continua a ricevere email.; voto molto basso (1 su 5)",
+        "prova": "Ho chiesto di cancellare il mio account e i miei dati ma continuo a ricevere email."
+      },
+      {
+        "review_id": "R5def8d1939",
+        "data": "2026-09-05",
+        "voto": "1 su 5",
+        "priorita": "alta",
+        "motivo": "addebiti e abbonamenti: L'utente dice che gli è stato addebitato l'abbonamento annuale dopo averlo disdetto.; reclamo non risolto: L'utente dice di aver scritto all'assistenza due volte senza ricevere risposta.; voto molto basso (1 su 5)",
+        "prova": "Mi hanno addebitato l'abbonamento annuale dopo che l'avevo disdetto."
+      },
+      {
+        "review_id": "Ra4c1785c7e",
+        "data": "2026-09-28",
+        "voto": "1 su 5",
+        "priorita": "media",
+        "motivo": "guasto grave dell'app: L'utente dice che dopo l'aggiornamento l'app perde le liste salvate.; voto molto basso (1 su 5)",
+        "prova": "Dopo l'aggiornamento perde le liste salvate."
+      },
+      {
+        "review_id": "R62a08af42a",
+        "data": "2026-09-26",
+        "voto": "1 su 5",
+        "priorita": "media",
+        "motivo": "guasto grave dell'app: L'utente dice che l'app si blocca continuamente dall'ultimo aggiornamento, inutilizzabile.; voto molto basso (1 su 5)",
+        "prova": "Si blocca continuamente dall'ultimo aggiornamento, inutilizzabile."
+      },
+      {
+        "review_id": "R7267fe2309",
+        "data": "2026-09-25",
+        "voto": "1 su 5",
+        "priorita": "media",
+        "motivo": "guasto grave dell'app: L'utente dice che dopo l'aggiornamento l'app si chiude appena apre una lista condivisa.; voto molto basso (1 su 5)",
+        "prova": "Dopo l'aggiornamento l'app si chiude appena apro una lista condivisa"
+      },
+      {
+        "review_id": "Rbf40997718",
+        "data": "2026-09-16",
+        "voto": "1 su 5",
+        "priorita": "media",
+        "motivo": "account bloccato: L'utente dice che l'account è bloccato senza motivo e non riesce più ad accedere.; reclamo non risolto: L'utente dice che l'assistenza non risponde.; voto molto basso (1 su 5)",
+        "prova": "Account bloccato senza motivo, non riesco piu' ad accedere"
+      }
+    ],
+    "per_piattaforma": [
+      {
+        "piattaforma": "android",
+        "recensioni": "10",
+        "voto_medio": "3,1 su 5",
+        "positive": "40%",
+        "negative": "40%",
+        "piu_apprezzati": [
+          "usabilità",
+          "grafica e widget",
+          "utilità"
+        ],
+        "piu_criticati": [
+          "performance e stabilità dell'app",
+          "grafica e widget",
+          "versione gratuita"
+        ],
+        "versioni": [
+          {
+            "versione": "3.1.0",
+            "recensioni": "3",
+            "nota": "troppe poche recensioni per avere statistiche"
+          },
+          {
+            "versione": "3.2.0",
+            "recensioni": "3",
+            "nota": "troppe poche recensioni per avere statistiche"
+          },
+          {
+            "versione": "3.2.1",
+            "recensioni": "4",
+            "nota": "troppe poche recensioni per avere statistiche"
+          }
+        ],
+        "confronti_ultima_versione_eseguiti": "0",
+        "cambiamenti_ultima_versione": []
+      },
+      {
+        "piattaforma": "ios",
+        "recensioni": "20",
+        "voto_medio": "3,3 su 5",
+        "positive": "50%",
+        "negative": "35%",
+        "piu_apprezzati": [
+          "usabilità",
+          "utilità",
+          "condivisione e collaborazione"
+        ],
+        "piu_criticati": [
+          "fatturazione e abbonamento",
+          "condivisione e collaborazione",
+          "performance e stabilità dell'app"
+        ],
+        "versioni": [
+          {
+            "versione": "3.1.0",
+            "recensioni": "8",
+            "nota": "troppe poche recensioni per avere statistiche"
+          },
+          {
+            "versione": "3.2.0",
+            "recensioni": "6",
+            "nota": "troppe poche recensioni per avere statistiche"
+          },
+          {
+            "versione": "3.2.1",
+            "recensioni": "6",
+            "nota": "troppe poche recensioni per avere statistiche"
+          }
+        ],
+        "confronti_ultima_versione_eseguiti": "0",
+        "cambiamenti_ultima_versione": []
+      }
+    ],
+    "lingue_con_abbastanza_recensioni": [],
+    "differenze_tra_lingue_significative": [],
+    "citazioni_disponibili": [
+      {
+        "per": "apprezzato: usabilità",
+        "parole_chiave": [
+          "usability",
+          "user",
+          "interface",
+          "customization",
+          "theme"
+        ],
+        "recensioni": []
+      },
+      {
+        "per": "apprezzato: utilità",
+        "parole_chiave": [
+          "usefulness",
+          "list",
+          "updating"
+        ],
+        "recensioni": []
+      },
+      {
+        "per": "apprezzato: grafica e widget",
+        "parole_chiave": [
+          "graphics",
+          "widget",
+          "functionality",
+          "widgets"
+        ],
+        "recensioni": []
+      },
+      {
+        "per": "criticato: performance e stabilità dell'app",
+        "parole_chiave": [
+          "performance",
+          "stability"
+        ],
+        "recensioni": [
+          {
+            "review_id": "R7267fe2309",
+            "data": "2026-09-25",
+            "voto": "1 su 5",
+            "lingua": "it",
+            "testo": "INVENTATA - Dopo l'aggiornamento l'app si chiude appena apro una lista condivisa."
+          }
+        ]
+      },
+      {
+        "per": "criticato: fatturazione e abbonamento",
+        "parole_chiave": [
+          "billing",
+          "subscription",
+          "price",
+          "refund",
+          "policy"
+        ],
+        "recensioni": [
+          {
+            "review_id": "Rd9156eb1ca",
+            "data": "2026-10-20",
+            "voto": "2 su 5",
+            "lingua": "it",
+            "testo": "INVENTATA - Abbonamento pagato due volte, ho chiesto il rimborso e me l'hanno negato."
+          },
+          {
+            "review_id": "R5def8d1939",
+            "data": "2026-09-05",
+            "voto": "1 su 5",
+            "lingua": "it",
+            "testo": "INVENTATA - Mi hanno addebitato l'abbonamento annuale dopo che l'avevo disdetto. Ho scritto all'assistenza due volte e nessuno risponde."
+          }
+        ]
+      },
+      {
+        "per": "criticato: condivisione e collaborazione",
+        "parole_chiave": [
+          "sharing",
+          "feature",
+          "collaboration"
+        ],
+        "recensioni": [
+          {
+            "review_id": "R7267fe2309",
+            "data": "2026-09-25",
+            "voto": "1 su 5",
+            "lingua": "it",
+            "testo": "INVENTATA - Dopo l'aggiornamento l'app si chiude appena apro una lista condivisa."
+          }
+        ]
+      }
+    ]
+  },
+  "registro_giro": {
+    "inizio": "2026-11-14T15:27:50.024Z",
+    "fine": "2026-11-14T15:28:41.613Z",
+    "durata_minuti": 0.9,
+    "modello": "gpt-4.1-mini",
+    "prezzi_usd_per_milione_di_token": {
+      "input": 0.4,
+      "output": 1.6
+    },
+    "recensioni": 30,
+    "versione_aspetti": "scoperta del 2026-11-14",
+    "misurato_per_fase": {
+      "scoperta_temi_liberi": {
+        "chiamate": 3,
+        "token_input": 2036,
+        "token_output": 847,
+        "costo_usd": 0.0022
+      },
+      "consolidamento_aspetti": {
+        "chiamate": 1,
+        "token_input": 846,
+        "token_output": 621,
+        "costo_usd": 0.0013
+      },
+      "analisi_recensioni": {
+        "chiamate": 30,
+        "token_input": 52416,
+        "token_output": 2137,
+        "costo_usd": 0.0244
+      },
+      "digest": {
+        "chiamate": 3,
+        "token_input": 15383,
+        "token_output": 1951,
+        "costo_usd": 0.0093
+      },
+      "aggiornamento_elenco": {
+        "chiamate": 0,
+        "token_input": 0,
+        "token_output": 0,
+        "costo_usd": 0
+      }
+    },
+    "misurato_totale": {
+      "token_input": 70681,
+      "token_output": 5556,
+      "costo_usd": 0.0372
+    },
+    "guardrail_stimato": {
+      "chiamate": 31,
+      "token_input": 12622,
+      "token_output": 930,
+      "nota": "STIMA: token calcolati dalla lunghezza dei testi, n8n non li espone per i nodi Guardrails",
+      "costo_usd": 0.0065
+    },
+    "costo_totale_usd_misurato_piu_stimato": 0.0437,
+    "costo_per_1000_recensioni_usd": 1.4567
+  },
+  "aggiornamento_elenco": {
+    "versione_in_uso": "scoperta del 2026-11-14",
+    "revisione_forzata_per_prova": false,
+    "controllo": {
+      "da_rivedere": false,
+      "temi_candidati": [],
+      "confronto_con_la_linea_di_base": null
+    },
+    "esito": "non applicabile: gli aspetti di questo giro vengono dalla scoperta, non da un elenco fisso"
+  }
+}

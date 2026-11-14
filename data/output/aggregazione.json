@@ -1,0 +1,1397 @@
+{
+  "meta": {
+    "generato_il": "2026-11-14T15:28:25.187Z",
+    "modello": "gpt-4.1-mini",
+    "file_input": "/files/input/recensioni_inventate.csv",
+    "righe_nel_file": 30,
+    "recensioni_in_output": 30,
+    "recensioni_aggregate": 30,
+    "escluse_dall_aggregazione": {
+      "duplicati": 0,
+      "vuote": 0,
+      "analisi_fallita": 0,
+      "sospette_di_manipolazione": 0
+    },
+    "prima_data": "2026-09-02",
+    "ultima_data": "2026-11-02",
+    "elenco_aspetti": {
+      "versione": "scoperta del 2026-11-14",
+      "origine": "scoperta dalle recensioni",
+      "recensioni_con_temi_fuori_elenco_pct": 33.3,
+      "confronto_con_la_linea_di_base": null,
+      "soglia_temi_candidati_recensioni": 5,
+      "temi_candidati": [],
+      "da_rivedere": false,
+      "regola": "da rivedere se la quota di recensioni con temi fuori elenco supera la linea di base di almeno 2 errori standard, oppure se un tema fuori elenco compare in almeno il 2% delle recensioni"
+    },
+    "granularita": "mese",
+    "regola_periodi": "unita' di tempo (mese) di pubblicazione unite finche' ogni periodo ha almeno 50 recensioni",
+    "regola_versioni": "statistiche per versione solo con almeno 30 recensioni; l'ultima versione con abbastanza recensioni e' confrontata con tutte le precedenti della stessa piattaforma",
+    "definizioni": {
+      "menzioni": "recensioni che esprimono un giudizio sull'aspetto (al massimo 1 per recensione)",
+      "pct_recensioni_che_lo_apprezzano": "recensioni con giudizio positivo sull'aspetto / recensioni aggregate del periodo x 100",
+      "pct_recensioni_che_lo_criticano": "recensioni con giudizio negativo sull'aspetto / recensioni aggregate del periodo x 100",
+      "pct_positive_su_menzioni": "giudizi positivi / menzioni x 100",
+      "pct_negative_su_menzioni": "giudizi negativi / menzioni x 100",
+      "saldo": "(positive - negative) / menzioni, da -1 a +1",
+      "piu_apprezzati": "ordinati per numero di recensioni che apprezzano l'aspetto",
+      "piu_criticati": "ordinati per numero di recensioni che criticano l'aspetto",
+      "per_tasso": "ordinati per quota sulle menzioni, solo aspetti con almeno 30 menzioni",
+      "per_lingua": "ogni lingua con almeno 15 recensioni contro tutte le altre, quota di recensioni negative o miste; significativo dopo Benjamini-Hochberg (FDR 10%)",
+      "andamento": "ultimo periodo contro i precedenti; significativo = test su due proporzioni con correzione Benjamini-Hochberg (FDR 10%)"
+    }
+  },
+  "sentiment_complessivo": {
+    "positive": {
+      "recensioni": 14,
+      "pct": 46.7
+    },
+    "negative": {
+      "recensioni": 11,
+      "pct": 36.7
+    },
+    "mixed": {
+      "recensioni": 3,
+      "pct": 10
+    },
+    "neutral": {
+      "recensioni": 2,
+      "pct": 6.7
+    }
+  },
+  "voto_medio": 3.23,
+  "lingue": {
+    "it": 30
+  },
+  "per_lingua": [
+    {
+      "lingua": "it",
+      "recensioni": 30,
+      "voto_medio": 3.23,
+      "sentiment_complessivo": {
+        "positive": {
+          "recensioni": 14,
+          "pct": 46.7
+        },
+        "negative": {
+          "recensioni": 11,
+          "pct": 36.7
+        },
+        "mixed": {
+          "recensioni": 3,
+          "pct": 10
+        },
+        "neutral": {
+          "recensioni": 2,
+          "pct": 6.7
+        }
+      },
+      "confronto_con_le_altre_lingue": null
+    }
+  ],
+  "aspetti": [
+    {
+      "aspect": "usability",
+      "nome": "usabilità",
+      "menzioni": 6,
+      "positive": 5,
+      "negative": 1,
+      "neutral": 0,
+      "pct_recensioni_che_ne_parlano": 20,
+      "pct_recensioni_che_lo_apprezzano": 16.7,
+      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_positive_su_menzioni": 83.3,
+      "pct_negative_su_menzioni": 16.7,
+      "ic95_pct_negative_su_menzioni": [
+        3,
+        56.4
+      ],
+      "saldo": 0.67
+    },
+    {
+      "aspect": "billing_and_subscription",
+      "nome": "fatturazione e abbonamento",
+      "menzioni": 3,
+      "positive": 0,
+      "negative": 3,
+      "neutral": 0,
+      "pct_recensioni_che_ne_parlano": 10,
+      "pct_recensioni_che_lo_apprezzano": 0,
+      "pct_recensioni_che_lo_criticano": 10,
+      "pct_positive_su_menzioni": 0,
+      "pct_negative_su_menzioni": 100,
+      "ic95_pct_negative_su_menzioni": [
+        43.8,
+        100
+      ],
+      "saldo": -1
+    },
+    {
+      "aspect": "customer_support",
+      "nome": "assistenza clienti",
+      "menzioni": 1,
+      "positive": 0,
+      "negative": 1,
+      "neutral": 0,
+      "pct_recensioni_che_ne_parlano": 3.3,
+      "pct_recensioni_che_lo_apprezzano": 0,
+      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_positive_su_menzioni": 0,
+      "pct_negative_su_menzioni": 100,
+      "ic95_pct_negative_su_menzioni": [
+        20.7,
+        100
+      ],
+      "saldo": -1
+    },
+    {
+      "aspect": "free_version",
+      "nome": "versione gratuita",
+      "menzioni": 2,
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "pct_recensioni_che_ne_parlano": 6.7,
+      "pct_recensioni_che_lo_apprezzano": 0,
+      "pct_recensioni_che_lo_criticano": 6.7,
+      "pct_positive_su_menzioni": 0,
+      "pct_negative_su_menzioni": 100,
+      "ic95_pct_negative_su_menzioni": [
+        34.2,
+        100
+      ],
+      "saldo": -1
+    },
+    {
+      "aspect": "sharing_and_collaboration",
+      "nome": "condivisione e collaborazione",
+      "menzioni": 4,
+      "positive": 2,
+      "negative": 2,
+      "neutral": 0,
+      "pct_recensioni_che_ne_parlano": 13.3,
+      "pct_recensioni_che_lo_apprezzano": 6.7,
+      "pct_recensioni_che_lo_criticano": 6.7,
+      "pct_positive_su_menzioni": 50,
+      "pct_negative_su_menzioni": 50,
+      "ic95_pct_negative_su_menzioni": [
+        15,
+        85
+      ],
+      "saldo": 0
+    },
+    {
+      "aspect": "synchronization",
+      "nome": "sincronizzazione",
+      "menzioni": 2,
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "pct_recensioni_che_ne_parlano": 6.7,
+      "pct_recensioni_che_lo_apprezzano": 3.3,
+      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_positive_su_menzioni": 50,
+      "pct_negative_su_menzioni": 50,
+      "ic95_pct_negative_su_menzioni": [
+        9.5,
+        90.5
+      ],
+      "saldo": 0
+    },
+    {
+      "aspect": "app_performance_and_stability",
+      "nome": "performance e stabilità dell'app",
+      "menzioni": 4,
+      "positive": 0,
+      "negative": 4,
+      "neutral": 0,
+      "pct_recensioni_che_ne_parlano": 13.3,
+      "pct_recensioni_che_lo_apprezzano": 0,
+      "pct_recensioni_che_lo_criticano": 13.3,
+      "pct_positive_su_menzioni": 0,
+      "pct_negative_su_menzioni": 100,
+      "ic95_pct_negative_su_menzioni": [
+        51,
+        100
+      ],
+      "saldo": -1
+    },
+    {
+      "aspect": "account_security_and_access",
+      "nome": "sicurezza e accesso account",
+      "menzioni": 0,
+      "positive": 0,
+      "negative": 0,
+      "neutral": 0,
+      "pct_recensioni_che_ne_parlano": 0,
+      "pct_recensioni_che_lo_apprezzano": 0,
+      "pct_recensioni_che_lo_criticano": 0,
+      "pct_positive_su_menzioni": null,
+      "pct_negative_su_menzioni": null,
+      "ic95_pct_negative_su_menzioni": null,
+      "saldo": null
+    },
+    {
+      "aspect": "data_privacy_and_retention",
+      "nome": "privacy e conservazione dati",
+      "menzioni": 1,
+      "positive": 0,
+      "negative": 1,
+      "neutral": 0,
+      "pct_recensioni_che_ne_parlano": 3.3,
+      "pct_recensioni_che_lo_apprezzano": 0,
+      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_positive_su_menzioni": 0,
+      "pct_negative_su_menzioni": 100,
+      "ic95_pct_negative_su_menzioni": [
+        20.7,
+        100
+      ],
+      "saldo": -1
+    },
+    {
+      "aspect": "graphics_and_widgets",
+      "nome": "grafica e widget",
+      "menzioni": 4,
+      "positive": 3,
+      "negative": 1,
+      "neutral": 0,
+      "pct_recensioni_che_ne_parlano": 13.3,
+      "pct_recensioni_che_lo_apprezzano": 10,
+      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_positive_su_menzioni": 75,
+      "pct_negative_su_menzioni": 25,
+      "ic95_pct_negative_su_menzioni": [
+        4.6,
+        69.9
+      ],
+      "saldo": 0.5
+    },
+    {
+      "aspect": "usefulness",
+      "nome": "utilità",
+      "menzioni": 5,
+      "positive": 4,
+      "negative": 1,
+      "neutral": 0,
+      "pct_recensioni_che_ne_parlano": 16.7,
+      "pct_recensioni_che_lo_apprezzano": 13.3,
+      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_positive_su_menzioni": 80,
+      "pct_negative_su_menzioni": 20,
+      "ic95_pct_negative_su_menzioni": [
+        3.6,
+        62.4
+      ],
+      "saldo": 0.6
+    }
+  ],
+  "classifiche": {
+    "piu_apprezzati": [
+      {
+        "posizione": 1,
+        "aspect": "usability",
+        "nome": "usabilità",
+        "recensioni_positive": 5,
+        "pct_recensioni_che_lo_apprezzano": 16.7,
+        "pct_positive_su_menzioni": 83.3,
+        "menzioni": 6
+      },
+      {
+        "posizione": 2,
+        "aspect": "usefulness",
+        "nome": "utilità",
+        "recensioni_positive": 4,
+        "pct_recensioni_che_lo_apprezzano": 13.3,
+        "pct_positive_su_menzioni": 80,
+        "menzioni": 5
+      },
+      {
+        "posizione": 3,
+        "aspect": "graphics_and_widgets",
+        "nome": "grafica e widget",
+        "recensioni_positive": 3,
+        "pct_recensioni_che_lo_apprezzano": 10,
+        "pct_positive_su_menzioni": 75,
+        "menzioni": 4
+      },
+      {
+        "posizione": 4,
+        "aspect": "sharing_and_collaboration",
+        "nome": "condivisione e collaborazione",
+        "recensioni_positive": 2,
+        "pct_recensioni_che_lo_apprezzano": 6.7,
+        "pct_positive_su_menzioni": 50,
+        "menzioni": 4
+      },
+      {
+        "posizione": 5,
+        "aspect": "synchronization",
+        "nome": "sincronizzazione",
+        "recensioni_positive": 1,
+        "pct_recensioni_che_lo_apprezzano": 3.3,
+        "pct_positive_su_menzioni": 50,
+        "menzioni": 2
+      }
+    ],
+    "piu_criticati": [
+      {
+        "posizione": 1,
+        "aspect": "app_performance_and_stability",
+        "nome": "performance e stabilità dell'app",
+        "recensioni_negative": 4,
+        "pct_recensioni_che_lo_criticano": 13.3,
+        "pct_negative_su_menzioni": 100,
+        "menzioni": 4
+      },
+      {
+        "posizione": 2,
+        "aspect": "billing_and_subscription",
+        "nome": "fatturazione e abbonamento",
+        "recensioni_negative": 3,
+        "pct_recensioni_che_lo_criticano": 10,
+        "pct_negative_su_menzioni": 100,
+        "menzioni": 3
+      },
+      {
+        "posizione": 3,
+        "aspect": "sharing_and_collaboration",
+        "nome": "condivisione e collaborazione",
+        "recensioni_negative": 2,
+        "pct_recensioni_che_lo_criticano": 6.7,
+        "pct_negative_su_menzioni": 50,
+        "menzioni": 4
+      },
+      {
+        "posizione": 4,
+        "aspect": "free_version",
+        "nome": "versione gratuita",
+        "recensioni_negative": 2,
+        "pct_recensioni_che_lo_criticano": 6.7,
+        "pct_negative_su_menzioni": 100,
+        "menzioni": 2
+      },
+      {
+        "posizione": 5,
+        "aspect": "usability",
+        "nome": "usabilità",
+        "recensioni_negative": 1,
+        "pct_recensioni_che_lo_criticano": 3.3,
+        "pct_negative_su_menzioni": 16.7,
+        "menzioni": 6
+      },
+      {
+        "posizione": 6,
+        "aspect": "usefulness",
+        "nome": "utilità",
+        "recensioni_negative": 1,
+        "pct_recensioni_che_lo_criticano": 3.3,
+        "pct_negative_su_menzioni": 20,
+        "menzioni": 5
+      },
+      {
+        "posizione": 7,
+        "aspect": "graphics_and_widgets",
+        "nome": "grafica e widget",
+        "recensioni_negative": 1,
+        "pct_recensioni_che_lo_criticano": 3.3,
+        "pct_negative_su_menzioni": 25,
+        "menzioni": 4
+      },
+      {
+        "posizione": 8,
+        "aspect": "synchronization",
+        "nome": "sincronizzazione",
+        "recensioni_negative": 1,
+        "pct_recensioni_che_lo_criticano": 3.3,
+        "pct_negative_su_menzioni": 50,
+        "menzioni": 2
+      },
+      {
+        "posizione": 9,
+        "aspect": "customer_support",
+        "nome": "assistenza clienti",
+        "recensioni_negative": 1,
+        "pct_recensioni_che_lo_criticano": 3.3,
+        "pct_negative_su_menzioni": 100,
+        "menzioni": 1
+      },
+      {
+        "posizione": 10,
+        "aspect": "data_privacy_and_retention",
+        "nome": "privacy e conservazione dati",
+        "recensioni_negative": 1,
+        "pct_recensioni_che_lo_criticano": 3.3,
+        "pct_negative_su_menzioni": 100,
+        "menzioni": 1
+      }
+    ],
+    "piu_apprezzati_per_tasso": [],
+    "piu_criticati_per_tasso": []
+  },
+  "periodi": [
+    {
+      "periodo": "2026-09 / 2026-11",
+      "dal": "2026-09",
+      "al": "2026-11",
+      "i0": 0,
+      "i1": 2,
+      "recensioni": 30,
+      "voto_medio": 3.23,
+      "sentiment_complessivo": {
+        "positive": {
+          "recensioni": 14,
+          "pct": 46.7
+        },
+        "negative": {
+          "recensioni": 11,
+          "pct": 36.7
+        },
+        "mixed": {
+          "recensioni": 3,
+          "pct": 10
+        },
+        "neutral": {
+          "recensioni": 2,
+          "pct": 6.7
+        }
+      },
+      "piu_apprezzati": [
+        "usability",
+        "usefulness",
+        "graphics_and_widgets",
+        "sharing_and_collaboration",
+        "synchronization"
+      ],
+      "piu_criticati": [
+        "app_performance_and_stability",
+        "billing_and_subscription",
+        "sharing_and_collaboration",
+        "free_version",
+        "usability"
+      ],
+      "aspetti": {
+        "usability": {
+          "aspect": "usability",
+          "nome": "usabilità",
+          "menzioni": 6,
+          "positive": 5,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 20,
+          "pct_recensioni_che_lo_apprezzano": 16.7,
+          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_positive_su_menzioni": 83.3,
+          "pct_negative_su_menzioni": 16.7,
+          "ic95_pct_negative_su_menzioni": [
+            3,
+            56.4
+          ],
+          "saldo": 0.67
+        },
+        "billing_and_subscription": {
+          "aspect": "billing_and_subscription",
+          "nome": "fatturazione e abbonamento",
+          "menzioni": 3,
+          "positive": 0,
+          "negative": 3,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 10,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 10,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            43.8,
+            100
+          ],
+          "saldo": -1
+        },
+        "customer_support": {
+          "aspect": "customer_support",
+          "nome": "assistenza clienti",
+          "menzioni": 1,
+          "positive": 0,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 3.3,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            20.7,
+            100
+          ],
+          "saldo": -1
+        },
+        "free_version": {
+          "aspect": "free_version",
+          "nome": "versione gratuita",
+          "menzioni": 2,
+          "positive": 0,
+          "negative": 2,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 6.7,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 6.7,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            34.2,
+            100
+          ],
+          "saldo": -1
+        },
+        "sharing_and_collaboration": {
+          "aspect": "sharing_and_collaboration",
+          "nome": "condivisione e collaborazione",
+          "menzioni": 4,
+          "positive": 2,
+          "negative": 2,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 13.3,
+          "pct_recensioni_che_lo_apprezzano": 6.7,
+          "pct_recensioni_che_lo_criticano": 6.7,
+          "pct_positive_su_menzioni": 50,
+          "pct_negative_su_menzioni": 50,
+          "ic95_pct_negative_su_menzioni": [
+            15,
+            85
+          ],
+          "saldo": 0
+        },
+        "synchronization": {
+          "aspect": "synchronization",
+          "nome": "sincronizzazione",
+          "menzioni": 2,
+          "positive": 1,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 6.7,
+          "pct_recensioni_che_lo_apprezzano": 3.3,
+          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_positive_su_menzioni": 50,
+          "pct_negative_su_menzioni": 50,
+          "ic95_pct_negative_su_menzioni": [
+            9.5,
+            90.5
+          ],
+          "saldo": 0
+        },
+        "app_performance_and_stability": {
+          "aspect": "app_performance_and_stability",
+          "nome": "performance e stabilità dell'app",
+          "menzioni": 4,
+          "positive": 0,
+          "negative": 4,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 13.3,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 13.3,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            51,
+            100
+          ],
+          "saldo": -1
+        },
+        "account_security_and_access": {
+          "aspect": "account_security_and_access",
+          "nome": "sicurezza e accesso account",
+          "menzioni": 0,
+          "positive": 0,
+          "negative": 0,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 0,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 0,
+          "pct_positive_su_menzioni": null,
+          "pct_negative_su_menzioni": null,
+          "ic95_pct_negative_su_menzioni": null,
+          "saldo": null
+        },
+        "data_privacy_and_retention": {
+          "aspect": "data_privacy_and_retention",
+          "nome": "privacy e conservazione dati",
+          "menzioni": 1,
+          "positive": 0,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 3.3,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            20.7,
+            100
+          ],
+          "saldo": -1
+        },
+        "graphics_and_widgets": {
+          "aspect": "graphics_and_widgets",
+          "nome": "grafica e widget",
+          "menzioni": 4,
+          "positive": 3,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 13.3,
+          "pct_recensioni_che_lo_apprezzano": 10,
+          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_positive_su_menzioni": 75,
+          "pct_negative_su_menzioni": 25,
+          "ic95_pct_negative_su_menzioni": [
+            4.6,
+            69.9
+          ],
+          "saldo": 0.5
+        },
+        "usefulness": {
+          "aspect": "usefulness",
+          "nome": "utilità",
+          "menzioni": 5,
+          "positive": 4,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 16.7,
+          "pct_recensioni_che_lo_apprezzano": 13.3,
+          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_positive_su_menzioni": 80,
+          "pct_negative_su_menzioni": 20,
+          "ic95_pct_negative_su_menzioni": [
+            3.6,
+            62.4
+          ],
+          "saldo": 0.6
+        }
+      }
+    }
+  ],
+  "andamento": [],
+  "per_piattaforma": [
+    {
+      "piattaforma": "android",
+      "recensioni": 10,
+      "voto_medio": 3.1,
+      "sentiment_complessivo": {
+        "positive": {
+          "recensioni": 4,
+          "pct": 40
+        },
+        "negative": {
+          "recensioni": 4,
+          "pct": 40
+        },
+        "mixed": {
+          "recensioni": 1,
+          "pct": 10
+        },
+        "neutral": {
+          "recensioni": 1,
+          "pct": 10
+        }
+      },
+      "piu_apprezzati": [
+        "usability",
+        "graphics_and_widgets",
+        "usefulness"
+      ],
+      "piu_criticati": [
+        "app_performance_and_stability",
+        "graphics_and_widgets",
+        "free_version"
+      ],
+      "aspetti": {
+        "usability": {
+          "aspect": "usability",
+          "nome": "usabilità",
+          "menzioni": 2,
+          "positive": 2,
+          "negative": 0,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 20,
+          "pct_recensioni_che_lo_apprezzano": 20,
+          "pct_recensioni_che_lo_criticano": 0,
+          "pct_positive_su_menzioni": 100,
+          "pct_negative_su_menzioni": 0,
+          "ic95_pct_negative_su_menzioni": [
+            0,
+            65.8
+          ],
+          "saldo": 1
+        },
+        "billing_and_subscription": {
+          "aspect": "billing_and_subscription",
+          "nome": "fatturazione e abbonamento",
+          "menzioni": 0,
+          "positive": 0,
+          "negative": 0,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 0,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 0,
+          "pct_positive_su_menzioni": null,
+          "pct_negative_su_menzioni": null,
+          "ic95_pct_negative_su_menzioni": null,
+          "saldo": null
+        },
+        "customer_support": {
+          "aspect": "customer_support",
+          "nome": "assistenza clienti",
+          "menzioni": 0,
+          "positive": 0,
+          "negative": 0,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 0,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 0,
+          "pct_positive_su_menzioni": null,
+          "pct_negative_su_menzioni": null,
+          "ic95_pct_negative_su_menzioni": null,
+          "saldo": null
+        },
+        "free_version": {
+          "aspect": "free_version",
+          "nome": "versione gratuita",
+          "menzioni": 1,
+          "positive": 0,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 10,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 10,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            20.7,
+            100
+          ],
+          "saldo": -1
+        },
+        "sharing_and_collaboration": {
+          "aspect": "sharing_and_collaboration",
+          "nome": "condivisione e collaborazione",
+          "menzioni": 0,
+          "positive": 0,
+          "negative": 0,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 0,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 0,
+          "pct_positive_su_menzioni": null,
+          "pct_negative_su_menzioni": null,
+          "ic95_pct_negative_su_menzioni": null,
+          "saldo": null
+        },
+        "synchronization": {
+          "aspect": "synchronization",
+          "nome": "sincronizzazione",
+          "menzioni": 0,
+          "positive": 0,
+          "negative": 0,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 0,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 0,
+          "pct_positive_su_menzioni": null,
+          "pct_negative_su_menzioni": null,
+          "ic95_pct_negative_su_menzioni": null,
+          "saldo": null
+        },
+        "app_performance_and_stability": {
+          "aspect": "app_performance_and_stability",
+          "nome": "performance e stabilità dell'app",
+          "menzioni": 2,
+          "positive": 0,
+          "negative": 2,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 20,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 20,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            34.2,
+            100
+          ],
+          "saldo": -1
+        },
+        "account_security_and_access": {
+          "aspect": "account_security_and_access",
+          "nome": "sicurezza e accesso account",
+          "menzioni": 0,
+          "positive": 0,
+          "negative": 0,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 0,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 0,
+          "pct_positive_su_menzioni": null,
+          "pct_negative_su_menzioni": null,
+          "ic95_pct_negative_su_menzioni": null,
+          "saldo": null
+        },
+        "data_privacy_and_retention": {
+          "aspect": "data_privacy_and_retention",
+          "nome": "privacy e conservazione dati",
+          "menzioni": 0,
+          "positive": 0,
+          "negative": 0,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 0,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 0,
+          "pct_positive_su_menzioni": null,
+          "pct_negative_su_menzioni": null,
+          "ic95_pct_negative_su_menzioni": null,
+          "saldo": null
+        },
+        "graphics_and_widgets": {
+          "aspect": "graphics_and_widgets",
+          "nome": "grafica e widget",
+          "menzioni": 2,
+          "positive": 1,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 20,
+          "pct_recensioni_che_lo_apprezzano": 10,
+          "pct_recensioni_che_lo_criticano": 10,
+          "pct_positive_su_menzioni": 50,
+          "pct_negative_su_menzioni": 50,
+          "ic95_pct_negative_su_menzioni": [
+            9.5,
+            90.5
+          ],
+          "saldo": 0
+        },
+        "usefulness": {
+          "aspect": "usefulness",
+          "nome": "utilità",
+          "menzioni": 1,
+          "positive": 1,
+          "negative": 0,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 10,
+          "pct_recensioni_che_lo_apprezzano": 10,
+          "pct_recensioni_che_lo_criticano": 0,
+          "pct_positive_su_menzioni": 100,
+          "pct_negative_su_menzioni": 0,
+          "ic95_pct_negative_su_menzioni": [
+            0,
+            79.3
+          ],
+          "saldo": 1
+        }
+      },
+      "versioni": [
+        {
+          "versione": "3.1.0",
+          "recensioni": 3,
+          "sotto_il_minimo": true
+        },
+        {
+          "versione": "3.2.0",
+          "recensioni": 3,
+          "sotto_il_minimo": true
+        },
+        {
+          "versione": "3.2.1",
+          "recensioni": 4,
+          "sotto_il_minimo": true
+        }
+      ],
+      "andamento_ultima_versione": []
+    },
+    {
+      "piattaforma": "ios",
+      "recensioni": 20,
+      "voto_medio": 3.3,
+      "sentiment_complessivo": {
+        "positive": {
+          "recensioni": 10,
+          "pct": 50
+        },
+        "negative": {
+          "recensioni": 7,
+          "pct": 35
+        },
+        "mixed": {
+          "recensioni": 2,
+          "pct": 10
+        },
+        "neutral": {
+          "recensioni": 1,
+          "pct": 5
+        }
+      },
+      "piu_apprezzati": [
+        "usability",
+        "usefulness",
+        "sharing_and_collaboration",
+        "graphics_and_widgets",
+        "synchronization"
+      ],
+      "piu_criticati": [
+        "billing_and_subscription",
+        "sharing_and_collaboration",
+        "app_performance_and_stability",
+        "usability",
+        "usefulness"
+      ],
+      "aspetti": {
+        "usability": {
+          "aspect": "usability",
+          "nome": "usabilità",
+          "menzioni": 4,
+          "positive": 3,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 20,
+          "pct_recensioni_che_lo_apprezzano": 15,
+          "pct_recensioni_che_lo_criticano": 5,
+          "pct_positive_su_menzioni": 75,
+          "pct_negative_su_menzioni": 25,
+          "ic95_pct_negative_su_menzioni": [
+            4.6,
+            69.9
+          ],
+          "saldo": 0.5
+        },
+        "billing_and_subscription": {
+          "aspect": "billing_and_subscription",
+          "nome": "fatturazione e abbonamento",
+          "menzioni": 3,
+          "positive": 0,
+          "negative": 3,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 15,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 15,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            43.8,
+            100
+          ],
+          "saldo": -1
+        },
+        "customer_support": {
+          "aspect": "customer_support",
+          "nome": "assistenza clienti",
+          "menzioni": 1,
+          "positive": 0,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 5,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 5,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            20.7,
+            100
+          ],
+          "saldo": -1
+        },
+        "free_version": {
+          "aspect": "free_version",
+          "nome": "versione gratuita",
+          "menzioni": 1,
+          "positive": 0,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 5,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 5,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            20.7,
+            100
+          ],
+          "saldo": -1
+        },
+        "sharing_and_collaboration": {
+          "aspect": "sharing_and_collaboration",
+          "nome": "condivisione e collaborazione",
+          "menzioni": 4,
+          "positive": 2,
+          "negative": 2,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 20,
+          "pct_recensioni_che_lo_apprezzano": 10,
+          "pct_recensioni_che_lo_criticano": 10,
+          "pct_positive_su_menzioni": 50,
+          "pct_negative_su_menzioni": 50,
+          "ic95_pct_negative_su_menzioni": [
+            15,
+            85
+          ],
+          "saldo": 0
+        },
+        "synchronization": {
+          "aspect": "synchronization",
+          "nome": "sincronizzazione",
+          "menzioni": 2,
+          "positive": 1,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 10,
+          "pct_recensioni_che_lo_apprezzano": 5,
+          "pct_recensioni_che_lo_criticano": 5,
+          "pct_positive_su_menzioni": 50,
+          "pct_negative_su_menzioni": 50,
+          "ic95_pct_negative_su_menzioni": [
+            9.5,
+            90.5
+          ],
+          "saldo": 0
+        },
+        "app_performance_and_stability": {
+          "aspect": "app_performance_and_stability",
+          "nome": "performance e stabilità dell'app",
+          "menzioni": 2,
+          "positive": 0,
+          "negative": 2,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 10,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 10,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            34.2,
+            100
+          ],
+          "saldo": -1
+        },
+        "account_security_and_access": {
+          "aspect": "account_security_and_access",
+          "nome": "sicurezza e accesso account",
+          "menzioni": 0,
+          "positive": 0,
+          "negative": 0,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 0,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 0,
+          "pct_positive_su_menzioni": null,
+          "pct_negative_su_menzioni": null,
+          "ic95_pct_negative_su_menzioni": null,
+          "saldo": null
+        },
+        "data_privacy_and_retention": {
+          "aspect": "data_privacy_and_retention",
+          "nome": "privacy e conservazione dati",
+          "menzioni": 1,
+          "positive": 0,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 5,
+          "pct_recensioni_che_lo_apprezzano": 0,
+          "pct_recensioni_che_lo_criticano": 5,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            20.7,
+            100
+          ],
+          "saldo": -1
+        },
+        "graphics_and_widgets": {
+          "aspect": "graphics_and_widgets",
+          "nome": "grafica e widget",
+          "menzioni": 2,
+          "positive": 2,
+          "negative": 0,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 10,
+          "pct_recensioni_che_lo_apprezzano": 10,
+          "pct_recensioni_che_lo_criticano": 0,
+          "pct_positive_su_menzioni": 100,
+          "pct_negative_su_menzioni": 0,
+          "ic95_pct_negative_su_menzioni": [
+            0,
+            65.8
+          ],
+          "saldo": 1
+        },
+        "usefulness": {
+          "aspect": "usefulness",
+          "nome": "utilità",
+          "menzioni": 4,
+          "positive": 3,
+          "negative": 1,
+          "neutral": 0,
+          "pct_recensioni_che_ne_parlano": 20,
+          "pct_recensioni_che_lo_apprezzano": 15,
+          "pct_recensioni_che_lo_criticano": 5,
+          "pct_positive_su_menzioni": 75,
+          "pct_negative_su_menzioni": 25,
+          "ic95_pct_negative_su_menzioni": [
+            4.6,
+            69.9
+          ],
+          "saldo": 0.5
+        }
+      },
+      "versioni": [
+        {
+          "versione": "3.1.0",
+          "recensioni": 8,
+          "sotto_il_minimo": true
+        },
+        {
+          "versione": "3.2.0",
+          "recensioni": 6,
+          "sotto_il_minimo": true
+        },
+        {
+          "versione": "3.2.1",
+          "recensioni": 6,
+          "sotto_il_minimo": true
+        }
+      ],
+      "andamento_ultima_versione": []
+    }
+  ],
+  "serie_annuale": [
+    {
+      "anno": 2026,
+      "recensioni": 30,
+      "sentiment_complessivo": {
+        "positive": 14,
+        "negative": 11,
+        "mixed": 3,
+        "neutral": 2
+      },
+      "aspetti": {
+        "usability": {
+          "positive": 5,
+          "negative": 1,
+          "neutral": 0
+        },
+        "billing_and_subscription": {
+          "positive": 0,
+          "negative": 3,
+          "neutral": 0
+        },
+        "customer_support": {
+          "positive": 0,
+          "negative": 1,
+          "neutral": 0
+        },
+        "free_version": {
+          "positive": 0,
+          "negative": 2,
+          "neutral": 0
+        },
+        "sharing_and_collaboration": {
+          "positive": 2,
+          "negative": 2,
+          "neutral": 0
+        },
+        "synchronization": {
+          "positive": 1,
+          "negative": 1,
+          "neutral": 0
+        },
+        "app_performance_and_stability": {
+          "positive": 0,
+          "negative": 4,
+          "neutral": 0
+        },
+        "account_security_and_access": {
+          "positive": 0,
+          "negative": 0,
+          "neutral": 0
+        },
+        "data_privacy_and_retention": {
+          "positive": 0,
+          "negative": 1,
+          "neutral": 0
+        },
+        "graphics_and_widgets": {
+          "positive": 3,
+          "negative": 1,
+          "neutral": 0
+        },
+        "usefulness": {
+          "positive": 4,
+          "negative": 1,
+          "neutral": 0
+        }
+      }
+    }
+  ],
+  "segnalazioni": {
+    "totale": 11,
+    "pct_sul_totale": 36.7,
+    "per_priorita": {
+      "alta": 4,
+      "media": 6,
+      "bassa": 1
+    },
+    "per_categoria": {
+      "billing_subscription": 2,
+      "unresolved_complaint": 2,
+      "severe_technical_failure": 5,
+      "account_blocked": 1,
+      "privacy_data": 2
+    },
+    "solo_per_voto_basso": 1,
+    "per_periodo": [
+      {
+        "periodo": "2026-09 / 2026-11",
+        "segnalate": 11,
+        "segnalate_priorita_alta": 4
+      }
+    ],
+    "elenco": [
+      {
+        "review_id": "Rfe5d2c08d6",
+        "published_date": "2026-10-28",
+        "rating": 1,
+        "priorita": "alta",
+        "categorie": [
+          "privacy_data"
+        ],
+        "attention_reason": "privacy e dati personali: L'utente dice che qualcuno è entrato nel suo account e ha cancellato tutte le liste.; voto molto basso (1 su 5)"
+      },
+      {
+        "review_id": "Rd9156eb1ca",
+        "published_date": "2026-10-20",
+        "rating": 2,
+        "priorita": "alta",
+        "categorie": [
+          "billing_subscription"
+        ],
+        "attention_reason": "addebiti e abbonamenti: L'utente dice che ha pagato due volte l'abbonamento e il rimborso è stato negato.; voto molto basso (2 su 5)"
+      },
+      {
+        "review_id": "R107b66f0ac",
+        "published_date": "2026-10-06",
+        "rating": 1,
+        "priorita": "alta",
+        "categorie": [
+          "privacy_data"
+        ],
+        "attention_reason": "privacy e dati personali: L'utente dice che ha chiesto di cancellare account e dati ma continua a ricevere email.; voto molto basso (1 su 5)"
+      },
+      {
+        "review_id": "R5def8d1939",
+        "published_date": "2026-09-05",
+        "rating": 1,
+        "priorita": "alta",
+        "categorie": [
+          "billing_subscription",
+          "unresolved_complaint"
+        ],
+        "attention_reason": "addebiti e abbonamenti: L'utente dice che gli è stato addebitato l'abbonamento annuale dopo averlo disdetto.; reclamo non risolto: L'utente dice di aver scritto all'assistenza due volte senza ricevere risposta.; voto molto basso (1 su 5)"
+      },
+      {
+        "review_id": "Ra4c1785c7e",
+        "published_date": "2026-09-28",
+        "rating": 1,
+        "priorita": "media",
+        "categorie": [
+          "severe_technical_failure"
+        ],
+        "attention_reason": "guasto grave dell'app: L'utente dice che dopo l'aggiornamento l'app perde le liste salvate.; voto molto basso (1 su 5)"
+      },
+      {
+        "review_id": "R62a08af42a",
+        "published_date": "2026-09-26",
+        "rating": 1,
+        "priorita": "media",
+        "categorie": [
+          "severe_technical_failure"
+        ],
+        "attention_reason": "guasto grave dell'app: L'utente dice che l'app si blocca continuamente dall'ultimo aggiornamento, inutilizzabile.; voto molto basso (1 su 5)"
+      },
+      {
+        "review_id": "R7267fe2309",
+        "published_date": "2026-09-25",
+        "rating": 1,
+        "priorita": "media",
+        "categorie": [
+          "severe_technical_failure"
+        ],
+        "attention_reason": "guasto grave dell'app: L'utente dice che dopo l'aggiornamento l'app si chiude appena apre una lista condivisa.; voto molto basso (1 su 5)"
+      },
+      {
+        "review_id": "Rbf40997718",
+        "published_date": "2026-09-16",
+        "rating": 1,
+        "priorita": "media",
+        "categorie": [
+          "account_blocked",
+          "unresolved_complaint"
+        ],
+        "attention_reason": "account bloccato: L'utente dice che l'account è bloccato senza motivo e non riesce più ad accedere.; reclamo non risolto: L'utente dice che l'assistenza non risponde.; voto molto basso (1 su 5)"
+      },
+      {
+        "review_id": "R28bbe5bf0d",
+        "published_date": "2026-09-10",
+        "rating": 2,
+        "priorita": "media",
+        "categorie": [
+          "severe_technical_failure"
+        ],
+        "attention_reason": "guasto grave dell'app: L'utente dice che il widget su Android non si aggiorna mai.; voto molto basso (2 su 5)"
+      },
+      {
+        "review_id": "R2cb8eb7cea",
+        "published_date": "2026-09-09",
+        "rating": 2,
+        "priorita": "media",
+        "categorie": [
+          "severe_technical_failure"
+        ],
+        "attention_reason": "guasto grave dell'app: L'utente dice che le note non si sincronizzano tra telefono e tablet e ha perso una lista intera.; voto molto basso (2 su 5)"
+      },
+      {
+        "review_id": "R5453a2c047",
+        "published_date": "2026-09-27",
+        "rating": 2,
+        "priorita": "bassa",
+        "categorie": [],
+        "attention_reason": "voto molto basso (2 su 5)"
+      }
+    ]
+  },
+  "controllo_campagne": {
+    "regole": {
+      "testi_quasi_identici": "almeno 8 parole; somiglianza di Jaccard sulle terne di parole >= 0,8; al massimo 14 giorni di distanza",
+      "picchi_una_stella": "recensioni da 1 stella al giorno contro il ritmo degli altri giorni (Poisson, una coda), Benjamini-Hochberg FDR 10% su 62 giorni; solo giorni con quota di 1 stella sopra la media (23.3%)"
+    },
+    "recensioni_controllate": 30,
+    "testi_quasi_identici": [],
+    "giorni_controllati": 62,
+    "una_stella_al_giorno_in_media": 0.11,
+    "picchi_una_stella": [],
+    "giorni_piu_vicini_alla_soglia": [
+      {
+        "data": "2026-09-05",
+        "una_stella": 1,
+        "attese_una_stella": 0.1,
+        "p_value": 0.0937
+      },
+      {
+        "data": "2026-09-16",
+        "una_stella": 1,
+        "attese_una_stella": 0.1,
+        "p_value": 0.0937
+      },
+      {
+        "data": "2026-09-25",
+        "una_stella": 1,
+        "attese_una_stella": 0.1,
+        "p_value": 0.0937
+      }
+    ],
+    "esito": "nessun segnale"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "_istruzioni": "Contesto per un'app qualsiasi pubblicata su App Store e Google Play. Definisce dominio e segnalazioni, NON suggerisce aspetti: gli aspetti emergono dalle recensioni.",
+  "oggetto_recensito": "un'app per smartphone, disponibile su iOS e Android",
+  "descrizione": "App con account, funzioni gratuite e a pagamento (abbonamento o acquisti nell'app). Le recensioni sono pubblicate dagli utenti sugli store, soprattutto in italiano, e sono spesso molto brevi.",
+  "autori_delle_recensioni": "utenti dell'app",
+  "lettori_dei_risultati": "chi gestisce e chi sviluppa l'app",
+  "lingua_del_digest": "italiano",
+  "voto": {
+    "minimo": 1,
+    "massimo": 5,
+    "basso_fino_a": 2,
+    "alto_da": 4
+  },
+  "critiche_ordinarie_da_non_segnalare": "pubblicita' fastidiosa, interfaccia poco intuitiva, troppe notifiche, prezzi alti, funzioni che mancano",
+  "categorie_di_segnalazione": {
+    "billing_subscription": {
+      "nome": "addebiti e abbonamenti",
+      "priorita": "alta",
+      "definizione": "addebiti inattesi o non autorizzati, abbonamenti o rinnovi non voluti, acquisti spariti, rimborsi negati"
+    },
+    "privacy_data": {
+      "nome": "privacy e dati personali",
+      "priorita": "alta",
+      "definizione": "uso scorretto di dati, account violati, dati personali esposti, difficolta' a cancellare i propri dati"
+    },
+    "safety_abuse": {
+      "nome": "sicurezza e abusi",
+      "priorita": "alta",
+      "definizione": "truffe, contenuti offensivi o pericolosi, comportamenti abusivi di altri utenti dentro l'app"
+    },
+    "account_blocked": {
+      "nome": "account bloccato",
+      "priorita": "media",
+      "definizione": "account sospeso, bloccato o cancellato senza spiegazione, impossibile accedere"
+    },
+    "severe_technical_failure": {
+      "nome": "guasto grave dell'app",
+      "priorita": "media",
+      "definizione": "l'app non si apre, si chiude da sola, perde dati, una funzione pagata non funziona"
+    },
+    "unresolved_complaint": {
+      "nome": "reclamo non risolto",
+      "priorita": "media",
+      "definizione": "l'utente ha contattato l'assistenza senza risposta o senza soluzione, oppure dichiara di voler chiedere il rimborso alla banca o andare per vie legali"
+    }
+  }
+}
