@@ -38,7 +38,9 @@ Analizza le 36 recensioni inventate e scrive i risultati in `data/output/`:
 - `registro_giro.json`: tempi, costi e quante analisi sono state riprese dalla memoria;
 - `memoria_analisi.json` e `memoria_guardrail.json`.
 
-Sulle recensioni inventate il primo giro dura meno di un minuto e costa circa 4 centesimi di dollaro. Il secondo giro riprende tutto dalla memoria: 0 chiamate all'analisi, meno di un centesimo, risultati identici.
+Il repository contiene già la memoria dell'ultimo giro. Quindi il primo giro dopo averlo scaricato riprende tutto da lì: 0 chiamate all'analisi, una ventina di secondi, meno di un centesimo, risultati identici.
+
+Per vedere un giro completo basta cancellare `data/output/memoria_analisi.json` e `data/output/memoria_guardrail.json`. Sulle 36 recensioni inventate dura meno di un minuto e costa circa 4 centesimi di dollaro.
 
 Per vedere l'avviso a grappolo bisogna «spostare» la data di oggi a quella delle recensioni inventate, perché l'avviso guarda gli ultimi 7 giorni:
 
