@@ -44,6 +44,7 @@ if (unione) righe.push(`Nuove recensioni scaricate in questo giro: ${unione.nuov
 righe.push('');
 for (const x of fatti.frasi_piattaforme ?? []) righe.push(`- ${x}.`);
 if (unione && unione.android && unione.android !== 'ok') righe.push(`(Android: ${unione.android})`);
+if (unione && unione.ios && unione.ios !== 'ok') righe.push(`(iOS: ${unione.ios})`);
 righe.push('', 'Piu\' criticati:');
 for (const x of A.classifiche.piu_criticati.slice(0, 3)) righe.push(`- ${x.nome}: ${x.recensioni_negative} recensioni (${pct(x.pct_recensioni_che_lo_criticano)} del totale)`);
 const sig = A.andamento.filter((x) => x.significativo);

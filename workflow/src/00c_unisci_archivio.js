@@ -27,6 +27,7 @@ return [{
     scaricate: scaricate.length,
     scaricate_ios: ios.righe.length,
     scaricate_android: android.righe.length,
+    ios: ios.stato ?? 'ok',
     android: android.stato,
     nuove_ios: nuove.filter((r) => r.piattaforma === 'ios').length,
     nuove_android: nuove.filter((r) => r.piattaforma === 'android').length,

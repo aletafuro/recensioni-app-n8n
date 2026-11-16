@@ -36,5 +36,7 @@ for (let p = 1; p <= 10; p++) {
     });
   }
 }
-if (!righe.length) throw new Error('Nessuna recensione scaricata dallo store: ' + JSON.stringify(pagine));
-return [{ json: { scaricate: righe.length, pagine, righe } }];
+// il feed di Apple a volte risponde vuoto per qualche ora: non si blocca il giro (Android e l'archivio
+// vanno avanti), lo si scrive nel riassunto. Correzione del 16/11 dopo un giro fermato da un feed vuoto.
+const stato = righe.length ? 'ok' : 'feed di Apple vuoto o non raggiungibile in questo giro: ' + JSON.stringify(pagine);
+return [{ json: { scaricate: righe.length, pagine, righe, stato } }];

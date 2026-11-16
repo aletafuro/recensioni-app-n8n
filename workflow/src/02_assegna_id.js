@@ -19,8 +19,10 @@ const sha1 = (s) => crypto.createHash('sha1').update(s, 'utf8').digest('hex');
 
 const righe = $input.all().map((i) => i.json);
 if (righe.length === 0) throw new Error('Nessuna recensione nel file ' + cfg.input_file);
+// una colonna c'e' se compare in almeno una riga: le recensioni di Google Play non hanno il titolo,
+// e se la prima riga e' una di quelle la lettura del CSV non riporta il campo (correzione del 16/11)
 for (const c of ['title', 'rating', 'publishedDate', 'text']) {
-  if (!(c in righe[0])) throw new Error('Colonna mancante nel CSV: ' + c);
+  if (!righe.some((r) => c in r)) throw new Error('Colonna mancante nel CSV: ' + c);
 }
 
 const visti = new Set();
