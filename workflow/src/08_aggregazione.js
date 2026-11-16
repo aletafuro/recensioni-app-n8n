@@ -374,6 +374,7 @@ const segnalazioni = {
   per_priorita: perPriorita,
   per_categoria: perCategoria,
   solo_per_voto_basso: segnalate.filter((r) => r.segnalazioni.length === 0 && r.rating !== null && r.rating <= ctx.voto.basso_fino_a).length,
+  con_un_problema_preciso: segnalate.filter((r) => r.segnalazioni.length > 0).length,
   per_periodo: periodi.map((p) => ({
     periodo: p.periodo,
     segnalate: segnalate.filter((r) => nelPeriodo(r, p)).length,
@@ -518,6 +519,175 @@ const campagne = (() => {
   };
 })();
 
+// --- avviso a grappolo: chi gestisce l'app vuole saperlo subito quando poche persone scrivono lo stesso problema
+// sulla stessa versione (per esempio «ho pagato ma l'acquisto non e' arrivato»), prima che arrivino i reclami.
+// Si contano le recensioni con la stessa segnalazione, sulla stessa piattaforma e sulla stessa versione,
+// pubblicate negli ultimi GRAPPOLO_GIORNI giorni. Ne bastano GRAPPOLO_MINIMO: e' un campanello per andare a
+// guardare i ticket del servizio clienti, non un test statistico.
+// Per ogni grappolo si dice se la versione e' la piu' recente vista nelle recensioni di quella piattaforma
+// (l'ultima pubblicata sullo store non la conosciamo: si dice solo quello che si vede).
+// Non contano le recensioni sospette di manipolazione ne' i duplicati. L'avviso su Telegram parte solo se nel
+// grappolo c'e' almeno una recensione nuova di questo giro (lo decide il nodo Telegram).
+const grappoli = (() => {
+  const giornoNum = (d) => Math.round(Date.parse(String(d).slice(0, 10) + 'T00:00:00Z') / 86400000);
+  const comeData = (n) => new Date(n * 86400000).toISOString().slice(0, 10);
+  const oggi = cfg.grappolo_oggi ?? new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' });
+  const fine = giornoNum(oggi), inizio = fine - (cfg.grappolo_giorni - 1);
+  const pronte = new Map($('Recensioni pronte').all().map((i) => [i.json.review_id, i.json]));
+  const piuRecente = {};
+  for (const r of pronte.values()) {
+    if (!r.versione) continue;
+    const pf = r.piattaforma ?? 'non indicata';
+    if (!piuRecente[pf] || ordineVersione(r.versione, piuRecente[pf]) > 0) piuRecente[pf] = r.versione;
+  }
+  const gruppi = new Map();
+  for (const r of valide) {
+    const g = r.published_date ? giornoNum(r.published_date) : NaN;
+    if (!(g >= inizio && g <= fine)) continue;
+    const pf = r.piattaforma ?? 'non indicata', v = r.versione || '';
+    const viste = new Set();
+    for (const s of r.segnalazioni ?? []) {
+      if (viste.has(s.categoria)) continue; // una recensione conta una volta sola per categoria
+      viste.add(s.categoria);
+      const k = `${pf}|${v}|${s.categoria}`;
+      if (!gruppi.has(k)) gruppi.set(k, { piattaforma: pf, versione: v || null, categoria: s.categoria, nome_categoria: s.nome_categoria, recensioni: [] });
+      const x = pronte.get(r.review_id) ?? {};
+      gruppi.get(k).recensioni.push({ review_id: r.review_id, chiave_store: `${pf}|${x.id_store ?? ''}`, data: r.published_date, voto: r.rating, sintesi: s.sintesi, evidenza: s.evidenza });
+    }
+  }
+  // la stessa persona che scrive due volte (stesso titolo, un testo contenuto nell'altro) conta una volta sola:
+  // si tiene la recensione piu' recente. Dubbio sollevato da una verifica alla cieca: la stessa persona che riscrive
+  // la sua recensione con una frase in piu' non deve far scattare da sola un avviso.
+  const norma = (s) => String(s ?? '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+  for (const g of gruppi.values()) {
+    const tenute = [];
+    for (const x of [...g.recensioni].sort((a, b) => String(b.data).localeCompare(String(a.data)))) {
+      const p = pronte.get(x.review_id) ?? {};
+      const t = norma(p.text), ti = norma(p.title);
+      const doppia = tenute.find((y) => y.ti === ti && t.length >= 20 && y.t.length >= 20 && (y.t.includes(t) || t.includes(y.t)));
+      if (doppia) { doppia.x.contata_anche = [...(doppia.x.contata_anche ?? []), x.review_id]; continue; }
+      tenute.push({ x, t, ti });
+    }
+    g.recensioni = tenute.map((y) => y.x).sort((a, b) => String(a.data).localeCompare(String(b.data)));
+  }
+  const trovati = [...gruppi.values()].filter((g) => g.recensioni.length >= cfg.grappolo_minimo).map((g) => {
+    const d = g.recensioni.map((x) => x.data).sort();
+    const recente = piuRecente[g.piattaforma] ?? null;
+    return {
+      ...g,
+      quante: g.recensioni.length,
+      dal: d[0],
+      al: d[d.length - 1],
+      versione_piu_recente_vista: recente,
+      e_la_versione_piu_recente: g.versione && recente ? ordineVersione(g.versione, recente) === 0 : null,
+    };
+  }).sort((a, b) => b.quante - a.quante);
+  return {
+    regola: `almeno ${cfg.grappolo_minimo} recensioni con la stessa segnalazione, stessa piattaforma e stessa versione, pubblicate dal ${comeData(inizio)} al ${comeData(fine)} (${cfg.grappolo_giorni} giorni); escluse le sospette e i duplicati; due recensioni con lo stesso titolo e un testo contenuto nell'altro contano una volta sola (probabilmente la stessa persona)`,
+    dal: comeData(inizio),
+    al: comeData(fine),
+    grappoli: trovati,
+  };
+})();
+
+// --- confronti tra periodi di calendario: mese per mese e ogni due settimane (lunedi'-domenica).
+// Serve a vedere l'andamento («questo mese piu' negative del mese prima?») senza aprire il digest.
+// Per tutte le piattaforme insieme e per ciascuna. Per ogni periodo: recensioni, voto medio, sentiment. I periodi
+// senza recensioni restano nella serie, cosi' «il periodo prima» e' sempre quello del calendario.
+// Confronto con il periodo subito prima sulla quota di recensioni negative: test su due proporzioni solo se tutti
+// e due i periodi hanno almeno 20 recensioni (sotto: «pochi dati», numeri senza verdetto); correzione di
+// Benjamini-Hochberg (FDR 10%) su tutti i confronti fatti nella stessa serie. Il periodo in corso e' segnato.
+const MIN_RECENSIONI_CONFRONTO = 20;
+const periodiCalendario = (() => {
+  const oggi = cfg.grappolo_oggi ?? new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' });
+  const giorno = (s) => new Date(String(s).slice(0, 10) + 'T00:00:00Z');
+  const iso = (t) => t.toISOString().slice(0, 10);
+  const piuGiorni = (s, n) => { const t = giorno(s); t.setUTCDate(t.getUTCDate() + n); return iso(t); };
+  const lunedi = (s) => { const t = giorno(s); return piuGiorni(iso(t), -((t.getUTCDay() + 6) % 7)); };
+  const ANCORA = '2020-01-06'; // un lunedi'
+  const inizioQuindicina = (s) => {
+    const l = lunedi(s);
+    const settimane = Math.round((giorno(l) - giorno(ANCORA)) / (7 * 86400000));
+    return ((settimane % 2) + 2) % 2 === 0 ? l : piuGiorni(l, -7);
+  };
+  const tipi = {
+    mese: {
+      chiave: (d) => String(d).slice(0, 7),
+      successivo: (k) => { const [a, m] = k.split('-').map(Number); return m === 12 ? `${a + 1}-01` : `${a}-${String(m + 1).padStart(2, '0')}`; },
+      etichetta: (k) => k,
+      in_corso: oggi.slice(0, 7),
+    },
+    // due settimane (lunedi'-domenica) invece di una: con circa 20 recensioni a settimana i confronti
+    // settimanali sarebbero quasi sempre «pochi dati». I periodi partono da un
+    // lunedi' fisso (6/1/2020), cosi' restano gli stessi da un giro all'altro.
+    due_settimane: {
+      chiave: (d) => inizioQuindicina(d),
+      successivo: (k) => piuGiorni(k, 14),
+      etichetta: (k) => `${k} / ${piuGiorni(k, 13)}`,
+      in_corso: inizioQuindicina(oggi),
+    },
+  };
+  const serie = (lista, tipo) => {
+    const T = tipi[tipo];
+    const conData = lista.filter((r) => r.published_date && String(r.published_date).slice(0, 10) <= oggi);
+    if (!conData.length) return [];
+    const gruppi = new Map();
+    for (const r of conData) {
+      const k = T.chiave(r.published_date);
+      if (!gruppi.has(k)) gruppi.set(k, []);
+      gruppi.get(k).push(r);
+    }
+    const prima = [...gruppi.keys()].sort()[0];
+    const primaData = conData.map((r) => String(r.published_date).slice(0, 10)).sort()[0];
+    const periodi = [];
+    for (let k = prima; k <= T.in_corso; k = T.successivo(k)) {
+      const l = gruppi.get(k) ?? [];
+      const neg = l.filter((r) => r.overall_sentiment === 'negative').length;
+      // il primo periodo e' incompleto se i dati partono dopo il suo inizio (es. archivio dal 7/6, mese da 1/6)
+      const inizioPeriodo = tipo === 'mese' ? `${k}-01` : k;
+      periodi.push({
+        periodo: T.etichetta(k),
+        in_corso: k === T.in_corso,
+        dati_solo_dal: k === prima && primaData > inizioPeriodo ? primaData : null,
+        recensioni: l.length,
+        voto_medio: media(l.filter((r) => r.rating !== null).map((r) => r.rating)),
+        positive: l.filter((r) => r.overall_sentiment === 'positive').length,
+        negative: neg,
+        miste: l.filter((r) => r.overall_sentiment === 'mixed').length,
+        neutre: l.filter((r) => r.overall_sentiment === 'neutral').length,
+        pct_negative: pct(neg, l.length),
+      });
+    }
+    const confronti = [];
+    periodi.forEach((p, i) => {
+      if (i === 0) return;
+      const q = periodi[i - 1];
+      const c = { periodo_prima: q.periodo, pct_negative_prima: q.pct_negative, differenza_punti: p.pct_negative !== null && q.pct_negative !== null ? Math.round(10 * (p.pct_negative - q.pct_negative)) / 10 : null };
+      if (p.recensioni >= MIN_RECENSIONI_CONFRONTO && q.recensioni >= MIN_RECENSIONI_CONFRONTO) {
+        Object.assign(c, dueProporzioni(p.negative, p.recensioni, q.negative, q.recensioni));
+        c.p_value = Number(c.p_value.toPrecision(3));
+        confronti.push(c);
+      } else {
+        c.esito = 'pochi dati';
+      }
+      p.confronto = c;
+    });
+    benjaminiHochberg(confronti);
+    for (const c of confronti) c.esito = c.significativo ? 'oltre il rumore' : 'entro il rumore';
+    return periodi;
+  };
+  const piattaforme = [...new Set(valide.map((r) => r.piattaforma ?? 'non indicata'))].sort();
+  // iOS e Android sempre separati: una serie «tutte» mescolerebbe l'andamento con il cambio di composizione
+  // (per esempio quando arriva lo storico di una sola piattaforma). Dubbio della verifica alla cieca del 16/11.
+  const perTipo = (tipo) => piattaforme.map((pf) => ({ piattaforma: pf, periodi: serie(valide.filter((r) => (r.piattaforma ?? 'non indicata') === pf), tipo) }));
+  return {
+    regola: `quota di recensioni negative di ogni periodo contro il periodo subito prima; test su due proporzioni solo con almeno ${MIN_RECENSIONI_CONFRONTO} recensioni in tutti e due i periodi, correzione Benjamini-Hochberg (FDR 10%) per serie; periodi di due settimane da lunedi' a domenica, a partire dal 6/1/2020; il periodo in corso e' incompleto`,
+    oggi,
+    mesi: perTipo('mese'),
+    due_settimane: perTipo('due_settimane'),
+  };
+})();
+
 const aggregazione = {
   meta: {
     generato_il: new Date().toISOString(),
@@ -564,6 +734,8 @@ const aggregazione = {
   serie_annuale: serieAnnuale,
   segnalazioni,
   controllo_campagne: campagne,
+  avviso_a_grappolo: grappoli,
+  periodi_di_calendario: periodiCalendario,
 };
 
 return [{ json: { aggregazione, info_analisi: infoAnalisi } }];

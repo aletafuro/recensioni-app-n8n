@@ -1,12 +1,12 @@
 periodo,recensioni_del_periodo,aspetto,nome_aspetto,menzioni,positive,negative,neutral,pct_recensioni_che_lo_apprezzano,pct_recensioni_che_lo_criticano
-2026-09 / 2026-11,30,usability,usabilità,6,5,1,0,16.7,3.3
-2026-09 / 2026-11,30,billing_and_subscription,fatturazione e abbonamento,3,0,3,0,0,10
-2026-09 / 2026-11,30,customer_support,assistenza clienti,1,0,1,0,0,3.3
-2026-09 / 2026-11,30,free_version,versione gratuita,2,0,2,0,0,6.7
-2026-09 / 2026-11,30,sharing_and_collaboration,condivisione e collaborazione,4,2,2,0,6.7,6.7
-2026-09 / 2026-11,30,synchronization,sincronizzazione,2,1,1,0,3.3,3.3
-2026-09 / 2026-11,30,app_performance_and_stability,performance e stabilità dell'app,4,0,4,0,0,13.3
-2026-09 / 2026-11,30,account_security_and_access,sicurezza e accesso account,0,0,0,0,0,0
-2026-09 / 2026-11,30,data_privacy_and_retention,privacy e conservazione dati,1,0,1,0,0,3.3
-2026-09 / 2026-11,30,graphics_and_widgets,grafica e widget,4,3,1,0,10,3.3
-2026-09 / 2026-11,30,usefulness,utilità,5,4,1,0,13.3,3.3
+2026-09 / 2026-11,35,usability,usabilità,6,5,1,0,14.3,2.9
+2026-09 / 2026-11,35,billing_and_subscription,fatturazione e abbonamento,8,0,8,0,0,22.9
+2026-09 / 2026-11,35,customer_support,assistenza clienti,2,0,2,0,0,5.7
+2026-09 / 2026-11,35,free_version,versione gratuita,2,0,2,0,0,5.7
+2026-09 / 2026-11,35,sharing_and_collaboration,condivisione e collaborazione,4,2,2,0,5.7,5.7
+2026-09 / 2026-11,35,synchronization,sincronizzazione,2,1,1,0,2.9,2.9
+2026-09 / 2026-11,35,app_performance_and_stability,performance e stabilità dell'app,4,0,4,0,0,11.4
+2026-09 / 2026-11,35,account_security_and_access,sicurezza e accesso account,0,0,0,0,0,0
+2026-09 / 2026-11,35,data_privacy_and_retention,privacy e conservazione dati,1,0,1,0,0,2.9
+2026-09 / 2026-11,35,graphics_and_widgets,grafica e widget,4,3,1,0,8.6,2.9
+2026-09 / 2026-11,35,usefulness,utilità,5,4,1,0,11.4,2.9

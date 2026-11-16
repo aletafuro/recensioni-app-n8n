@@ -16,7 +16,12 @@
     "billing_subscription": {
       "nome": "addebiti e abbonamenti",
       "priorita": "alta",
-      "definizione": "addebiti inattesi o non autorizzati, abbonamenti o rinnovi non voluti, acquisti spariti, rimborsi negati"
+      "definizione": "addebiti inattesi o non autorizzati, abbonamenti o rinnovi non voluti, acquisti che l'utente aveva gia' e poi sono spariti, rimborsi negati (se l'utente ha pagato e quanto acquistato non e' mai arrivato o l'abbonamento pagato non si e' attivato, la categoria e' purchase_not_received)"
+    },
+    "purchase_not_received": {
+      "nome": "acquisto pagato ma non ricevuto",
+      "priorita": "media",
+      "definizione": "l'utente dice di aver pagato un acquisto nell'app ma di non averlo mai ricevuto: funzioni a pagamento non sbloccate, abbonamento pagato che non si e' attivato, pagamento andato a buon fine ma niente sull'account. NON rientrano: chi si lamenta del prezzo o dei limiti della versione gratuita; acquisti che l'utente aveva gia' e poi sono spariti (sono billing_subscription)"
     },
     "privacy_data": {
       "nome": "privacy e dati personali",

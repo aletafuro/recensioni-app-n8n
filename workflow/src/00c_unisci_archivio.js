@@ -15,7 +15,8 @@ try {
 }
 const COLONNE = ['id_store', 'title', 'rating', 'travelDate', 'publishedDate', 'text', 'piattaforma', 'versione', 'paese'];
 const visti = new Set(archivio.map((r) => `${r.piattaforma}|${r.id_store}`));
-const nuove = scaricate.filter((r) => !visti.has(`${r.piattaforma}|${r.id_store}`));
+// una recensione arrivata due volte nello stesso giro (per esempio dall'API e dal report mensile) entra una volta sola
+const nuove = scaricate.filter((r) => { const k = `${r.piattaforma}|${r.id_store}`; if (visti.has(k)) return false; visti.add(k); return true; });
 const tutte = [...nuove, ...archivio].map((r) => Object.fromEntries(COLONNE.map((c) => [c, r[c] ?? ''])));
 // CSV con virgolette su ogni campo (testi con virgole, a capo e virgolette)
 const campo = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
@@ -29,6 +30,7 @@ return [{
     scaricate_android: android.righe.length,
     ios: ios.stato ?? 'ok',
     android: android.stato,
+    android_storico: android.storico_stato ?? null,
     nuove_ios: nuove.filter((r) => r.piattaforma === 'ios').length,
     nuove_android: nuove.filter((r) => r.piattaforma === 'android').length,
     nuove: nuove.length,

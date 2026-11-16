@@ -26,6 +26,8 @@ return [{
     // Android: nome del pacchetto su Google Play e lingue da tenere (l'API non dice il paese, solo la lingua)
     play_package: env('GOOGLE_PLAY_PACKAGE') || '',
     play_lingue: String(env('PLAY_LINGUE') ?? 'it').split(',').map((x) => x.trim().toLowerCase()).filter(Boolean),
+    // Android, storico: spazio di Cloud Storage dei report della Play Console (anche nella forma gs://nome/reviews/)
+    play_bucket: String(env('GOOGLE_PLAY_BUCKET') || '').replace(/^gs:\/\//, '').split('/')[0],
     input_file: env('INPUT_FILE') || '/files/input/recensioni_inventate.csv',
     // contesto del dominio: chi e' recensito, chi legge, categorie di segnalazione
     context_file: env('CONTEXT_FILE') || '/files/contesto/contesto.json',
@@ -51,6 +53,12 @@ return [{
     granularita: ['anno', 'trimestre', 'mese'].includes(env('GRANULARITA')) ? env('GRANULARITA') : 'anno',
     // minimo di recensioni perche' una versione dell'app abbia statistiche proprie
     min_reviews_per_version: numero(env('MIN_REVIEWS_PER_VERSION'), 30),
+    // avviso a grappolo: almeno GRAPPOLO_MINIMO recensioni con la
+    // stessa segnalazione, sulla stessa piattaforma e versione, negli ultimi GRAPPOLO_GIORNI giorni.
+    // GRAPPOLO_OGGI (AAAA-MM-GG) sposta la data di riferimento: serve solo alle prove su dati vecchi.
+    grappolo_minimo: numero(env('GRAPPOLO_MINIMO'), 3),
+    grappolo_giorni: numero(env('GRAPPOLO_GIORNI'), 7),
+    grappolo_oggi: /^\d{4}-\d{2}-\d{2}$/.test(String(env('GRAPPOLO_OGGI') ?? '')) ? env('GRAPPOLO_OGGI') : null,
     // minimo di menzioni per entrare nelle classifiche "per tasso"
     min_mentions_rate_ranking: numero(env('MIN_MENTIONS_RATE_RANKING'), 30),
     // prezzi del modello in dollari per milione di token (listino da verificare quando cambia)

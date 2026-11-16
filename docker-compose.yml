@@ -24,6 +24,11 @@ x-n8n-comune: &n8n-comune
     MIN_REVIEWS_PER_PERIOD: ${MIN_REVIEWS_PER_PERIOD:-50}
     GRANULARITA: ${GRANULARITA:-mese}
     MIN_REVIEWS_PER_VERSION: ${MIN_REVIEWS_PER_VERSION:-30}
+    # avviso a grappolo: stessa segnalazione, stessa piattaforma e versione, in pochi giorni
+    GRAPPOLO_MINIMO: ${GRAPPOLO_MINIMO:-3}
+    GRAPPOLO_GIORNI: ${GRAPPOLO_GIORNI:-7}
+    # data di riferimento della finestra (vuota = oggi): solo per le prove su dati vecchi
+    GRAPPOLO_OGGI: ${GRAPPOLO_OGGI:-}
     CONTEXT_FILE: ${CONTEXT_FILE:-/files/contesto/contesto.json}
     ASPECTS_FILE: ${ASPECTS_FILE:-/files/aspetti/aspetti_fissi.json}
     RISCOPRI_ASPETTI: ${RISCOPRI_ASPETTI:-false}
@@ -37,6 +42,9 @@ x-n8n-comune: &n8n-comune
     GOOGLE_PLAY_PACKAGE: ${GOOGLE_PLAY_PACKAGE:-}
     GOOGLE_PLAY_CREDENZIALI_B64: ${GOOGLE_PLAY_CREDENZIALI_B64:-}
     PLAY_LINGUE: ${PLAY_LINGUE:-it}
+    # storico Android: report mensili della Play Console in Cloud Storage (Scarica report -> Recensioni ->
+    # «Copia URI Cloud Storage»), letti a ogni giro dall'account di servizio
+    GOOGLE_PLAY_BUCKET: ${GOOGLE_PLAY_BUCKET:-}
     # Telegram: token del bot e chat di destinazione (nel file .env, mai nel workflow)
     TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
     TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}

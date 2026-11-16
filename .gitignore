@@ -1,3 +1,5 @@
 .env
 data/prove/
 __pycache__/
+segreti/
+*.p8

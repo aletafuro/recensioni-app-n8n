@@ -3,7 +3,9 @@
 // 1. un messaggio breve con i punti principali (numeri presi dall'aggregazione, scritti dal codice);
 // 2. il digest completo come file digest.md (lo manda il nodo Telegram nativo che segue);
 // 3. un avviso per ogni recensione NUOVA di questo giro con una segnalazione ad alta priorita'
-//    (nuova = id dello store mai visto prima: si sa solo quando il giro scarica dallo store).
+//    (nuova = id dello store mai visto prima: si sa solo quando il giro scarica dallo store);
+// 4. un avviso a grappolo quando almeno GRAPPOLO_MINIMO recensioni recenti riportano lo stesso problema sulla
+//    stessa piattaforma e versione (calcolato nell'Aggregazione), se almeno una e' nuova di questo giro.
 // I testi sono quelli gia' controllati dal workflow: le prove delle segnalazioni sono frasi
 // esatte delle recensioni, con i dati personali gia' oscurati dal guardrail di ingresso.
 // Se Telegram non risponde, il giro NON fallisce: l'errore resta scritto nel risultato.
@@ -45,12 +47,49 @@ righe.push('');
 for (const x of fatti.frasi_piattaforme ?? []) righe.push(`- ${x}.`);
 if (unione && unione.android && unione.android !== 'ok') righe.push(`(Android: ${unione.android})`);
 if (unione && unione.ios && unione.ios !== 'ok') righe.push(`(iOS: ${unione.ios})`);
+if (unione && unione.android_storico && !String(unione.android_storico).startsWith('ok')) righe.push(`(Storico Android: ${unione.android_storico})`);
 righe.push('', 'Piu\' criticati:');
 for (const x of A.classifiche.piu_criticati.slice(0, 3)) righe.push(`- ${x.nome}: ${x.recensioni_negative} recensioni (${pct(x.pct_recensioni_che_lo_criticano)} del totale)`);
+// andamento per piattaforma: ultime due settimane complete e ultimo mese completo, contro il periodo prima
+// (numeri e verdetti dall'Aggregazione: «oltre il rumore», «entro il rumore» o «pochi dati»)
+const PC = A.periodi_di_calendario;
+if (PC) {
+  const NOMI = { ios: 'iOS', android: 'Android' };
+  const MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+  const gm = (d) => `${d.slice(8, 10)}/${d.slice(5, 7)}`;
+  const nomePeriodo = (p, tipo) => (tipo === 'mesi' ? `${MESI[Number(p.slice(5, 7)) - 1]} ${p.slice(0, 4)}` : `dal ${gm(p.slice(0, 10))} al ${gm(p.slice(-10))}`);
+  // il periodo e' scritto su ogni riga: iOS e Android possono avere ultimi periodi completi diversi
+  // (correzione dopo la verifica alla cieca del 16/11: «pochi dati» anche quando manca il periodo prima,
+  // e «dati solo dal» quando il periodo e' il primo dell'archivio e parte a meta')
+  for (const [tipo, titolo] of [['due_settimane', 'Ultime due settimane complete'], ['mesi', 'Ultimo mese completo']]) {
+    const righeP = [];
+    for (const s of PC[tipo].filter((x) => x.piattaforma !== 'tutte')) {
+      const p = [...s.periodi].reverse().find((x) => !x.in_corso);
+      if (!p) continue;
+      const testa = `- ${NOMI[s.piattaforma] ?? s.piattaforma}, ${nomePeriodo(p.periodo, tipo)}${p.dati_solo_dal ? ` (dati solo dal ${gm(p.dati_solo_dal)})` : ''}`;
+      if (!p.recensioni) { righeP.push(`${testa}: nessuna recensione`); continue; }
+      const c = p.confronto;
+      let t = `${testa}: ${p.recensioni} recensioni, ${pct(p.pct_negative)} negative`;
+      if (c && c.pct_negative_prima !== null) t += ` (prima ${pct(c.pct_negative_prima)}): ${c.esito}`;
+      else t += ` (nessun dato sul periodo prima${p.recensioni < 20 ? '; pochi dati' : ''})`;
+      righeP.push(t);
+    }
+    if (righeP.length) righe.push('', `${titolo}:`, ...righeP);
+  }
+}
 const sig = A.andamento.filter((x) => x.significativo);
-righe.push('', sig.length ? `Cambiamenti nel tempo oltre la soglia statistica: ${sig.length} (dettagli nel digest).` : 'Nessun cambiamento nel tempo oltre la soglia statistica.');
-righe.push(`Segnalate: ${A.segnalazioni.totale}, di cui ${A.segnalazioni.per_priorita.alta} con priorita' alta.`);
+righe.push('', sig.length ? `Temi: ${sig.length} cambiamenti oltre la soglia statistica tra l'ultimo periodo e i precedenti (dettagli nel digest).` : 'Temi: nessun cambiamento oltre la soglia statistica tra l\'ultimo periodo e i precedenti.');
+const S2 = A.segnalazioni;
+const precise = S2.con_un_problema_preciso ?? null;
+righe.push(precise === null
+  ? `Segnalate: ${S2.totale}, di cui ${S2.per_priorita.alta} con priorita' alta.`
+  : `Da guardare: ${S2.totale} recensioni. ${precise} con un problema preciso (sono nel foglio Segnalazioni dell'Excel), di cui ${S2.per_priorita.alta} con priorita' alta; le altre ${S2.totale - precise} solo per voto basso o per voto e testo in contrasto.`);
 if (fatti.frase_campagne) righe.push('', fatti.frase_campagne);
+// avvisi a grappolo (vedi Aggregazione): solo quelli con almeno una recensione nuova di questo giro,
+// cosi' lo stesso grappolo non viene ripetuto a ogni giro se non arriva niente di nuovo
+const G = A.avviso_a_grappolo ?? { grappoli: [] };
+const grappoliDaAvvisare = G.grappoli.filter((g) => g.recensioni.some((x) => nuove.has(x.chiave_store)));
+if (grappoliDaAvvisare.length) righe.push('', `Avvisi a grappolo: ${grappoliDaAvvisare.length} (stesso problema sulla stessa versione, in ${cfg.grappolo_giorni} giorni). Li trovi qui sotto.`);
 righe.push('', 'Il digest completo e\' nel file qui sotto.');
 await invia(righe.join('\n'));
 
@@ -78,8 +117,40 @@ for (const r of urgenti.slice(0, MAX_AVVISI)) {
 }
 if (urgenti.length > MAX_AVVISI) await invia(`Altre ${urgenti.length - MAX_AVVISI} recensioni nuove con priorita' alta: sono nel digest e in recensioni_diagnostica.jsonl.`);
 
+// --- 4. avvisi a grappolo: stesso problema, stessa piattaforma e stessa versione, in pochi giorni
+//        (per esempio tre persone che sulla stessa versione scrivono «ho pagato ma non ho ricevuto l'acquisto»)
+const NOME_PF = { ios: 'iOS', android: 'Android' };
+const dataIt = (d) => (d ? String(d).slice(0, 10).split('-').reverse().join('/') : '');
+const MAX_GRAPPOLI = 10, MAX_FRASI = 5;
+for (const g of grappoliDaAvvisare.slice(0, MAX_GRAPPOLI)) {
+  const pf = NOME_PF[g.piattaforma] ?? g.piattaforma;
+  const nuoveQui = g.recensioni.filter((x) => nuove.has(x.chiave_store)).length;
+  const frase = g.versione
+    ? (g.e_la_versione_piu_recente
+      ? `È la versione più recente tra quelle viste nelle recensioni ${pf}.`
+      : `È una versione vecchia: la più recente vista nelle recensioni ${pf} è la ${g.versione_piu_recente_vista}.`)
+    : 'Lo store non indica la versione.';
+  const testo = [
+    `Avviso a grappolo: ${g.nome_categoria}`,
+    `${g.quante} recensioni ${pf}${g.versione ? ' sulla versione ' + g.versione : ''} dal ${dataIt(g.dal)} al ${dataIt(g.al)}, ${nuoveQui} nuove in questo giro.`,
+    frase,
+    'Dalle recensioni (sono affermazioni degli utenti):',
+    ...g.recensioni.slice(0, MAX_FRASI).map((x) => `- «${x.evidenza}» (voto ${x.voto ?? '-'}, ${dataIt(x.data)})`),
+  ];
+  if (g.quante > MAX_FRASI) testo.push(`... e altre ${g.quante - MAX_FRASI}: sono in aggregazione.json.`);
+  testo.push('Da confrontare con i ticket del servizio clienti.');
+  await invia(testo.join('\n'));
+}
+if (grappoliDaAvvisare.length > MAX_GRAPPOLI) await invia(`Altri ${grappoliDaAvvisare.length - MAX_GRAPPOLI} avvisi a grappolo: sono in aggregazione.json.`);
+
 // esito scritto accanto agli altri risultati (telegram.json), per controllare che cosa e' partito
-const esito = { inviato_il: new Date().toISOString(), avvisi_urgenti: urgenti.length, nuove_recensioni: unione?.nuove ?? null, esiti };
+const esito = {
+  inviato_il: new Date().toISOString(),
+  avvisi_urgenti: urgenti.length,
+  avvisi_a_grappolo: grappoliDaAvvisare.map((g) => ({ categoria: g.categoria, piattaforma: g.piattaforma, versione: g.versione, quante: g.quante })),
+  nuove_recensioni: unione?.nuove ?? null,
+  esiti,
+};
 const b64 = (t) => Buffer.from(t, 'utf8').toString('base64');
 return [{
   json: { telegram: 'testi inviati', path: `${cfg.output_dir}/telegram.json`, chat_id: String(chat), ...esito },

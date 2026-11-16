@@ -25,7 +25,8 @@ try {
 const b64url = (x) => Buffer.from(typeof x === 'string' ? x : JSON.stringify(x)).toString('base64').replace(/=+$/, '').replace(/\+/g, '-').replace(/\//g, '_');
 const ora = Math.floor(Date.now() / 1000);
 const testa = b64url({ alg: 'RS256', typ: 'JWT' });
-const corpo = b64url({ iss: account.client_email, scope: 'https://www.googleapis.com/auth/androidpublisher', aud: 'https://oauth2.googleapis.com/token', iat: ora, exp: ora + 3600 });
+// due permessi nello stesso accesso: le recensioni (API) e la lettura dei report mensili (Cloud Storage)
+const corpo = b64url({ iss: account.client_email, scope: 'https://www.googleapis.com/auth/androidpublisher https://www.googleapis.com/auth/devstorage.read_only', aud: 'https://oauth2.googleapis.com/token', iat: ora, exp: ora + 3600 });
 const firma = crypto.createSign('RSA-SHA256').update(`${testa}.${corpo}`).sign(account.private_key, 'base64').replace(/=+$/, '').replace(/\+/g, '-').replace(/\//g, '_');
 let accessToken;
 try {
@@ -80,4 +81,86 @@ function daRecensioneApi(rec) {
   }];
 }
 
-return esito(righe.filter((r) => r.id_store), errore ? 'scaricate in parte: ' + errore : 'ok', { pagine });
+// --- 3. storico: i report mensili delle recensioni che Google tiene in Cloud Storage
+// (Play Console -> Scarica report -> Recensioni; file reviews_<pacchetto>_<AAAAMM>.csv in UTF-16, aggiornati ogni
+// giorno). Si leggono a ogni giro: le recensioni gia' in archivio vengono scartate dall'unione con l'archivio.
+// Serve GOOGLE_PLAY_BUCKET e il permesso dell'account di servizio «Visualizzazione di informazioni sulle app e
+// download di report collettivi» (Autorizzazioni account). Se manca, il giro continua e lo scrive.
+// Stesse regole di strumenti/importa_play_console.py (identificativo, data, lingue, recensioni senza testo).
+let storicoStato = 'non configurato: manca GOOGLE_PLAY_BUCKET';
+let storicoFile = 0, storicoRighe = 0;
+if (cfg.play_bucket) {
+  try {
+    const nomi = [];
+    let pag = null;
+    do {
+      const url = `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(cfg.play_bucket)}/o?prefix=${encodeURIComponent(`reviews/reviews_${cfg.play_package}_`)}&maxResults=1000${pag ? '&pageToken=' + encodeURIComponent(pag) : ''}`;
+      const r = await helpers.httpRequest({ method: 'GET', url, headers: { Authorization: 'Bearer ' + accessToken }, json: true, timeout: 30000 });
+      const d = typeof r === 'string' ? JSON.parse(r) : r;
+      nomi.push(...(d.items ?? []).map((o) => o.name).filter((n) => /\.csv$/i.test(n)));
+      pag = d.nextPageToken ?? null;
+    } while (pag);
+    for (const nome of nomi.sort()) {
+      const dati = await helpers.httpRequest({
+        method: 'GET', url: `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(cfg.play_bucket)}/o/${encodeURIComponent(nome)}?alt=media`,
+        headers: { Authorization: 'Bearer ' + accessToken }, encoding: 'arraybuffer', timeout: 60000,
+      });
+      const nuoveDalFile = daReport(Buffer.from(dati));
+      righe.push(...nuoveDalFile);
+      storicoFile++;
+      storicoRighe += nuoveDalFile.length;
+    }
+    storicoStato = `ok: ${storicoFile} report mensili, ${storicoRighe} recensioni con testo nelle lingue scelte`;
+  } catch (e) {
+    const codice = e.httpCode ?? e.cause?.status ?? e.response?.status ?? '';
+    storicoStato = String(codice) === '403' || /403|forbidden|denied/i.test(e.message)
+      ? 'permesso sui report non ancora attivo (Google puo\' metterci fino a un giorno dopo che e\' stato dato)'
+      : 'report mensili non letti: ' + e.message;
+  }
+}
+
+function testoDelFile(buf) {
+  if (buf[0] === 0xff && buf[1] === 0xfe) return buf.slice(2).toString('utf16le');
+  if (buf[0] === 0xfe && buf[1] === 0xff) { const b = Buffer.from(buf.slice(2)); b.swap16(); return b.toString('utf16le'); }
+  const t = buf.toString('utf8');
+  return t.charCodeAt(0) === 0xfeff ? t.slice(1) : t;
+}
+function leggiCsv(t) {
+  const out = []; let campo = '', riga = [], q = false;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) { if (c === '"' && t[i + 1] === '"') { campo += '"'; i++; } else if (c === '"') q = false; else campo += c; }
+    else if (c === '"') q = true; else if (c === ',') { riga.push(campo); campo = ''; }
+    else if (c === '\n') { riga.push(campo); out.push(riga); riga = []; campo = ''; } else if (c !== '\r') campo += c;
+  }
+  if (campo || riga.length) { riga.push(campo); out.push(riga); }
+  const [h, ...r] = out;
+  return r.filter((x) => x.length > 1).map((x) => Object.fromEntries(h.map((k, i) => [k.trim(), x[i] ?? ''])));
+}
+function daReport(buf) {
+  const out = [];
+  for (const r of leggiCsv(testoDelFile(buf))) {
+    const lingua = String(r['Reviewer Language'] ?? '').trim().toLowerCase().slice(0, 2);
+    if (cfg.play_lingue.length && !cfg.play_lingue.includes(lingua)) continue;
+    const testo = String(r['Review Text'] ?? '').trim(), titolo = String(r['Review Title'] ?? '').trim();
+    if (!testo && !titolo) continue; // solo stelle: niente da analizzare
+    let id = '';
+    const m = String(r['Review Link'] ?? '').match(/[?&]reviewid=([^&]+)/i);
+    if (m) id = decodeURIComponent(m[1]);
+    else id = 'pc:' + crypto.createHash('sha1').update([r['Review Submit Millis Since Epoch'] ?? '', r['Star Rating'] ?? '', r['Review Text'] ?? ''].join('|'), 'utf8').digest('hex').slice(0, 16);
+    let data = '';
+    for (const campo of ['Review Last Update Millis Since Epoch', 'Review Submit Millis Since Epoch']) {
+      const v = String(r[campo] ?? '').trim();
+      if (/^\d+$/.test(v)) { data = new Date(Number(v)).toISOString().slice(0, 10); break; }
+    }
+    if (!data) data = String(r['Review Submit Date and Time'] ?? '').trim().slice(0, 10);
+    out.push({ id_store: id, title: titolo, rating: String(r['Star Rating'] ?? '').trim(), travelDate: '', publishedDate: data, text: testo,
+      piattaforma: 'android', versione: String(r['App Version Name'] ?? '').trim(), paese: lingua });
+  }
+  return out;
+}
+
+// la stessa recensione puo' arrivare dall'API e dal report: si tiene la prima (l'API, piu' aggiornata)
+const viste = new Set();
+const uniche = righe.filter((r) => r.id_store && !viste.has(r.id_store) && viste.add(r.id_store));
+return esito(uniche, errore ? 'scaricate in parte: ' + errore : 'ok', { pagine, storico_stato: storicoStato, storico_file: storicoFile, storico_righe: storicoRighe });

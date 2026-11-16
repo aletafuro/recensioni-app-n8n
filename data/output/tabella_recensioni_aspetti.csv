@@ -11,7 +11,7 @@ R2cb8eb7cea,2026-09-09,2026,2026-09,2,it,ios,3.1.0,negative,true,media,true,sync
 R28bbe5bf0d,2026-09-10,2026,2026-09,2,it,android,3.1.0,negative,true,media,true,graphics_and_widgets,grafica e widget,negative
 Re11e12dddb,2026-09-12,2026,2026-09,4,it,ios,3.1.0,positive,false,,true,usefulness,utilità,positive
 Re11e12dddb,2026-09-12,2026,2026-09,4,it,ios,3.1.0,positive,false,,true,graphics_and_widgets,grafica e widget,positive
-R4c4f7817dc,2026-09-15,2026,2026-09,3,it,ios,3.1.0,neutral,false,,true,free_version,versione gratuita,negative
+R4c4f7817dc,2026-09-15,2026,2026-09,3,it,ios,3.1.0,mixed,false,,true,free_version,versione gratuita,negative
 Rbf40997718,2026-09-16,2026,2026-09,1,it,android,3.1.0,negative,true,media,true,,,
 R0cac49d7ab,2026-09-18,2026,2026-09,5,it,ios,3.1.0,positive,false,,true,sharing_and_collaboration,condivisione e collaborazione,positive
 R7267fe2309,2026-09-25,2026,2026-09,1,it,ios,3.2.0,negative,true,media,true,sharing_and_collaboration,condivisione e collaborazione,negative
@@ -37,3 +37,10 @@ R39699c4484,2026-10-25,2026,2026-10,5,it,ios,3.2.1,positive,false,,true,,,
 Rfe5d2c08d6,2026-10-28,2026,2026-10,1,it,android,3.2.1,negative,true,alta,true,,,
 R40eacafad9,2026-10-30,2026,2026-10,4,it,ios,3.2.1,positive,false,,true,usability,usabilità,positive
 R84570ccff5,2026-11-02,2026,2026-11,4,it,android,3.2.1,positive,false,,true,usability,usabilità,positive
+R758dc1ec4b,2026-11-03,2026,2026-11,1,it,android,3.2.0,negative,true,media,true,billing_and_subscription,fatturazione e abbonamento,negative
+R579d8fad3d,2026-11-04,2026,2026-11,2,it,ios,3.2.1,negative,true,bassa,true,billing_and_subscription,fatturazione e abbonamento,negative
+R795ef0b270,2026-11-04,2026,2026-11,1,it,android,3.2.0,negative,true,media,true,billing_and_subscription,fatturazione e abbonamento,negative
+Rcdf22c0ce8,2026-11-05,2026,2026-11,5,it,ios,3.2.1,positive,true,media,false,,,
+Rfff1f1c0a9,2026-11-05,2026,2026-11,2,it,android,3.2.0,negative,true,media,true,billing_and_subscription,fatturazione e abbonamento,negative
+Rae4265af5b,2026-11-06,2026,2026-11,1,it,android,3.2.0,negative,true,media,true,billing_and_subscription,fatturazione e abbonamento,negative
+Rae4265af5b,2026-11-06,2026,2026-11,1,it,android,3.2.0,negative,true,media,true,customer_support,assistenza clienti,negative

@@ -1,24 +1,29 @@
 {
   "meta": {
-    "generato_il": "2026-11-14T15:28:25.187Z",
+    "generato_il": "2026-11-16T20:20:54.185Z",
     "modello": "gpt-4.1-mini",
     "file_input": "/files/input/recensioni_inventate.csv",
-    "righe_nel_file": 30,
-    "recensioni_in_output": 30,
-    "recensioni_aggregate": 30,
+    "righe_nel_file": 36,
+    "recensioni_in_output": 36,
+    "recensioni_aggregate": 35,
     "escluse_dall_aggregazione": {
       "duplicati": 0,
       "vuote": 0,
       "analisi_fallita": 0,
-      "sospette_di_manipolazione": 0
+      "sospette_di_manipolazione": 1
     },
     "prima_data": "2026-09-02",
-    "ultima_data": "2026-11-02",
+    "ultima_data": "2026-11-06",
     "elenco_aspetti": {
-      "versione": "scoperta del 2026-11-14",
-      "origine": "scoperta dalle recensioni",
-      "recensioni_con_temi_fuori_elenco_pct": 33.3,
-      "confronto_con_la_linea_di_base": null,
+      "versione": "v1",
+      "origine": "elenco fisso",
+      "recensioni_con_temi_fuori_elenco_pct": 17.1,
+      "confronto_con_la_linea_di_base": {
+        "pct_oggi": 17.1,
+        "pct_linea_di_base": 17.1,
+        "z": 0,
+        "sopra_la_linea_di_base": false
+      },
       "soglia_temi_candidati_recensioni": 5,
       "temi_candidati": [],
       "da_rivedere": false,
@@ -44,46 +49,46 @@
   "sentiment_complessivo": {
     "positive": {
       "recensioni": 14,
-      "pct": 46.7
+      "pct": 40
     },
     "negative": {
-      "recensioni": 11,
-      "pct": 36.7
+      "recensioni": 16,
+      "pct": 45.7
     },
     "mixed": {
-      "recensioni": 3,
-      "pct": 10
+      "recensioni": 4,
+      "pct": 11.4
     },
     "neutral": {
-      "recensioni": 2,
-      "pct": 6.7
+      "recensioni": 1,
+      "pct": 2.9
     }
   },
-  "voto_medio": 3.23,
+  "voto_medio": 2.97,
   "lingue": {
-    "it": 30
+    "it": 35
   },
   "per_lingua": [
     {
       "lingua": "it",
-      "recensioni": 30,
-      "voto_medio": 3.23,
+      "recensioni": 35,
+      "voto_medio": 2.97,
       "sentiment_complessivo": {
         "positive": {
           "recensioni": 14,
-          "pct": 46.7
+          "pct": 40
         },
         "negative": {
-          "recensioni": 11,
-          "pct": 36.7
+          "recensioni": 16,
+          "pct": 45.7
         },
         "mixed": {
-          "recensioni": 3,
-          "pct": 10
+          "recensioni": 4,
+          "pct": 11.4
         },
         "neutral": {
-          "recensioni": 2,
-          "pct": 6.7
+          "recensioni": 1,
+          "pct": 2.9
         }
       },
       "confronto_con_le_altre_lingue": null
@@ -97,9 +102,9 @@
       "positive": 5,
       "negative": 1,
       "neutral": 0,
-      "pct_recensioni_che_ne_parlano": 20,
-      "pct_recensioni_che_lo_apprezzano": 16.7,
-      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_recensioni_che_ne_parlano": 17.1,
+      "pct_recensioni_che_lo_apprezzano": 14.3,
+      "pct_recensioni_che_lo_criticano": 2.9,
       "pct_positive_su_menzioni": 83.3,
       "pct_negative_su_menzioni": 16.7,
       "ic95_pct_negative_su_menzioni": [
@@ -111,17 +116,17 @@
     {
       "aspect": "billing_and_subscription",
       "nome": "fatturazione e abbonamento",
-      "menzioni": 3,
+      "menzioni": 8,
       "positive": 0,
-      "negative": 3,
+      "negative": 8,
       "neutral": 0,
-      "pct_recensioni_che_ne_parlano": 10,
+      "pct_recensioni_che_ne_parlano": 22.9,
       "pct_recensioni_che_lo_apprezzano": 0,
-      "pct_recensioni_che_lo_criticano": 10,
+      "pct_recensioni_che_lo_criticano": 22.9,
       "pct_positive_su_menzioni": 0,
       "pct_negative_su_menzioni": 100,
       "ic95_pct_negative_su_menzioni": [
-        43.8,
+        67.6,
         100
       ],
       "saldo": -1
@@ -129,17 +134,17 @@
     {
       "aspect": "customer_support",
       "nome": "assistenza clienti",
-      "menzioni": 1,
+      "menzioni": 2,
       "positive": 0,
-      "negative": 1,
+      "negative": 2,
       "neutral": 0,
-      "pct_recensioni_che_ne_parlano": 3.3,
+      "pct_recensioni_che_ne_parlano": 5.7,
       "pct_recensioni_che_lo_apprezzano": 0,
-      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_recensioni_che_lo_criticano": 5.7,
       "pct_positive_su_menzioni": 0,
       "pct_negative_su_menzioni": 100,
       "ic95_pct_negative_su_menzioni": [
-        20.7,
+        34.2,
         100
       ],
       "saldo": -1
@@ -151,9 +156,9 @@
       "positive": 0,
       "negative": 2,
       "neutral": 0,
-      "pct_recensioni_che_ne_parlano": 6.7,
+      "pct_recensioni_che_ne_parlano": 5.7,
       "pct_recensioni_che_lo_apprezzano": 0,
-      "pct_recensioni_che_lo_criticano": 6.7,
+      "pct_recensioni_che_lo_criticano": 5.7,
       "pct_positive_su_menzioni": 0,
       "pct_negative_su_menzioni": 100,
       "ic95_pct_negative_su_menzioni": [
@@ -169,9 +174,9 @@
       "positive": 2,
       "negative": 2,
       "neutral": 0,
-      "pct_recensioni_che_ne_parlano": 13.3,
-      "pct_recensioni_che_lo_apprezzano": 6.7,
-      "pct_recensioni_che_lo_criticano": 6.7,
+      "pct_recensioni_che_ne_parlano": 11.4,
+      "pct_recensioni_che_lo_apprezzano": 5.7,
+      "pct_recensioni_che_lo_criticano": 5.7,
       "pct_positive_su_menzioni": 50,
       "pct_negative_su_menzioni": 50,
       "ic95_pct_negative_su_menzioni": [
@@ -187,9 +192,9 @@
       "positive": 1,
       "negative": 1,
       "neutral": 0,
-      "pct_recensioni_che_ne_parlano": 6.7,
-      "pct_recensioni_che_lo_apprezzano": 3.3,
-      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_recensioni_che_ne_parlano": 5.7,
+      "pct_recensioni_che_lo_apprezzano": 2.9,
+      "pct_recensioni_che_lo_criticano": 2.9,
       "pct_positive_su_menzioni": 50,
       "pct_negative_su_menzioni": 50,
       "ic95_pct_negative_su_menzioni": [
@@ -205,9 +210,9 @@
       "positive": 0,
       "negative": 4,
       "neutral": 0,
-      "pct_recensioni_che_ne_parlano": 13.3,
+      "pct_recensioni_che_ne_parlano": 11.4,
       "pct_recensioni_che_lo_apprezzano": 0,
-      "pct_recensioni_che_lo_criticano": 13.3,
+      "pct_recensioni_che_lo_criticano": 11.4,
       "pct_positive_su_menzioni": 0,
       "pct_negative_su_menzioni": 100,
       "ic95_pct_negative_su_menzioni": [
@@ -238,9 +243,9 @@
       "positive": 0,
       "negative": 1,
       "neutral": 0,
-      "pct_recensioni_che_ne_parlano": 3.3,
+      "pct_recensioni_che_ne_parlano": 2.9,
       "pct_recensioni_che_lo_apprezzano": 0,
-      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_recensioni_che_lo_criticano": 2.9,
       "pct_positive_su_menzioni": 0,
       "pct_negative_su_menzioni": 100,
       "ic95_pct_negative_su_menzioni": [
@@ -256,9 +261,9 @@
       "positive": 3,
       "negative": 1,
       "neutral": 0,
-      "pct_recensioni_che_ne_parlano": 13.3,
-      "pct_recensioni_che_lo_apprezzano": 10,
-      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_recensioni_che_ne_parlano": 11.4,
+      "pct_recensioni_che_lo_apprezzano": 8.6,
+      "pct_recensioni_che_lo_criticano": 2.9,
       "pct_positive_su_menzioni": 75,
       "pct_negative_su_menzioni": 25,
       "ic95_pct_negative_su_menzioni": [
@@ -274,9 +279,9 @@
       "positive": 4,
       "negative": 1,
       "neutral": 0,
-      "pct_recensioni_che_ne_parlano": 16.7,
-      "pct_recensioni_che_lo_apprezzano": 13.3,
-      "pct_recensioni_che_lo_criticano": 3.3,
+      "pct_recensioni_che_ne_parlano": 14.3,
+      "pct_recensioni_che_lo_apprezzano": 11.4,
+      "pct_recensioni_che_lo_criticano": 2.9,
       "pct_positive_su_menzioni": 80,
       "pct_negative_su_menzioni": 20,
       "ic95_pct_negative_su_menzioni": [
@@ -293,7 +298,7 @@
         "aspect": "usability",
         "nome": "usabilità",
         "recensioni_positive": 5,
-        "pct_recensioni_che_lo_apprezzano": 16.7,
+        "pct_recensioni_che_lo_apprezzano": 14.3,
         "pct_positive_su_menzioni": 83.3,
         "menzioni": 6
       },
@@ -302,7 +307,7 @@
         "aspect": "usefulness",
         "nome": "utilità",
         "recensioni_positive": 4,
-        "pct_recensioni_che_lo_apprezzano": 13.3,
+        "pct_recensioni_che_lo_apprezzano": 11.4,
         "pct_positive_su_menzioni": 80,
         "menzioni": 5
       },
@@ -311,7 +316,7 @@
         "aspect": "graphics_and_widgets",
         "nome": "grafica e widget",
         "recensioni_positive": 3,
-        "pct_recensioni_che_lo_apprezzano": 10,
+        "pct_recensioni_che_lo_apprezzano": 8.6,
         "pct_positive_su_menzioni": 75,
         "menzioni": 4
       },
@@ -320,7 +325,7 @@
         "aspect": "sharing_and_collaboration",
         "nome": "condivisione e collaborazione",
         "recensioni_positive": 2,
-        "pct_recensioni_che_lo_apprezzano": 6.7,
+        "pct_recensioni_che_lo_apprezzano": 5.7,
         "pct_positive_su_menzioni": 50,
         "menzioni": 4
       },
@@ -329,7 +334,7 @@
         "aspect": "synchronization",
         "nome": "sincronizzazione",
         "recensioni_positive": 1,
-        "pct_recensioni_che_lo_apprezzano": 3.3,
+        "pct_recensioni_che_lo_apprezzano": 2.9,
         "pct_positive_su_menzioni": 50,
         "menzioni": 2
       }
@@ -337,91 +342,91 @@
     "piu_criticati": [
       {
         "posizione": 1,
-        "aspect": "app_performance_and_stability",
-        "nome": "performance e stabilità dell'app",
-        "recensioni_negative": 4,
-        "pct_recensioni_che_lo_criticano": 13.3,
+        "aspect": "billing_and_subscription",
+        "nome": "fatturazione e abbonamento",
+        "recensioni_negative": 8,
+        "pct_recensioni_che_lo_criticano": 22.9,
         "pct_negative_su_menzioni": 100,
-        "menzioni": 4
+        "menzioni": 8
       },
       {
         "posizione": 2,
-        "aspect": "billing_and_subscription",
-        "nome": "fatturazione e abbonamento",
-        "recensioni_negative": 3,
-        "pct_recensioni_che_lo_criticano": 10,
+        "aspect": "app_performance_and_stability",
+        "nome": "performance e stabilità dell'app",
+        "recensioni_negative": 4,
+        "pct_recensioni_che_lo_criticano": 11.4,
         "pct_negative_su_menzioni": 100,
-        "menzioni": 3
+        "menzioni": 4
       },
       {
         "posizione": 3,
         "aspect": "sharing_and_collaboration",
         "nome": "condivisione e collaborazione",
         "recensioni_negative": 2,
-        "pct_recensioni_che_lo_criticano": 6.7,
+        "pct_recensioni_che_lo_criticano": 5.7,
         "pct_negative_su_menzioni": 50,
         "menzioni": 4
       },
       {
         "posizione": 4,
-        "aspect": "free_version",
-        "nome": "versione gratuita",
+        "aspect": "customer_support",
+        "nome": "assistenza clienti",
         "recensioni_negative": 2,
-        "pct_recensioni_che_lo_criticano": 6.7,
+        "pct_recensioni_che_lo_criticano": 5.7,
         "pct_negative_su_menzioni": 100,
         "menzioni": 2
       },
       {
         "posizione": 5,
+        "aspect": "free_version",
+        "nome": "versione gratuita",
+        "recensioni_negative": 2,
+        "pct_recensioni_che_lo_criticano": 5.7,
+        "pct_negative_su_menzioni": 100,
+        "menzioni": 2
+      },
+      {
+        "posizione": 6,
         "aspect": "usability",
         "nome": "usabilità",
         "recensioni_negative": 1,
-        "pct_recensioni_che_lo_criticano": 3.3,
+        "pct_recensioni_che_lo_criticano": 2.9,
         "pct_negative_su_menzioni": 16.7,
         "menzioni": 6
       },
       {
-        "posizione": 6,
+        "posizione": 7,
         "aspect": "usefulness",
         "nome": "utilità",
         "recensioni_negative": 1,
-        "pct_recensioni_che_lo_criticano": 3.3,
+        "pct_recensioni_che_lo_criticano": 2.9,
         "pct_negative_su_menzioni": 20,
         "menzioni": 5
       },
       {
-        "posizione": 7,
+        "posizione": 8,
         "aspect": "graphics_and_widgets",
         "nome": "grafica e widget",
         "recensioni_negative": 1,
-        "pct_recensioni_che_lo_criticano": 3.3,
+        "pct_recensioni_che_lo_criticano": 2.9,
         "pct_negative_su_menzioni": 25,
         "menzioni": 4
       },
       {
-        "posizione": 8,
+        "posizione": 9,
         "aspect": "synchronization",
         "nome": "sincronizzazione",
         "recensioni_negative": 1,
-        "pct_recensioni_che_lo_criticano": 3.3,
+        "pct_recensioni_che_lo_criticano": 2.9,
         "pct_negative_su_menzioni": 50,
         "menzioni": 2
-      },
-      {
-        "posizione": 9,
-        "aspect": "customer_support",
-        "nome": "assistenza clienti",
-        "recensioni_negative": 1,
-        "pct_recensioni_che_lo_criticano": 3.3,
-        "pct_negative_su_menzioni": 100,
-        "menzioni": 1
       },
       {
         "posizione": 10,
         "aspect": "data_privacy_and_retention",
         "nome": "privacy e conservazione dati",
         "recensioni_negative": 1,
-        "pct_recensioni_che_lo_criticano": 3.3,
+        "pct_recensioni_che_lo_criticano": 2.9,
         "pct_negative_su_menzioni": 100,
         "menzioni": 1
       }
@@ -436,24 +441,24 @@
       "al": "2026-11",
       "i0": 0,
       "i1": 2,
-      "recensioni": 30,
-      "voto_medio": 3.23,
+      "recensioni": 35,
+      "voto_medio": 2.97,
       "sentiment_complessivo": {
         "positive": {
           "recensioni": 14,
-          "pct": 46.7
+          "pct": 40
         },
         "negative": {
-          "recensioni": 11,
-          "pct": 36.7
+          "recensioni": 16,
+          "pct": 45.7
         },
         "mixed": {
-          "recensioni": 3,
-          "pct": 10
+          "recensioni": 4,
+          "pct": 11.4
         },
         "neutral": {
-          "recensioni": 2,
-          "pct": 6.7
+          "recensioni": 1,
+          "pct": 2.9
         }
       },
       "piu_apprezzati": [
@@ -464,11 +469,11 @@
         "synchronization"
       ],
       "piu_criticati": [
-        "app_performance_and_stability",
         "billing_and_subscription",
+        "app_performance_and_stability",
         "sharing_and_collaboration",
-        "free_version",
-        "usability"
+        "customer_support",
+        "free_version"
       ],
       "aspetti": {
         "usability": {
@@ -478,9 +483,9 @@
           "positive": 5,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 20,
-          "pct_recensioni_che_lo_apprezzano": 16.7,
-          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_recensioni_che_ne_parlano": 17.1,
+          "pct_recensioni_che_lo_apprezzano": 14.3,
+          "pct_recensioni_che_lo_criticano": 2.9,
           "pct_positive_su_menzioni": 83.3,
           "pct_negative_su_menzioni": 16.7,
           "ic95_pct_negative_su_menzioni": [
@@ -492,17 +497,17 @@
         "billing_and_subscription": {
           "aspect": "billing_and_subscription",
           "nome": "fatturazione e abbonamento",
-          "menzioni": 3,
+          "menzioni": 8,
           "positive": 0,
-          "negative": 3,
+          "negative": 8,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 10,
+          "pct_recensioni_che_ne_parlano": 22.9,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 10,
+          "pct_recensioni_che_lo_criticano": 22.9,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
-            43.8,
+            67.6,
             100
           ],
           "saldo": -1
@@ -510,17 +515,17 @@
         "customer_support": {
           "aspect": "customer_support",
           "nome": "assistenza clienti",
-          "menzioni": 1,
+          "menzioni": 2,
           "positive": 0,
-          "negative": 1,
+          "negative": 2,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 3.3,
+          "pct_recensioni_che_ne_parlano": 5.7,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_recensioni_che_lo_criticano": 5.7,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
-            20.7,
+            34.2,
             100
           ],
           "saldo": -1
@@ -532,9 +537,9 @@
           "positive": 0,
           "negative": 2,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 6.7,
+          "pct_recensioni_che_ne_parlano": 5.7,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 6.7,
+          "pct_recensioni_che_lo_criticano": 5.7,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
@@ -550,9 +555,9 @@
           "positive": 2,
           "negative": 2,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 13.3,
-          "pct_recensioni_che_lo_apprezzano": 6.7,
-          "pct_recensioni_che_lo_criticano": 6.7,
+          "pct_recensioni_che_ne_parlano": 11.4,
+          "pct_recensioni_che_lo_apprezzano": 5.7,
+          "pct_recensioni_che_lo_criticano": 5.7,
           "pct_positive_su_menzioni": 50,
           "pct_negative_su_menzioni": 50,
           "ic95_pct_negative_su_menzioni": [
@@ -568,9 +573,9 @@
           "positive": 1,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 6.7,
-          "pct_recensioni_che_lo_apprezzano": 3.3,
-          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_recensioni_che_ne_parlano": 5.7,
+          "pct_recensioni_che_lo_apprezzano": 2.9,
+          "pct_recensioni_che_lo_criticano": 2.9,
           "pct_positive_su_menzioni": 50,
           "pct_negative_su_menzioni": 50,
           "ic95_pct_negative_su_menzioni": [
@@ -586,9 +591,9 @@
           "positive": 0,
           "negative": 4,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 13.3,
+          "pct_recensioni_che_ne_parlano": 11.4,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 13.3,
+          "pct_recensioni_che_lo_criticano": 11.4,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
@@ -619,9 +624,9 @@
           "positive": 0,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 3.3,
+          "pct_recensioni_che_ne_parlano": 2.9,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_recensioni_che_lo_criticano": 2.9,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
@@ -637,9 +642,9 @@
           "positive": 3,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 13.3,
-          "pct_recensioni_che_lo_apprezzano": 10,
-          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_recensioni_che_ne_parlano": 11.4,
+          "pct_recensioni_che_lo_apprezzano": 8.6,
+          "pct_recensioni_che_lo_criticano": 2.9,
           "pct_positive_su_menzioni": 75,
           "pct_negative_su_menzioni": 25,
           "ic95_pct_negative_su_menzioni": [
@@ -655,9 +660,9 @@
           "positive": 4,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 16.7,
-          "pct_recensioni_che_lo_apprezzano": 13.3,
-          "pct_recensioni_che_lo_criticano": 3.3,
+          "pct_recensioni_che_ne_parlano": 14.3,
+          "pct_recensioni_che_lo_apprezzano": 11.4,
+          "pct_recensioni_che_lo_criticano": 2.9,
           "pct_positive_su_menzioni": 80,
           "pct_negative_su_menzioni": 20,
           "ic95_pct_negative_su_menzioni": [
@@ -673,24 +678,24 @@
   "per_piattaforma": [
     {
       "piattaforma": "android",
-      "recensioni": 10,
-      "voto_medio": 3.1,
+      "recensioni": 14,
+      "voto_medio": 2.57,
       "sentiment_complessivo": {
         "positive": {
           "recensioni": 4,
-          "pct": 40
+          "pct": 28.6
         },
         "negative": {
-          "recensioni": 4,
-          "pct": 40
+          "recensioni": 8,
+          "pct": 57.1
         },
         "mixed": {
           "recensioni": 1,
-          "pct": 10
+          "pct": 7.1
         },
         "neutral": {
           "recensioni": 1,
-          "pct": 10
+          "pct": 7.1
         }
       },
       "piu_apprezzati": [
@@ -699,8 +704,10 @@
         "usefulness"
       ],
       "piu_criticati": [
+        "billing_and_subscription",
         "app_performance_and_stability",
         "graphics_and_widgets",
+        "customer_support",
         "free_version"
       ],
       "aspetti": {
@@ -711,8 +718,8 @@
           "positive": 2,
           "negative": 0,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 20,
-          "pct_recensioni_che_lo_apprezzano": 20,
+          "pct_recensioni_che_ne_parlano": 14.3,
+          "pct_recensioni_che_lo_apprezzano": 14.3,
           "pct_recensioni_che_lo_criticano": 0,
           "pct_positive_su_menzioni": 100,
           "pct_negative_su_menzioni": 0,
@@ -725,32 +732,38 @@
         "billing_and_subscription": {
           "aspect": "billing_and_subscription",
           "nome": "fatturazione e abbonamento",
-          "menzioni": 0,
+          "menzioni": 4,
           "positive": 0,
-          "negative": 0,
+          "negative": 4,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 0,
+          "pct_recensioni_che_ne_parlano": 28.6,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 0,
-          "pct_positive_su_menzioni": null,
-          "pct_negative_su_menzioni": null,
-          "ic95_pct_negative_su_menzioni": null,
-          "saldo": null
+          "pct_recensioni_che_lo_criticano": 28.6,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            51,
+            100
+          ],
+          "saldo": -1
         },
         "customer_support": {
           "aspect": "customer_support",
           "nome": "assistenza clienti",
-          "menzioni": 0,
+          "menzioni": 1,
           "positive": 0,
-          "negative": 0,
+          "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 0,
+          "pct_recensioni_che_ne_parlano": 7.1,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 0,
-          "pct_positive_su_menzioni": null,
-          "pct_negative_su_menzioni": null,
-          "ic95_pct_negative_su_menzioni": null,
-          "saldo": null
+          "pct_recensioni_che_lo_criticano": 7.1,
+          "pct_positive_su_menzioni": 0,
+          "pct_negative_su_menzioni": 100,
+          "ic95_pct_negative_su_menzioni": [
+            20.7,
+            100
+          ],
+          "saldo": -1
         },
         "free_version": {
           "aspect": "free_version",
@@ -759,9 +772,9 @@
           "positive": 0,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 10,
+          "pct_recensioni_che_ne_parlano": 7.1,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 10,
+          "pct_recensioni_che_lo_criticano": 7.1,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
@@ -807,9 +820,9 @@
           "positive": 0,
           "negative": 2,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 20,
+          "pct_recensioni_che_ne_parlano": 14.3,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 20,
+          "pct_recensioni_che_lo_criticano": 14.3,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
@@ -855,9 +868,9 @@
           "positive": 1,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 20,
-          "pct_recensioni_che_lo_apprezzano": 10,
-          "pct_recensioni_che_lo_criticano": 10,
+          "pct_recensioni_che_ne_parlano": 14.3,
+          "pct_recensioni_che_lo_apprezzano": 7.1,
+          "pct_recensioni_che_lo_criticano": 7.1,
           "pct_positive_su_menzioni": 50,
           "pct_negative_su_menzioni": 50,
           "ic95_pct_negative_su_menzioni": [
@@ -873,8 +886,8 @@
           "positive": 1,
           "negative": 0,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 10,
-          "pct_recensioni_che_lo_apprezzano": 10,
+          "pct_recensioni_che_ne_parlano": 7.1,
+          "pct_recensioni_che_lo_apprezzano": 7.1,
           "pct_recensioni_che_lo_criticano": 0,
           "pct_positive_su_menzioni": 100,
           "pct_negative_su_menzioni": 0,
@@ -893,7 +906,7 @@
         },
         {
           "versione": "3.2.0",
-          "recensioni": 3,
+          "recensioni": 7,
           "sotto_il_minimo": true
         },
         {
@@ -906,24 +919,24 @@
     },
     {
       "piattaforma": "ios",
-      "recensioni": 20,
-      "voto_medio": 3.3,
+      "recensioni": 21,
+      "voto_medio": 3.24,
       "sentiment_complessivo": {
         "positive": {
           "recensioni": 10,
-          "pct": 50
+          "pct": 47.6
         },
         "negative": {
-          "recensioni": 7,
-          "pct": 35
+          "recensioni": 8,
+          "pct": 38.1
         },
         "mixed": {
-          "recensioni": 2,
-          "pct": 10
+          "recensioni": 3,
+          "pct": 14.3
         },
         "neutral": {
-          "recensioni": 1,
-          "pct": 5
+          "recensioni": 0,
+          "pct": 0
         }
       },
       "piu_apprezzati": [
@@ -948,9 +961,9 @@
           "positive": 3,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 20,
-          "pct_recensioni_che_lo_apprezzano": 15,
-          "pct_recensioni_che_lo_criticano": 5,
+          "pct_recensioni_che_ne_parlano": 19,
+          "pct_recensioni_che_lo_apprezzano": 14.3,
+          "pct_recensioni_che_lo_criticano": 4.8,
           "pct_positive_su_menzioni": 75,
           "pct_negative_su_menzioni": 25,
           "ic95_pct_negative_su_menzioni": [
@@ -962,17 +975,17 @@
         "billing_and_subscription": {
           "aspect": "billing_and_subscription",
           "nome": "fatturazione e abbonamento",
-          "menzioni": 3,
+          "menzioni": 4,
           "positive": 0,
-          "negative": 3,
+          "negative": 4,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 15,
+          "pct_recensioni_che_ne_parlano": 19,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 15,
+          "pct_recensioni_che_lo_criticano": 19,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
-            43.8,
+            51,
             100
           ],
           "saldo": -1
@@ -984,9 +997,9 @@
           "positive": 0,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 5,
+          "pct_recensioni_che_ne_parlano": 4.8,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 5,
+          "pct_recensioni_che_lo_criticano": 4.8,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
@@ -1002,9 +1015,9 @@
           "positive": 0,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 5,
+          "pct_recensioni_che_ne_parlano": 4.8,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 5,
+          "pct_recensioni_che_lo_criticano": 4.8,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
@@ -1020,9 +1033,9 @@
           "positive": 2,
           "negative": 2,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 20,
-          "pct_recensioni_che_lo_apprezzano": 10,
-          "pct_recensioni_che_lo_criticano": 10,
+          "pct_recensioni_che_ne_parlano": 19,
+          "pct_recensioni_che_lo_apprezzano": 9.5,
+          "pct_recensioni_che_lo_criticano": 9.5,
           "pct_positive_su_menzioni": 50,
           "pct_negative_su_menzioni": 50,
           "ic95_pct_negative_su_menzioni": [
@@ -1038,9 +1051,9 @@
           "positive": 1,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 10,
-          "pct_recensioni_che_lo_apprezzano": 5,
-          "pct_recensioni_che_lo_criticano": 5,
+          "pct_recensioni_che_ne_parlano": 9.5,
+          "pct_recensioni_che_lo_apprezzano": 4.8,
+          "pct_recensioni_che_lo_criticano": 4.8,
           "pct_positive_su_menzioni": 50,
           "pct_negative_su_menzioni": 50,
           "ic95_pct_negative_su_menzioni": [
@@ -1056,9 +1069,9 @@
           "positive": 0,
           "negative": 2,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 10,
+          "pct_recensioni_che_ne_parlano": 9.5,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 10,
+          "pct_recensioni_che_lo_criticano": 9.5,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
@@ -1089,9 +1102,9 @@
           "positive": 0,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 5,
+          "pct_recensioni_che_ne_parlano": 4.8,
           "pct_recensioni_che_lo_apprezzano": 0,
-          "pct_recensioni_che_lo_criticano": 5,
+          "pct_recensioni_che_lo_criticano": 4.8,
           "pct_positive_su_menzioni": 0,
           "pct_negative_su_menzioni": 100,
           "ic95_pct_negative_su_menzioni": [
@@ -1107,8 +1120,8 @@
           "positive": 2,
           "negative": 0,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 10,
-          "pct_recensioni_che_lo_apprezzano": 10,
+          "pct_recensioni_che_ne_parlano": 9.5,
+          "pct_recensioni_che_lo_apprezzano": 9.5,
           "pct_recensioni_che_lo_criticano": 0,
           "pct_positive_su_menzioni": 100,
           "pct_negative_su_menzioni": 0,
@@ -1125,9 +1138,9 @@
           "positive": 3,
           "negative": 1,
           "neutral": 0,
-          "pct_recensioni_che_ne_parlano": 20,
-          "pct_recensioni_che_lo_apprezzano": 15,
-          "pct_recensioni_che_lo_criticano": 5,
+          "pct_recensioni_che_ne_parlano": 19,
+          "pct_recensioni_che_lo_apprezzano": 14.3,
+          "pct_recensioni_che_lo_criticano": 4.8,
           "pct_positive_su_menzioni": 75,
           "pct_negative_su_menzioni": 25,
           "ic95_pct_negative_su_menzioni": [
@@ -1150,7 +1163,7 @@
         },
         {
           "versione": "3.2.1",
-          "recensioni": 6,
+          "recensioni": 7,
           "sotto_il_minimo": true
         }
       ],
@@ -1160,12 +1173,12 @@
   "serie_annuale": [
     {
       "anno": 2026,
-      "recensioni": 30,
+      "recensioni": 35,
       "sentiment_complessivo": {
         "positive": 14,
-        "negative": 11,
-        "mixed": 3,
-        "neutral": 2
+        "negative": 16,
+        "mixed": 4,
+        "neutral": 1
       },
       "aspetti": {
         "usability": {
@@ -1175,12 +1188,12 @@
         },
         "billing_and_subscription": {
           "positive": 0,
-          "negative": 3,
+          "negative": 8,
           "neutral": 0
         },
         "customer_support": {
           "positive": 0,
-          "negative": 1,
+          "negative": 2,
           "neutral": 0
         },
         "free_version": {
@@ -1227,25 +1240,27 @@
     }
   ],
   "segnalazioni": {
-    "totale": 11,
-    "pct_sul_totale": 36.7,
+    "totale": 17,
+    "pct_sul_totale": 47.2,
     "per_priorita": {
       "alta": 4,
-      "media": 6,
-      "bassa": 1
+      "media": 11,
+      "bassa": 2
     },
     "per_categoria": {
       "billing_subscription": 2,
-      "unresolved_complaint": 2,
+      "unresolved_complaint": 3,
       "severe_technical_failure": 5,
       "account_blocked": 1,
-      "privacy_data": 2
+      "privacy_data": 2,
+      "purchase_not_received": 4
     },
-    "solo_per_voto_basso": 1,
+    "solo_per_voto_basso": 2,
+    "con_un_problema_preciso": 14,
     "per_periodo": [
       {
         "periodo": "2026-09 / 2026-11",
-        "segnalate": 11,
+        "segnalate": 17,
         "segnalate_priorita_alta": 4
       }
     ],
@@ -1289,7 +1304,56 @@
           "billing_subscription",
           "unresolved_complaint"
         ],
-        "attention_reason": "addebiti e abbonamenti: L'utente dice che gli è stato addebitato l'abbonamento annuale dopo averlo disdetto.; reclamo non risolto: L'utente dice di aver scritto all'assistenza due volte senza ricevere risposta.; voto molto basso (1 su 5)"
+        "attention_reason": "addebiti e abbonamenti: L'utente dice che gli è stato addebitato l'abbonamento annuale dopo averlo disdetto.; reclamo non risolto: L'utente dice di aver scritto due volte all'assistenza senza ricevere risposta.; voto molto basso (1 su 5)"
+      },
+      {
+        "review_id": "Rae4265af5b",
+        "published_date": "2026-11-06",
+        "rating": 1,
+        "priorita": "media",
+        "categorie": [
+          "purchase_not_received",
+          "unresolved_complaint"
+        ],
+        "attention_reason": "acquisto pagato ma non ricevuto: L'utente dice che ha acquistato l'abbonamento ma l'app non lo riconosce.; reclamo non risolto: L'utente dice che l'assistenza non risponde.; voto molto basso (1 su 5)"
+      },
+      {
+        "review_id": "Rcdf22c0ce8",
+        "published_date": "2026-11-05",
+        "rating": 5,
+        "priorita": "media",
+        "categorie": [],
+        "attention_reason": "possibile testo manipolatorio rilevato dal guardrail (customRegex): verificare, esclusa dai conteggi"
+      },
+      {
+        "review_id": "Rfff1f1c0a9",
+        "published_date": "2026-11-05",
+        "rating": 2,
+        "priorita": "media",
+        "categorie": [
+          "purchase_not_received"
+        ],
+        "attention_reason": "acquisto pagato ma non ricevuto: L'utente dice che ha acquistato l'abbonamento, soldi scalati ma l'app non lo riconosce.; voto molto basso (2 su 5)"
+      },
+      {
+        "review_id": "R795ef0b270",
+        "published_date": "2026-11-04",
+        "rating": 1,
+        "priorita": "media",
+        "categorie": [
+          "purchase_not_received"
+        ],
+        "attention_reason": "acquisto pagato ma non ricevuto: L'utente dice che ha pagato ma risulta ancora con la versione gratuita.; voto molto basso (1 su 5)"
+      },
+      {
+        "review_id": "R758dc1ec4b",
+        "published_date": "2026-11-03",
+        "rating": 1,
+        "priorita": "media",
+        "categorie": [
+          "purchase_not_received"
+        ],
+        "attention_reason": "acquisto pagato ma non ricevuto: L'utente dice che ha pagato la versione Pro ma le funzioni non si sono sbloccate.; voto molto basso (1 su 5)"
       },
       {
         "review_id": "Ra4c1785c7e",
@@ -1340,7 +1404,7 @@
         "categorie": [
           "severe_technical_failure"
         ],
-        "attention_reason": "guasto grave dell'app: L'utente dice che il widget su Android non si aggiorna mai.; voto molto basso (2 su 5)"
+        "attention_reason": "guasto grave dell'app: L'utente dice che su Android il widget non si aggiorna mai.; voto molto basso (2 su 5)"
       },
       {
         "review_id": "R2cb8eb7cea",
@@ -1351,6 +1415,14 @@
           "severe_technical_failure"
         ],
         "attention_reason": "guasto grave dell'app: L'utente dice che le note non si sincronizzano tra telefono e tablet e ha perso una lista intera.; voto molto basso (2 su 5)"
+      },
+      {
+        "review_id": "R579d8fad3d",
+        "published_date": "2026-11-04",
+        "rating": 2,
+        "priorita": "bassa",
+        "categorie": [],
+        "attention_reason": "voto molto basso (2 su 5)"
       },
       {
         "review_id": "R5453a2c047",
@@ -1365,33 +1437,408 @@
   "controllo_campagne": {
     "regole": {
       "testi_quasi_identici": "almeno 8 parole; somiglianza di Jaccard sulle terne di parole >= 0,8; al massimo 14 giorni di distanza",
-      "picchi_una_stella": "recensioni da 1 stella al giorno contro il ritmo degli altri giorni (Poisson, una coda), Benjamini-Hochberg FDR 10% su 62 giorni; solo giorni con quota di 1 stella sopra la media (23.3%)"
+      "picchi_una_stella": "recensioni da 1 stella al giorno contro il ritmo degli altri giorni (Poisson, una coda), Benjamini-Hochberg FDR 10% su 66 giorni; solo giorni con quota di 1 stella sopra la media (27.8%)"
     },
-    "recensioni_controllate": 30,
+    "recensioni_controllate": 36,
     "testi_quasi_identici": [],
-    "giorni_controllati": 62,
-    "una_stella_al_giorno_in_media": 0.11,
+    "giorni_controllati": 66,
+    "una_stella_al_giorno_in_media": 0.15,
     "picchi_una_stella": [],
     "giorni_piu_vicini_alla_soglia": [
       {
         "data": "2026-09-05",
         "una_stella": 1,
-        "attese_una_stella": 0.1,
-        "p_value": 0.0937
+        "attese_una_stella": 0.14,
+        "p_value": 0.129
       },
       {
         "data": "2026-09-16",
         "una_stella": 1,
-        "attese_una_stella": 0.1,
-        "p_value": 0.0937
+        "attese_una_stella": 0.14,
+        "p_value": 0.129
       },
       {
         "data": "2026-09-25",
         "una_stella": 1,
-        "attese_una_stella": 0.1,
-        "p_value": 0.0937
+        "attese_una_stella": 0.14,
+        "p_value": 0.129
       }
     ],
     "esito": "nessun segnale"
+  },
+  "avviso_a_grappolo": {
+    "regola": "almeno 3 recensioni con la stessa segnalazione, stessa piattaforma e stessa versione, pubblicate dal 2026-10-31 al 2026-11-06 (7 giorni); escluse le sospette e i duplicati; due recensioni con lo stesso titolo e un testo contenuto nell'altro contano una volta sola (probabilmente la stessa persona)",
+    "dal": "2026-10-31",
+    "al": "2026-11-06",
+    "grappoli": [
+      {
+        "piattaforma": "android",
+        "versione": "3.2.0",
+        "categoria": "purchase_not_received",
+        "nome_categoria": "acquisto pagato ma non ricevuto",
+        "recensioni": [
+          {
+            "review_id": "R758dc1ec4b",
+            "chiave_store": "android|DEMO-ANDROID-031",
+            "data": "2026-11-03",
+            "voto": 1,
+            "sintesi": "L'utente dice che ha pagato la versione Pro ma le funzioni non si sono sbloccate.",
+            "evidenza": "Ho pagato la versione Pro ma le funzioni non si sono sbloccate."
+          },
+          {
+            "review_id": "R795ef0b270",
+            "chiave_store": "android|DEMO-ANDROID-032",
+            "data": "2026-11-04",
+            "voto": 1,
+            "sintesi": "L'utente dice che ha pagato ma risulta ancora con la versione gratuita.",
+            "evidenza": "Pagamento andato a buon fine su Google Play, ma risulto ancora con la versione gratuita."
+          },
+          {
+            "review_id": "Rae4265af5b",
+            "chiave_store": "android|DEMO-ANDROID-034",
+            "data": "2026-11-06",
+            "voto": 1,
+            "sintesi": "L'utente dice che ha acquistato l'abbonamento ma l'app non lo riconosce.",
+            "evidenza": "Acquistato l'abbonamento, soldi scalati dalla carta, ma l'app non lo riconosce.",
+            "contata_anche": [
+              "Rfff1f1c0a9"
+            ]
+          }
+        ],
+        "quante": 3,
+        "dal": "2026-11-03",
+        "al": "2026-11-06",
+        "versione_piu_recente_vista": "3.2.1",
+        "e_la_versione_piu_recente": false
+      }
+    ]
+  },
+  "periodi_di_calendario": {
+    "regola": "quota di recensioni negative di ogni periodo contro il periodo subito prima; test su due proporzioni solo con almeno 20 recensioni in tutti e due i periodi, correzione Benjamini-Hochberg (FDR 10%) per serie; periodi di due settimane da lunedi' a domenica, a partire dal 6/1/2020; il periodo in corso e' incompleto",
+    "oggi": "2026-11-06",
+    "mesi": [
+      {
+        "piattaforma": "android",
+        "periodi": [
+          {
+            "periodo": "2026-09",
+            "in_corso": false,
+            "dati_solo_dal": "2026-09-04",
+            "recensioni": 4,
+            "voto_medio": 2.25,
+            "positive": 1,
+            "negative": 3,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": 75
+          },
+          {
+            "periodo": "2026-10",
+            "in_corso": false,
+            "dati_solo_dal": null,
+            "recensioni": 5,
+            "voto_medio": 3.6,
+            "positive": 2,
+            "negative": 1,
+            "miste": 1,
+            "neutre": 1,
+            "pct_negative": 20,
+            "confronto": {
+              "periodo_prima": "2026-09",
+              "pct_negative_prima": 75,
+              "differenza_punti": -55,
+              "esito": "pochi dati"
+            }
+          },
+          {
+            "periodo": "2026-11",
+            "in_corso": true,
+            "dati_solo_dal": null,
+            "recensioni": 5,
+            "voto_medio": 1.8,
+            "positive": 1,
+            "negative": 4,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": 80,
+            "confronto": {
+              "periodo_prima": "2026-10",
+              "pct_negative_prima": 20,
+              "differenza_punti": 60,
+              "esito": "pochi dati"
+            }
+          }
+        ]
+      },
+      {
+        "piattaforma": "ios",
+        "periodi": [
+          {
+            "periodo": "2026-09",
+            "in_corso": false,
+            "dati_solo_dal": "2026-09-02",
+            "recensioni": 12,
+            "voto_medio": 3.08,
+            "positive": 5,
+            "negative": 5,
+            "miste": 2,
+            "neutre": 0,
+            "pct_negative": 41.7
+          },
+          {
+            "periodo": "2026-10",
+            "in_corso": false,
+            "dati_solo_dal": null,
+            "recensioni": 8,
+            "voto_medio": 3.63,
+            "positive": 5,
+            "negative": 2,
+            "miste": 1,
+            "neutre": 0,
+            "pct_negative": 25,
+            "confronto": {
+              "periodo_prima": "2026-09",
+              "pct_negative_prima": 41.7,
+              "differenza_punti": -16.7,
+              "esito": "pochi dati"
+            }
+          },
+          {
+            "periodo": "2026-11",
+            "in_corso": true,
+            "dati_solo_dal": null,
+            "recensioni": 1,
+            "voto_medio": 2,
+            "positive": 0,
+            "negative": 1,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": 100,
+            "confronto": {
+              "periodo_prima": "2026-10",
+              "pct_negative_prima": 25,
+              "differenza_punti": 75,
+              "esito": "pochi dati"
+            }
+          }
+        ]
+      }
+    ],
+    "due_settimane": [
+      {
+        "piattaforma": "android",
+        "periodi": [
+          {
+            "periodo": "2026-08-24 / 2026-09-06",
+            "in_corso": false,
+            "dati_solo_dal": "2026-09-04",
+            "recensioni": 1,
+            "voto_medio": 5,
+            "positive": 1,
+            "negative": 0,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": 0
+          },
+          {
+            "periodo": "2026-09-07 / 2026-09-20",
+            "in_corso": false,
+            "dati_solo_dal": null,
+            "recensioni": 2,
+            "voto_medio": 1.5,
+            "positive": 0,
+            "negative": 2,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": 100,
+            "confronto": {
+              "periodo_prima": "2026-08-24 / 2026-09-06",
+              "pct_negative_prima": 0,
+              "differenza_punti": 100,
+              "esito": "pochi dati"
+            }
+          },
+          {
+            "periodo": "2026-09-21 / 2026-10-04",
+            "in_corso": false,
+            "dati_solo_dal": null,
+            "recensioni": 2,
+            "voto_medio": 2.5,
+            "positive": 0,
+            "negative": 1,
+            "miste": 1,
+            "neutre": 0,
+            "pct_negative": 50,
+            "confronto": {
+              "periodo_prima": "2026-09-07 / 2026-09-20",
+              "pct_negative_prima": 100,
+              "differenza_punti": -50,
+              "esito": "pochi dati"
+            }
+          },
+          {
+            "periodo": "2026-10-05 / 2026-10-18",
+            "in_corso": false,
+            "dati_solo_dal": null,
+            "recensioni": 2,
+            "voto_medio": 4,
+            "positive": 1,
+            "negative": 0,
+            "miste": 0,
+            "neutre": 1,
+            "pct_negative": 0,
+            "confronto": {
+              "periodo_prima": "2026-09-21 / 2026-10-04",
+              "pct_negative_prima": 50,
+              "differenza_punti": -50,
+              "esito": "pochi dati"
+            }
+          },
+          {
+            "periodo": "2026-10-19 / 2026-11-01",
+            "in_corso": false,
+            "dati_solo_dal": null,
+            "recensioni": 2,
+            "voto_medio": 3,
+            "positive": 1,
+            "negative": 1,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": 50,
+            "confronto": {
+              "periodo_prima": "2026-10-05 / 2026-10-18",
+              "pct_negative_prima": 0,
+              "differenza_punti": 50,
+              "esito": "pochi dati"
+            }
+          },
+          {
+            "periodo": "2026-11-02 / 2026-11-15",
+            "in_corso": true,
+            "dati_solo_dal": null,
+            "recensioni": 5,
+            "voto_medio": 1.8,
+            "positive": 1,
+            "negative": 4,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": 80,
+            "confronto": {
+              "periodo_prima": "2026-10-19 / 2026-11-01",
+              "pct_negative_prima": 50,
+              "differenza_punti": 30,
+              "esito": "pochi dati"
+            }
+          }
+        ]
+      },
+      {
+        "piattaforma": "ios",
+        "periodi": [
+          {
+            "periodo": "2026-08-24 / 2026-09-06",
+            "in_corso": false,
+            "dati_solo_dal": "2026-09-02",
+            "recensioni": 3,
+            "voto_medio": 3.33,
+            "positive": 2,
+            "negative": 1,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": 33.3
+          },
+          {
+            "periodo": "2026-09-07 / 2026-09-20",
+            "in_corso": false,
+            "dati_solo_dal": null,
+            "recensioni": 5,
+            "voto_medio": 3.8,
+            "positive": 3,
+            "negative": 1,
+            "miste": 1,
+            "neutre": 0,
+            "pct_negative": 20,
+            "confronto": {
+              "periodo_prima": "2026-08-24 / 2026-09-06",
+              "pct_negative_prima": 33.3,
+              "differenza_punti": -13.3,
+              "esito": "pochi dati"
+            }
+          },
+          {
+            "periodo": "2026-09-21 / 2026-10-04",
+            "in_corso": false,
+            "dati_solo_dal": null,
+            "recensioni": 5,
+            "voto_medio": 2.6,
+            "positive": 1,
+            "negative": 3,
+            "miste": 1,
+            "neutre": 0,
+            "pct_negative": 60,
+            "confronto": {
+              "periodo_prima": "2026-09-07 / 2026-09-20",
+              "pct_negative_prima": 20,
+              "differenza_punti": 40,
+              "esito": "pochi dati"
+            }
+          },
+          {
+            "periodo": "2026-10-05 / 2026-10-18",
+            "in_corso": false,
+            "dati_solo_dal": null,
+            "recensioni": 4,
+            "voto_medio": 3.25,
+            "positive": 2,
+            "negative": 1,
+            "miste": 1,
+            "neutre": 0,
+            "pct_negative": 25,
+            "confronto": {
+              "periodo_prima": "2026-09-21 / 2026-10-04",
+              "pct_negative_prima": 60,
+              "differenza_punti": -35,
+              "esito": "pochi dati"
+            }
+          },
+          {
+            "periodo": "2026-10-19 / 2026-11-01",
+            "in_corso": false,
+            "dati_solo_dal": null,
+            "recensioni": 3,
+            "voto_medio": 3.67,
+            "positive": 2,
+            "negative": 1,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": 33.3,
+            "confronto": {
+              "periodo_prima": "2026-10-05 / 2026-10-18",
+              "pct_negative_prima": 25,
+              "differenza_punti": 8.3,
+              "esito": "pochi dati"
+            }
+          },
+          {
+            "periodo": "2026-11-02 / 2026-11-15",
+            "in_corso": true,
+            "dati_solo_dal": null,
+            "recensioni": 1,
+            "voto_medio": 2,
+            "positive": 0,
+            "negative": 1,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": 100,
+            "confronto": {
+              "periodo_prima": "2026-10-19 / 2026-11-01",
+              "pct_negative_prima": 33.3,
+              "differenza_punti": 66.7,
+              "esito": "pochi dati"
+            }
+          }
+        ]
+      }
+    ]
   }
 }
