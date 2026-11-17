@@ -39,9 +39,9 @@
     "prezzo_input_usd_per_milione": 0.4,
     "prezzo_output_usd_per_milione": 1.6,
     "seed": 42,
-    "started_at": "2026-11-17T14:18:09.978Z"
+    "started_at": "2026-11-17T14:53:53.252Z"
   },
-  "terminata_il": "2026-11-17T14:18:20.489Z",
+  "terminata_il": "2026-11-17T14:54:19.442Z",
   "file": "36 righe lette da /files/input/recensioni_inventate.csv",
   "anomalie_del_file": [],
   "guardrail_ingresso": {
@@ -122,22 +122,41 @@
     ]
   },
   "digest": {
-    "origine": "modello",
+    "origine": "riserva_controlli_non_superati",
     "guardrail_uscita": "superato",
     "verifica": {
       "tentativi": [
         {
           "tentativo": 1,
-          "ok": true,
-          "problemi": []
+          "ok": false,
+          "problemi": [
+            "la citazione «...» non e' copiata parola per parola dalla recensione Rcdf22c0ce8: copia frasi consecutive senza cambiare parole, oppure segna con \"...\" le parti saltate",
+            "la citazione della recensione Rcdf22c0ce8 e' troppo corta: scegli una frase di almeno 8 parole che si capisca da sola"
+          ]
+        },
+        {
+          "tentativo": 2,
+          "ok": false,
+          "problemi": [
+            "manca una citazione per la sezione \"apprezzati\""
+          ]
+        },
+        {
+          "tentativo": 3,
+          "ok": false,
+          "problemi": [
+            "la citazione «L'app è facile da usare e la grafica è molto chiara e piacev...» non e' copiata parola per parola dalla recensione R7267fe2309: copia frasi consecutive senza cambiare parole, oppure segna con \"...\" le parti saltate"
+          ]
         }
       ],
       "esito_finale": {
-        "ok": true,
-        "problemi": []
+        "ok": false,
+        "problemi": [
+          "la citazione «L'app è facile da usare e la grafica è molto chiara e piacev...» non e' copiata parola per parola dalla recensione R7267fe2309: copia frasi consecutive senza cambiare parole, oppure segna con \"...\" le parti saltate"
+        ]
       }
     },
-    "testo_del_modello_scartato": null
+    "testo_del_modello_scartato": "{\"sintesi\":\"L'app riceve un giudizio complessivamente basso, con quasi metà delle recensioni negative e meno della metà positive. Gli utenti apprezzano soprattutto l'usabilità, l'utilità e la grafica con i widget. Le critiche più frequenti riguardano la fatturazione e l'abbonamento, seguiti da problemi di performance e stabilità. I cambiamenti nel tempo non mostrano variazioni significative.\",\"commento_apprezzati\":\"Gli aspetti più apprezzati dell'app sono l'usabilità, che convince la maggior parte di chi ne parla, l'utilità percepita dagli utenti e la grafica con i widget, che contribuiscono a un'esperienza positiva per chi li menziona. Questi elementi rappresentano i punti di forza riconosciuti da una buona parte delle recensioni.\",\"commento_criticati\":\"La fatturazione e l'abbonamento sono l'aspetto più criticato in assoluto, con tutte le recensioni che ne parlano che esprimono giudizi negativi. Altri aspetti come le performance e la stabilità dell'app sono criticati da un numero minore di recensioni, ma sempre con giudizi negativi unanimi. Non ci sono aspetti particolarmente divisivi, cioè criticati da una parte consistente di chi ne parla ma non da tutti.\",\"commento_tempo\":\"Non si evidenziano cambiamenti significativi nelle opinioni degli utenti nel periodo analizzato. Le valutazioni e le critiche rimangono sostanzialmente stabili senza variazioni rilevanti nel tempo.\",\"commento_segnalate\":\"Tra le recensioni da guardare emergono problemi importanti legati alla privacy e ai dati personali, come accessi non autorizzati e difficoltà nella cancellazione dell'account. Sono segnalate anche criticità relative ad addebiti errati e problemi con l'assistenza clienti, che non risponde adeguatamente alle richieste degli utenti.\",\"citazioni\":[{\"sezione\":\"apprezzati\",\"review_id\":\"R7267fe2309\",\"testo\":\"L'app è facile da usare e la grafica è molto chiara e piacevole.\",\"traduzione\":\"\"},{\"sezione\":\"criticati\",\"review_id\":\"Rae4265af5b\",\"testo\":\"Acquistato l'abbonamento, soldi scalati dalla carta, ma l'app non lo riconosce. Aggiungo: l'assistenza non risponde.\",\"traduzione\":\"\"},{\"sezione\":\"criticati\",\"review_id\":\"R7267fe2309\",\"testo\":\"Dopo l'aggiornamento l'app si chiude appena apro una lista condivisa.\",\"traduzione\":\"\"},{\"sezione\":\"segnalate\",\"review_id\":\"Rfe5d2c08d6\",\"testo\":\"Qualcuno e' entrato nel mio account e ha cancellato tutte le liste.\",\"traduzione\":\"\"}]}"
   },
   "fatti_dati_al_modello_per_il_digest": {
     "frase_sintesi": "Sono state analizzate 35 recensioni pubblicate tra il 02/09/2026 e il 06/11/2026. Il voto medio delle recensioni scritte e' 2,97 su 5 (non e' il voto dello store, che conta anche chi da' solo le stelle). Il 40% delle recensioni e' positivo, l'11% misto, il 46% negativo e il 3% neutro.",
@@ -427,9 +446,9 @@
     ]
   },
   "registro_giro": {
-    "inizio": "2026-11-17T14:18:09.978Z",
-    "fine": "2026-11-17T14:18:20.491Z",
-    "durata_minuti": 0.2,
+    "inizio": "2026-11-17T14:53:53.252Z",
+    "fine": "2026-11-17T14:54:19.443Z",
+    "durata_minuti": 0.4,
     "modello": "gpt-4.1-mini",
     "prezzi_usd_per_milione_di_token": {
       "input": 0.4,
@@ -461,10 +480,10 @@
         "costo_usd": 0
       },
       "digest": {
-        "chiamate": 1,
-        "token_input": 4200,
-        "token_output": 585,
-        "costo_usd": 0.0026
+        "chiamate": 3,
+        "token_input": 14627,
+        "token_output": 1764,
+        "costo_usd": 0.0087
       },
       "aggiornamento_elenco": {
         "chiamate": 0,
@@ -474,19 +493,19 @@
       }
     },
     "misurato_totale": {
-      "token_input": 4200,
-      "token_output": 585,
-      "costo_usd": 0.0026
+      "token_input": 14627,
+      "token_output": 1764,
+      "costo_usd": 0.0087
     },
     "guardrail_stimato": {
       "chiamate": 1,
-      "token_input": 2249,
+      "token_input": 1793,
       "token_output": 30,
       "nota": "STIMA: token calcolati dalla lunghezza dei testi, n8n non li espone per i nodi Guardrails",
-      "costo_usd": 0.0009
+      "costo_usd": 0.0008
     },
-    "costo_totale_usd_misurato_piu_stimato": 0.0035,
-    "costo_per_1000_recensioni_usd": 0.0972
+    "costo_totale_usd_misurato_piu_stimato": 0.0095,
+    "costo_per_1000_recensioni_usd": 0.2639
   },
   "aggiornamento_elenco": {
     "versione_in_uso": "v1",

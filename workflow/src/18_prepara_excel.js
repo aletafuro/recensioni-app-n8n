@@ -39,7 +39,7 @@ fogli.push({
     ['Recensioni', 'Una riga per recensione: dati, sentiment, temi, segnalazioni, testo.'],
     ['', ''],
     ['Come leggere i confronti', '«oltre il rumore» = la differenza è troppo grande per essere un caso (test su due proporzioni con correzione per i confronti multipli). «entro il rumore» = può essere un caso. «pochi dati» = uno dei due periodi ha meno di 20 recensioni: si vedono i numeri ma non si dà un verdetto.'],
-    ['p-value e verdetto', 'Un p-value sotto 0,05 può restare «entro il rumore»: con tanti confronti nella stessa tabella qualcuno risulta basso per caso, e la correzione alza la soglia (Benjamini-Hochberg, al massimo 10% di falsi allarmi attesi). Conta la colonna «confronto».'],
+    ['Verdetto', 'Il verdetto tiene già conto che nella stessa tabella si fanno tanti confronti, e che qualche differenza esce grande per caso (correzione di Benjamini-Hochberg, al massimo 10% di falsi allarmi attesi). Il p-value non è nei fogli perché da solo inganna: chi vuole ricontrollare il calcolo lo trova in aggregazione.json.'],
     ['Periodo in corso', 'Il mese e le due settimane in corso non sono finiti: i loro numeri cresceranno. La colonna «nota» lo dice, e dice anche quando il primo periodo è incompleto perché i dati partono a metà.'],
     ['iOS e Android', 'Sempre separati: le due piattaforme hanno versioni e storici diversi. Solo il foglio Confronti (periodi) le considera insieme, come il digest.'],
     ['Italiano e inglese', 'Sempre separati nei confronti nel tempo (dal 17/11): la quota di recensioni in inglese è cresciuta molto e l\'inglese è meno negativo, quindi un confronto con le lingue insieme scambierebbe il cambio di composizione per un miglioramento.'],
@@ -54,9 +54,9 @@ const LINGUA_X = { it: 'italiano', en: 'inglese' };
 const NOMI_LINGUA_X = { it: 'italiano', en: 'inglese', es: 'spagnolo', fr: 'francese', de: 'tedesco', pt: 'portoghese', ro: 'rumeno', und: 'non riconosciuta', altre: 'altre lingue' };
 const righePeriodi = (serie) => serie.flatMap((s) => s.periodi.map((p) => [
   PF[s.piattaforma] ?? s.piattaforma, LINGUA_X[s.lingua] ?? s.lingua ?? '', p.periodo, p.in_corso ? 'in corso: incompleto' : p.dati_solo_dal ? `incompleto: dati solo dal ${p.dati_solo_dal}` : '', p.recensioni, p.voto_medio, p.positive, p.negative, p.miste, p.neutre,
-  p.pct_negative, p.confronto?.pct_negative_prima ?? null, p.confronto?.differenza_punti ?? null, p.confronto?.esito ?? '', p.confronto?.p_value ?? null,
+  p.pct_negative, p.confronto?.pct_negative_prima ?? null, p.confronto?.differenza_punti ?? null, p.confronto?.esito ?? '',
 ]));
-const colPeriodi = ['piattaforma', 'lingua', 'periodo', 'nota', 'recensioni', 'voto medio', 'positive', 'negative', 'miste', 'neutre', '% negative', '% negative periodo prima', 'differenza (punti)', 'confronto', 'p-value'];
+const colPeriodi = ['piattaforma', 'lingua', 'periodo', 'nota', 'recensioni', 'voto medio', 'positive', 'negative', 'miste', 'neutre', '% negative', '% negative periodo prima', 'differenza (punti)', 'confronto'];
 fogli.push({ nome: 'Due settimane', colonne: colPeriodi, righe: righePeriodi(R?.due_settimane ?? []) });
 fogli.push({ nome: 'Mesi', colonne: colPeriodi, righe: righePeriodi(R?.mesi ?? []) });
 
@@ -81,10 +81,10 @@ if (VS) {
 fogli.push({ nome: 'Voto negli store', colonne: ['piattaforma', 'mercato', 'data', 'voto', 'valutazioni', 'voti nuovi dalla rilevazione prima', 'media dei voti nuovi', 'nota'], righe: righeVoto });
 
 const confronti = [
-  ...(A.andamento ?? []).map((x) => [`iOS e Android insieme, ${LINGUA_X[x.lingua] ?? x.lingua ?? ''}`, 'periodo', `${x.ultimo_periodo} contro ${x.periodo_di_confronto}`, x.nome, MISURA[x.misura] ?? x.misura, x.valore_ultimo_periodo, x.valore_periodo_di_confronto, x.differenza_punti, x.p_value, x.significativo ? 'oltre il rumore' : 'entro il rumore']),
-  ...(A.per_piattaforma ?? []).flatMap((p) => (p.andamento_ultima_versione ?? []).map((x) => [`${PF[p.piattaforma] ?? p.piattaforma}, ${LINGUA_X[x.lingua] ?? x.lingua ?? ''}`, 'versione', `${x.ultima_versione} contro ${x.confrontata_con}`, x.nome, MISURA[x.misura] ?? x.misura, x.valore_nuovo, x.valore_confronto, x.differenza_punti, x.p_value, x.significativo ? 'oltre il rumore' : 'entro il rumore'])),
+  ...(A.andamento ?? []).map((x) => [`iOS e Android insieme, ${LINGUA_X[x.lingua] ?? x.lingua ?? ''}`, 'periodo', `${x.ultimo_periodo} contro ${x.periodo_di_confronto}`, x.nome, MISURA[x.misura] ?? x.misura, x.valore_ultimo_periodo, x.valore_periodo_di_confronto, x.differenza_punti, x.significativo ? 'oltre il rumore' : 'entro il rumore']),
+  ...(A.per_piattaforma ?? []).flatMap((p) => (p.andamento_ultima_versione ?? []).map((x) => [`${PF[p.piattaforma] ?? p.piattaforma}, ${LINGUA_X[x.lingua] ?? x.lingua ?? ''}`, 'versione', `${x.ultima_versione} contro ${x.confrontata_con}`, x.nome, MISURA[x.misura] ?? x.misura, x.valore_nuovo, x.valore_confronto, x.differenza_punti, x.significativo ? 'oltre il rumore' : 'entro il rumore'])),
 ];
-fogli.push({ nome: 'Confronti', colonne: ['piattaforma', 'tipo', 'confronto', 'tema', 'misura', 'valore nuovo', 'valore di confronto', 'differenza (punti)', 'p-value', 'esito'], righe: confronti });
+fogli.push({ nome: 'Confronti', colonne: ['piattaforma', 'tipo', 'confronto', 'tema', 'misura', 'valore nuovo', 'valore di confronto', 'differenza (punti)', 'esito'], righe: confronti });
 
 // temi per mese (conteggi semplici sulle recensioni nei conteggi)
 const temiMese = new Map();
