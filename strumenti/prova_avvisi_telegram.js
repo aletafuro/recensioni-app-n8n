@@ -17,16 +17,41 @@ const env = Object.fromEntries((fs.existsSync(fileEnv) ? fs.readFileSync(fileEnv
 
 const aggregazione = leggi('aggregazione.json');
 const chiavi = [...new Set((aggregazione.avviso_a_grappolo?.grappoli ?? []).flatMap((g) => g.recensioni.map((x) => x.chiave_store)))];
+// analisi per recensione ricostruite dai file del giro (per i conteggi «da guardare negli ultimi giorni»):
+// stato, priorita' e segnalazioni dalla diagnostica, data dalla tabella, needs_attention dalle analisi
+const righeJsonl = (f) => (fs.existsSync(path.join(cartella, f)) ? fs.readFileSync(path.join(cartella, f), 'utf8').split('\n').filter(Boolean).map((r) => JSON.parse(r)) : []);
+const attenzione = new Map(righeJsonl('recensioni_analizzate.jsonl').map((r) => [r.review_id, r.needs_attention]));
+const dataDi = new Map();
+if (fs.existsSync(path.join(cartella, 'tabella_recensioni_aspetti.csv'))) {
+  for (const r of fs.readFileSync(path.join(cartella, 'tabella_recensioni_aspetti.csv'), 'utf8').split('\n').slice(1)) {
+    const [id, data] = r.split(',');
+    if (id && !dataDi.has(id)) dataDi.set(id, data);
+  }
+}
+const analisiGiro = righeJsonl('recensioni_diagnostica.jsonl').map((d) => ({ ...d, needs_attention: attenzione.get(d.review_id), published_date: dataDi.get(d.review_id) }));
 const nodi = {
-  Configurazione: { output_dir: '/files/output', grappolo_giorni: Number(env.GRAPPOLO_GIORNI || 7) },
+  Configurazione: { output_dir: '/files/output', grappolo_giorni: Number(env.GRAPPOLO_GIORNI || 7), avvisi_giorni: Number(env.AVVISI_GIORNI || 14) },
   Aggregazione: { aggregazione },
   'Fatti per il digest': { fatti: { frasi_piattaforme: [], frase_campagne: null } },
   'Verifica digest': { digest: '(prova)' },
   "Unisci con l'archivio": { nuove: chiavi.length, nuove_ios: null, nuove_android: null, nuove_id_store: chiavi },
 };
+// «reale»: il messaggio come nel giro vero (nessuna recensione simulata come nuova, fatti del digest e voto negli
+// store presi dai file del giro: esecuzione.json e storico_voti.json)
+if (process.argv.includes('reale')) {
+  nodi["Unisci con l'archivio"] = { nuove: 0, nuove_ios: 0, nuove_android: 0, nuove_id_store: [] };
+  const esec = fs.existsSync(path.join(cartella, 'esecuzione.json')) ? leggi('esecuzione.json') : {};
+  if (esec.fatti_dati_al_modello_per_il_digest) nodi['Fatti per il digest'] = { fatti: esec.fatti_dati_al_modello_per_il_digest };
+  if (fs.existsSync(path.join(cartella, 'storico_voti.json'))) {
+    const sv = leggi('storico_voti.json');
+    if (sv.ultimo_giro) nodi['Voto negli store'] = { voto_store: { ...sv.ultimo_giro, istantanee_ios: sv.istantanee_ios } };
+  }
+}
 const $ = (nome) => {
+  if (nome === 'Voto negli store' && !nodi[nome]) throw new Error('non eseguito');
   if (nome === 'Usa digest di riserva') throw new Error('non eseguito');
-  if (nome === 'Recensioni pronte' || nome === 'Valida e completa') return { all: () => [] }; // niente avvisi singoli qui
+  if (nome === 'Recensioni pronte') return { all: () => [] }; // niente avvisi singoli qui
+  if (nome === 'Valida e completa') return { all: () => analisiGiro.map((json) => ({ json })) };
   return { first: () => ({ json: nodi[nome] }) };
 };
 const inviati = [];

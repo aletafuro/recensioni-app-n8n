@@ -87,40 +87,42 @@ def main():
     scrivi = len(sys.argv) > 1 and sys.argv[1] == "scrivi"
     env = leggi_env()
     paesi = [p.strip().upper() for p in env.get("APPLE_PAESI", "ITA").split(",") if p.strip()]
-    app_id = env.get("APP_STORE_ID", "")
-    if not app_id:
-        sys.exit("Manca APP_STORE_ID nel file .env (il numero dell'app nell'App Store).")
+    app_id = env.get("APP_STORE_ID") or sys.exit("Manca APP_STORE_ID nel file .env")
     archivio = list(csv.DictReader(open(ARCHIVIO, encoding="utf-8", newline="")))
     ios = [r for r in archivio if r["piattaforma"] == "ios"]
-    if not ios:
-        sys.exit("Nell'archivio non ci sono recensioni iOS dal feed: niente da cui partire.")
-    piu_vecchia_feed = min(r["publishedDate"][:10] for r in ios)
-    gia = {chiave_contenuto(r["publishedDate"], r["rating"], r["title"]) for r in ios}
+    # per ogni paese: la recensione piu' vecchia arrivata dal FEED (id numerico). Le recensioni dell'API piu' recenti
+    # di questa si lasciano al feed (che ha la versione); un paese senza recensioni dal feed si importa tutto.
+    # (17/11: aggiunti Regno Unito e Stati Uniti, che nell'archivio non avevano niente)
+    piu_vecchia_feed = {}
+    for r in ios:
+        if r["id_store"].isdigit():
+            p = r.get("paese") or "it"
+            piu_vecchia_feed[p] = min(piu_vecchia_feed.get(p, "9999"), r["publishedDate"][:10])
+    gia = {((r.get("paese") or "it"),) + chiave_contenuto(r["publishedDate"], r["rating"], r["title"]) for r in ios}
     id_gia = {r["id_store"] for r in ios}
 
     api = leggi_api(env, app_id)
     print(f"Recensioni lette dall'API: {len(api)} (paesi: {dict(Counter(x['attributes'].get('territory') for x in api))})")
     nel_paese = [x for x in api if x["attributes"].get("territory") in paesi]
     print(f"Nei paesi scelti ({','.join(paesi)}): {len(nel_paese)}")
-    abbinate = sum(1 for x in nel_paese if chiave_contenuto(x["attributes"]["createdDate"], x["attributes"]["rating"], x["attributes"].get("title") or "") in gia)
-    print(f"Gia' nell'archivio dal feed (stessa data, voto e titolo): {abbinate} su {len(ios)} recensioni iOS dell'archivio")
+    print("Recensione piu' vecchia dal feed, per paese:", piu_vecchia_feed or "nessuna")
 
     nuove, saltate_recenti, saltate_doppie = [], 0, 0
     for x in nel_paese:
         a = x["attributes"]
         d = a["createdDate"][:10]
-        if d > piu_vecchia_feed:
+        paese = PAESE.get(a.get("territory"), str(a.get("territory", "")).lower())
+        if paese in piu_vecchia_feed and d > piu_vecchia_feed[paese]:
             saltate_recenti += 1  # periodo coperto dal feed (con la versione): non si mescolano le fonti
             continue
-        if x["id"] in id_gia or chiave_contenuto(d, a["rating"], a.get("title") or "") in gia:
+        if x["id"] in id_gia or (paese,) + chiave_contenuto(d, a["rating"], a.get("title") or "") in gia:
             saltate_doppie += 1
             continue
         nuove.append({
             "id_store": x["id"], "title": a.get("title") or "", "rating": str(a["rating"]), "travelDate": "",
-            "publishedDate": d, "text": a.get("body") or "", "piattaforma": "ios", "versione": "",
-            "paese": PAESE.get(a.get("territory"), str(a.get("territory", "")).lower()),
+            "publishedDate": d, "text": a.get("body") or "", "piattaforma": "ios", "versione": "", "paese": paese,
         })
-    print(f"Saltate perche' piu' recenti del {piu_vecchia_feed} (le copre il feed): {saltate_recenti}")
+    print(f"Saltate perche' piu' recenti della recensione piu' vecchia del feed del loro paese: {saltate_recenti}")
     print(f"Saltate perche' gia' nell'archivio: {saltate_doppie}")
     print(f"DA AGGIUNGERE: {len(nuove)}")
     if nuove:

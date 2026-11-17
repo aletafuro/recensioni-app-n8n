@@ -95,16 +95,27 @@ if (cfg.play_bucket) {
     let pag = null;
     do {
       const url = `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(cfg.play_bucket)}/o?prefix=${encodeURIComponent(`reviews/reviews_${cfg.play_package}_`)}&maxResults=1000${pag ? '&pageToken=' + encodeURIComponent(pag) : ''}`;
-      const r = await helpers.httpRequest({ method: 'GET', url, headers: { Authorization: 'Bearer ' + accessToken }, json: true, timeout: 30000 });
+      const r = await (async () => { let u; for (let t = 1; t <= 5; t++) { try { return await helpers.httpRequest({ method: 'GET', url, headers: { Authorization: 'Bearer ' + accessToken }, json: true, timeout: 30000 }); } catch (e) { u = e; if (['403', '404'].includes(String(e.httpCode ?? ''))) throw e; await new Promise((ok) => setTimeout(ok, 10000 * 2 ** (t - 1))); } } throw u; })();  // elenco dei report: stessi tentativi dei file
       const d = typeof r === 'string' ? JSON.parse(r) : r;
       nomi.push(...(d.items ?? []).map((o) => o.name).filter((n) => /\.csv$/i.test(n)));
       pag = d.nextPageToken ?? null;
     } while (pag);
+    // Cloud Storage a volte non risponde in tempo (timeout su un file): fino a 5 tentativi, attese di 10, 20, 40 e 80 secondi
+    const scaricaFile = async (url) => {
+      let ultimo;
+      for (let t = 1; t <= 5; t++) {
+        try {
+          return await helpers.httpRequest({ method: 'GET', url, headers: { Authorization: 'Bearer ' + accessToken }, encoding: 'arraybuffer', timeout: 120000 });
+        } catch (e) {
+          ultimo = e;
+          if (String(e.httpCode ?? '') === '403') throw e; // permesso mancante: inutile riprovare
+          await new Promise((ok) => setTimeout(ok, 10000 * 2 ** (t - 1)));
+        }
+      }
+      throw ultimo;
+    };
     for (const nome of nomi.sort()) {
-      const dati = await helpers.httpRequest({
-        method: 'GET', url: `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(cfg.play_bucket)}/o/${encodeURIComponent(nome)}?alt=media`,
-        headers: { Authorization: 'Bearer ' + accessToken }, encoding: 'arraybuffer', timeout: 60000,
-      });
+      const dati = await scaricaFile(`https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(cfg.play_bucket)}/o/${encodeURIComponent(nome)}?alt=media`);
       const nuoveDalFile = daReport(Buffer.from(dati));
       righe.push(...nuoveDalFile);
       storicoFile++;

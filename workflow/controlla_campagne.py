@@ -2,8 +2,8 @@
 
 Rifa' in Python, in modo indipendente dal nodo n8n "Aggregazione", i due controlli:
 A. testi quasi identici (>= 8 parole, Jaccard sulle terne di parole >= 0,8, entro 14 giorni);
-B. picchi di recensioni da 1 stella (Poisson una coda contro il ritmo degli altri giorni,
-   Benjamini-Hochberg FDR 10%, solo giorni con quota di 1 stella sopra la media).
+B. picchi di recensioni da 1 stella (per piattaforma, Poisson una coda contro i 30 giorni prima e dopo,
+   Benjamini-Hochberg FDR 10%, almeno 3 da 1 stella e quota sopra quella dei giorni intorno).
 Poi confronta con data/output/aggregazione.json.
 
 Uso: python workflow/controlla_campagne.py
@@ -65,29 +65,39 @@ for i, x in enumerate(lunghe):
     gruppi.setdefault(radice(i), []).append(x[0])
 quasi = sorted([g for g in gruppi.values() if len(g) >= 2], key=len, reverse=True)
 
-# B. picchi di 1 stella
-per_giorno = {}
-for r in rec:
-    g = giorno(r["publishedDate"])
-    t, u = per_giorno.get(g, (0, 0))
-    per_giorno[g] = (t + 1, u + (r["rating"] == "1"))
-primo, ultimo = min(per_giorno), max(per_giorno)
-n_giorni = ultimo - primo + 1
-tot_una = sum(u for _, u in per_giorno.values())
-quota_media = tot_una / len(rec)
+# B. picchi di 1 stella (regola del 17/11): per piattaforma, ogni giorno contro i 30 giorni prima e i 30
+# dopo (escluso il giorno), Poisson una coda, Benjamini-Hochberg FDR 10% su tutti i giorni-piattaforma;
+# picco solo con almeno 3 recensioni da 1 stella e quota di 1 stella sopra quella dei giorni intorno.
+FINESTRA, MIN_UNA, MIN_INTORNO = 30, 3, 10  # sotto 10 recensioni intorno: pochi dati
 
 
 def coda_poisson(k, l):
     if k <= 0:
         return 1.0
+    if l <= 0:
+        return 0.0
     return max(0.0, 1 - sum(math.exp(-l) * l ** i / math.factorial(i) for i in range(k)))
 
 
-test = []
-for g in range(primo, ultimo + 1):
-    t, u = per_giorno.get(g, (0, 0))
-    atteso = (tot_una - u) / (n_giorni - 1)
-    test.append({"data": date.fromordinal(g).isoformat(), "una": u, "tutte": t, "atteso": atteso, "p": coda_poisson(u, atteso)})
+test, n_giorni, tot_una = [], 0, 0
+for pf in sorted({r["piattaforma"] or "non indicata" for r in rec}):
+    per_giorno = {}
+    for r in rec:
+        if (r["piattaforma"] or "non indicata") != pf:
+            continue
+        g = giorno(r["publishedDate"])
+        t, u = per_giorno.get(g, (0, 0))
+        per_giorno[g] = (t + 1, u + (r["rating"] == "1"))
+    primo, ultimo = min(per_giorno), max(per_giorno)
+    n_giorni += ultimo - primo + 1
+    tot_una += sum(u for _, u in per_giorno.values())
+    for g in range(primo, ultimo + 1):
+        t, u = per_giorno.get(g, (0, 0))
+        intorno = [per_giorno.get(h, (0, 0)) for h in range(max(primo, g - FINESTRA), min(ultimo, g + FINESTRA) + 1) if h != g]
+        una_i, tutte_i = sum(x[1] for x in intorno), sum(x[0] for x in intorno)
+        atteso = una_i / len(intorno) if intorno else 0.0
+        test.append({"pf": pf, "data": date.fromordinal(g).isoformat(), "una": u, "tutte": t, "atteso": atteso,
+                     "quota_intorno": una_i / tutte_i if tutte_i else 0.0, "p": coda_poisson(u, atteso) if tutte_i >= MIN_INTORNO else 1.0})
 ordinati = sorted(test, key=lambda x: x["p"])
 soglia = -1
 for i, x in enumerate(ordinati):
@@ -95,7 +105,8 @@ for i, x in enumerate(ordinati):
         soglia = i
 for i, x in enumerate(ordinati):
     x["sig"] = i <= soglia
-picchi = [x for x in test if x["sig"] and x["una"] / x["tutte"] > quota_media]
+picchi = [x for x in test if x["sig"] and x["una"] >= MIN_UNA and x["una"] / x["tutte"] > x["quota_intorno"]]
+quota_media = tot_una / len(rec)
 
 print(f"recensioni controllate: {len(rec)}; con almeno 8 parole: {len(lunghe)}")
 print(f"gruppi di testi quasi identici: {len(quasi)}")
@@ -104,8 +115,9 @@ for g in quasi:
 print(f"giorni controllati: {n_giorni}; 1 stella: {tot_una} ({100 * quota_media:.1f}%), {tot_una / n_giorni:.2f} al giorno")
 print(f"picchi di 1 stella: {len(picchi)}")
 for x in picchi:
-    print("  ", x["data"], x["una"], "su", x["tutte"], f"attese {x['atteso']:.2f}", f"p={x['p']:.3g}")
-print("giorni piu' vicini alla soglia:", [(x["data"], x["una"], round(x["atteso"], 2), float(f"{x['p']:.3g}")) for x in ordinati[:3]])
+    print("  ", x["pf"], x["data"], x["una"], "su", x["tutte"], f"attese {x['atteso']:.2f}", f"quota intorno {100 * x['quota_intorno']:.1f}%", f"p={x['p']:.3g}")
+vicini = [x for x in ordinati if x["una"] >= MIN_UNA][:3]
+print("giorni piu' vicini alla soglia:", [(x["pf"], x["data"], x["una"], round(x["atteso"], 2), float(f"{x['p']:.3g}")) for x in vicini])
 
 # confronto con il risultato del workflow
 agg = A / "data" / "output" / "aggregazione.json"
@@ -113,7 +125,7 @@ if agg.exists():
     c = json.loads(agg.read_text(encoding="utf-8")).get("controllo_campagne")
     if c:
         ok = (c["recensioni_controllate"] == len(rec) and len(c["testi_quasi_identici"]) == len(quasi)
-              and [p["data"] for p in c["picchi_una_stella"]] == [x["data"] for x in picchi]
+              and [(p.get("piattaforma"), p["data"]) for p in c["picchi_una_stella"]] == [(x["pf"], x["data"]) for x in picchi]
               and c["giorni_controllati"] == n_giorni
-              and [g["data"] for g in c["giorni_piu_vicini_alla_soglia"]] == [x["data"] for x in ordinati[:3]])
+              and [g["data"] for g in c["giorni_piu_vicini_alla_soglia"]] == [x["data"] for x in vicini])
         print("CONFRONTO CON n8n:", "IDENTICO" if ok else "DIVERSO", json.dumps({k: c[k] for k in ("recensioni_controllate", "giorni_controllati", "esito")}))

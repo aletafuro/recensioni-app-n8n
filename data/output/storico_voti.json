@@ -1,0 +1,25 @@
+{
+ "istantanee_ios": [],
+ "ultimo_giro": {
+  "generato_il": "2026-11-17T14:18:20.643Z",
+  "oggi": "2026-11-17",
+  "paesi": [
+   "it"
+  ],
+  "ios": {
+   "fonte": "App Store (itunes.apple.com/lookup)",
+   "stato": "non configurato: manca APP_STORE_ID",
+   "paesi": []
+  },
+  "android": {
+   "fonte": "Play Console, report delle valutazioni per paese",
+   "stato": "non configurato: servono GOOGLE_PLAY_BUCKET, GOOGLE_PLAY_PACKAGE e GOOGLE_PLAY_CREDENZIALI_B64",
+   "paesi": []
+  },
+  "versione_pubblicata": {
+   "ios": null,
+   "android": null,
+   "android_stato": "non configurato"
+  }
+ }
+}

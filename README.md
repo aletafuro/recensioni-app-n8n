@@ -6,10 +6,12 @@ Un workflow n8n che ogni settimana legge le recensioni di un'app su App Store e 
 - l'andamento nel tempo e per versione dell'app, con iOS e Android sempre separati;
 - un controllo delle recensioni che sembrano coordinate (testi lunghi quasi identici, picchi di recensioni da una stella);
 - un riassunto in italiano per chi non è tecnico, con le citazioni controllate parola per parola;
-- l'invio su Telegram del riassunto, del digest completo e di un avviso per ogni recensione nuova grave;
-- un **avviso a grappolo** quando poche persone scrivono lo stesso problema sulla stessa versione in pochi giorni (per esempio «ho pagato ma l'acquisto non è arrivato»), con l'indicazione se la versione è vecchia o la più recente;
-- l'andamento **ogni due settimane e mese per mese**, con un verdetto statistico onesto («oltre il rumore», «entro il rumore» o «pochi dati»);
-- un **file Excel** con 10 fogli (periodi, confronti, versioni, lingue, segnalazioni, grappoli, recensioni);
+- l'invio su Telegram del riassunto, del digest completo e di un avviso per ogni recensione nuova grave e recente;
+- un **avviso a grappolo** quando poche persone scrivono lo stesso problema sulla stessa versione in pochi giorni (per esempio «ho pagato ma l'acquisto non è arrivato»), con l'indicazione se quella versione è la stessa pubblicata ora nello store;
+- l'ultima versione dell'app confrontata con quella prima, con il peggioramento scritto in chiaro;
+- il **voto negli store per mercato** (Italia, Regno Unito, Stati Uniti...), che non è la media delle recensioni scritte, con l'andamento settimana per settimana;
+- l'andamento **ogni due settimane e mese per mese**, con un verdetto statistico onesto («oltre il rumore», «entro il rumore» o «pochi dati»), sempre separato per piattaforma e per lingua;
+- un **file Excel** con 11 fogli (periodi, voto negli store, confronti, temi, versioni, lingue, segnalazioni, grappoli, recensioni);
 - una **memoria delle analisi**: si mandano al modello solo le recensioni nuove o cambiate, e tutto si rianalizza da solo se cambiano le istruzioni.
 
 **I dati in questo repository sono inventati.** Il file `data/input/recensioni_inventate.csv` contiene 36 recensioni scritte apposta per un'app immaginaria di note e liste della spesa: ogni testo comincia con «INVENTATA». Le ultime sei servono a mostrare tre cose:
@@ -70,16 +72,19 @@ Nel file `.env`:
 | variabile | a che cosa serve |
 |---|---|
 | `SCARICA_STORE=true` | scaricare le recensioni nuove a ogni giro (sempre attivo nell'avvio del lunedì) |
-| `APP_STORE_ID`, `STORE_PAESE` | iOS: identificativo dell'app nell'App Store e paese del feed pubblico (per esempio `it`) |
+| `APP_STORE_ID`, `STORE_PAESI` | iOS: identificativo dell'app nell'App Store e paesi da leggere (per esempio `it,gb,us`) |
 | `GOOGLE_PLAY_PACKAGE`, `GOOGLE_PLAY_CREDENZIALI_B64` | Android: nome del pacchetto e chiave di un account di servizio della Play Console, in base64 |
-| `PLAY_LINGUE` | lingue delle recensioni Android da tenere (predefinito `it`) |
-| `GOOGLE_PLAY_BUCKET` | Android, storico: indirizzo `gs://...` dei report della Play Console (Scarica report → Recensioni → «Copia URI Cloud Storage») |
-| `APPLE_ISSUER_ID`, `APPLE_KEY_ID`, `APPLE_PAESI` | iOS, storico: chiave API di App Store Connect (il file `.p8` va in `segreti/`, esclusa da git) e paesi da importare |
+| `PLAY_LINGUE` | lingue delle recensioni Android da tenere (predefinito `it`; per esempio `it,en`) |
+| `GOOGLE_PLAY_BUCKET` | Android, storico e voto per paese: indirizzo `gs://...` dei report della Play Console (Scarica report → Recensioni → «Copia URI Cloud Storage») |
+| `APPLE_ISSUER_ID`, `APPLE_KEY_ID`, `APPLE_P8_B64` | iOS: chiave API di App Store Connect (il contenuto del file `.p8` in base64), usata quando il feed pubblico è vuoto; per lo storico il file `.p8` va in `segreti/`, esclusa da git |
+| `VOTO_PAESI` | paesi del voto negli store (predefinito `it`) |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | bot e chat che ricevono riassunto, digest, Excel e avvisi |
+| `AVVISI_GIORNI` | avvisi urgenti solo per le recensioni pubblicate negli ultimi N giorni (predefinito 14): lo storico entra senza avvisi |
 | `GRAPPOLO_MINIMO`, `GRAPPOLO_GIORNI` | avviso a grappolo: quante recensioni con lo stesso problema sulla stessa versione, in quanti giorni (predefiniti 3 e 7) |
+| `AGGIORNA_ELENCO=false` | sospende per un giro l'aggiornamento automatico dell'elenco degli aspetti (il controllo si scrive lo stesso): serve quando entra un blocco di recensioni diverse, per esempio una lingua nuova |
 | `INPUT_FILE` | l'archivio delle recensioni (si allarga da solo a ogni giro) |
 
-**iOS.** C'è un feed pubblico, bastano l'identificativo e il paese, ma dà solo le 500 recensioni più recenti. Lo storico completo si prende una volta con l'API di App Store Connect: `python strumenti/importa_storico_apple.py`, prima in prova e poi con `scrivi`. Le regole:
+**iOS.** C'è un feed pubblico, bastano l'identificativo e il paese, ma dà solo le 500 recensioni più recenti, e a volte è vuoto per tutte le app. Se è vuoto e la chiave di App Store Connect è nel `.env`, il giro prende le recensioni recenti dall'API (senza la versione dell'app); una recensione arrivata da tutte e due le strade si riconosce anche dal contenuto e non si conta due volte. Lo storico completo si prende una volta con l'API di App Store Connect: `python strumenti/importa_storico_apple.py`, prima in prova e poi con `scrivi`. Le regole:
 - l'API non dice la versione dell'app, quindi si importano solo le recensioni più vecchie di quelle del feed;
 - la loro versione resta «non indicata» e non viene stimata.
 
@@ -101,11 +106,14 @@ Le strade usano lo stesso identificativo di Google, quindi una recensione arriva
    - Il controllo della manipolazione ha la sua memoria (`memoria_guardrail.json`).
    - Validazione, controllo delle prove e regole si rifanno a ogni giro.
 5. **Aggregazione**: classifiche per volume e per quota, andamento nel tempo e per versione con test statistici e correzione per i confronti multipli, controllo delle campagne coordinate.
-   - **Periodi di calendario:** ogni due settimane (da lunedì a domenica, fissi dal 6/1/2020) e mese per mese, per piattaforma. Il test si fa solo con almeno 20 recensioni per parte; sotto si scrive «pochi dati».
+   - **Piattaforme e lingue sempre separate** nei confronti nel tempo: se cambia la quota di una lingua, un confronto con tutto insieme scambierebbe il cambio di composizione per un cambiamento vero.
+   - **Periodi di calendario:** ogni due settimane (da lunedì a domenica, fissi dal 6/1/2020) e mese per mese, per piattaforma e lingua. Il test si fa solo con almeno 20 recensioni per parte; sotto si scrive «pochi dati».
+   - **Versioni:** l'ultima versione con abbastanza recensioni contro quella prima, per lingua.
    - **Avviso a grappolo:** almeno 3 recensioni con la stessa segnalazione, la stessa piattaforma e la stessa versione in 7 giorni. Una persona che riscrive la sua recensione conta una volta sola.
-6. **Elenco degli aspetti**: se i temi fuori elenco crescono oltre la linea di base, il sistema propone una nuova versione e la adotta solo se supera controlli fissati prima.
+6. **Elenco degli aspetti**: se i temi fuori elenco crescono oltre la linea di base, il sistema propone una nuova versione e la adotta solo se supera controlli fissati prima. La linea di base è per piattaforma e lingua, non conta i temi generici («great site», «bella app») e si confronta solo con le recensioni arrivate dopo.
 7. **Digest**: le frasi con i numeri le scrive il codice; il modello scrive solo i commenti, senza cifre, e sceglie le citazioni; il codice controlla citazioni e affermazioni.
-8. **Telegram**: riassunto (con le ultime due settimane e l'ultimo mese completi, per piattaforma), digest come file, file Excel, avvisi sulle recensioni nuove con priorità alta e avvisi a grappolo (solo se il grappolo contiene almeno una recensione nuova). Se un giro si rompe arriva un avviso anche per quello.
+8. **Voto negli store**: Apple dal servizio pubblico per paese (con un'istantanea salvata a ogni giro, così si vede quanti voti nuovi sono arrivati e la loro media), Google dai report per paese della Play Console. Si legge anche la versione pubblicata ora nei due store.
+9. **Telegram**: riassunto (voto negli store, ultima versione contro quella prima, ultime due settimane e ultimo mese completi), digest come file, file Excel, avvisi sulle recensioni nuove e recenti con priorità alta e avvisi a grappolo (solo se il grappolo contiene almeno una recensione nuova). Se un giro si rompe arriva un avviso anche per quello.
 
 Il dominio sta tutto in `data/contesto/contesto.json` (che cosa viene recensito, chi legge, categorie di segnalazione con la loro priorità): per un'altra app o un altro settore si cambia quel file, non il workflow. Il file non elenca aspetti, perché il modello tenderebbe a vederli anche dove non ci sono.
 
@@ -149,6 +157,16 @@ Sono state corrette tutte. Un numero giusto può dire una cosa sbagliata.
 
 **Da 40 minuti a 18 secondi.** Con lo storico completo (2.325 recensioni) ogni giro rianalizzava tutto: 40 minuti e 2,65 dollari. Con la memoria delle analisi e del controllo della manipolazione, il giro normale dura 18 secondi e costa meno di un centesimo. I risultati sono identici campo per campo su tutte le 2.325 recensioni. La memoria non ricorda «che cosa ho già fatto», ma «con quali regole l'ho fatto»: se cambia anche una sola definizione, si rianalizza tutto da solo.
 
+**Lo storico non è una notizia.** Quando sono arrivati anni di recensioni Android, per l'archivio erano tutte «nuove»: il primo giro avrebbe mandato avvisi urgenti su recensioni di anni prima. L'ho fermato prima che partissero. Ora gli avvisi urgenti riguardano solo le recensioni degli ultimi 14 giorni; lo storico entra nelle analisi, nel digest e nell'Excel, ma non nei messaggi.
+
+**Il ritmo giusto è quello vicino.** Il controllo dei picchi di recensioni da una stella segnava sedici «picchi», tutti negli ultimi anni. Il ritmo atteso era la media di tutto l'archivio, ma i volumi erano cresciuti molto: ogni giorno recente sembrava anomalo. Ora il confronto è con i 30 giorni prima e dopo, sulla stessa piattaforma.
+
+**Una lingua nuova cambia i numeri.** Quando sono entrate le recensioni in inglese, il digest ha scritto che le critiche a un aspetto si erano dimezzate, con un test significativo. Ma le recensioni in inglese erano passate da meno di un quinto a più della metà, ed erano molto meno negative: dentro ogni lingua il calo non reggeva. Era il cambio di composizione, non un miglioramento. Lo stesso effetto faceva scattare il controllo dell'elenco degli aspetti, perché le recensioni inglesi sono piene di temi generici. Ora le lingue sono separate in tutti i confronti nel tempo, come le piattaforme, e i temi generici non contano. Poi un dubbio: l'inglese è davvero meno negativo, o è il modello che lo legge così? Un altro modello ha giudicato alla cieca 80 recensioni, 40 per lingua: in inglese il sistema, quando sbaglia, sbaglia verso il negativo. La differenza viene dalle persone, non dal modello.
+
+**Il voto dello store non è il voto delle recensioni.** La media delle recensioni scritte era molto più bassa del voto che si vede nello store, perché nello store contano anche le stelle date senza scrivere niente. Chi legge rischiava di confonderli. Ora il riassunto ha tutti e due, con il nome giusto, e il voto dello store è per mercato.
+
+**Google a volte non risponde.** In un giro uno dei report mensili di Google non è arrivato in tempo e il voto Android è rimasto vuoto. Ora ogni lettura si ritenta fino a cinque volte con attese crescenti; se Google non risponde ancora, il messaggio mostra i voti dell'ultimo giro riuscito, con la data.
+
 ## Verifica
 
 ```bash
@@ -164,8 +182,9 @@ Confronta le recensioni di sviluppo con quelle di test (se `data/valutazione/tes
 - Le recensioni sono brevi: molte dicono solo «Bella app» e non danno informazioni sugli aspetti.
 - I nomi di persona nelle recensioni non vengono oscurati.
 - L'avvio del lunedì funziona solo finché n8n resta acceso: per un uso vero serve una macchina sempre accesa.
-- L'avviso a grappolo dice se una versione è «la più recente vista nelle recensioni», non l'ultima pubblicata nello store.
-- Le recensioni iOS dello storico non hanno la versione: l'API di Apple non la dà.
+- Le recensioni iOS dello storico, e quelle prese dall'API quando il feed è vuoto, non hanno la versione: l'API di Apple non la dà.
+- Il controllo sulle lingue è fatto da un altro modello, su 80 recensioni: dice che non c'è un errore sistematico, non che il modello non sbagli mai.
+- Google non dà il numero delle valutazioni per paese: per Android si vede l'andamento del voto, ma non si può dire se una differenza è oltre il rumore.
 
 ## Struttura
 
@@ -180,6 +199,7 @@ data/output/                risultati dell'ultimo giro
 data/aspetti/               elenco fisso degli aspetti (con versione)
 strumenti/                  storico iOS (API di Apple) e Android (report), prove fuori da n8n:
                             prova_avvisi_telegram.js (messaggi), prova_periodi.js (confronti),
-                            prova_android.js (con un report finto), prova_permesso_report_google.py
+                            prova_android.js (con un report finto), prova_permesso_report_google.py,
+                            prova_campagne.js (controllo delle campagne), prova_voto_store.js (voto per paese)
 valutazione/                misure di qualità in Python
 ```

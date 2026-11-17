@@ -27,16 +27,27 @@ x-n8n-comune: &n8n-comune
     # avviso a grappolo: stessa segnalazione, stessa piattaforma e versione, in pochi giorni
     GRAPPOLO_MINIMO: ${GRAPPOLO_MINIMO:-3}
     GRAPPOLO_GIORNI: ${GRAPPOLO_GIORNI:-7}
+    # avvisi urgenti solo per recensioni pubblicate negli ultimi N giorni (lo storico entra senza avvisi)
+    AVVISI_GIORNI: ${AVVISI_GIORNI:-14}
+    # voto negli store per mercato: paesi da leggere
+    VOTO_PAESI: ${VOTO_PAESI:-it}
     # data di riferimento della finestra (vuota = oggi): solo per le prove su dati vecchi
     GRAPPOLO_OGGI: ${GRAPPOLO_OGGI:-}
     CONTEXT_FILE: ${CONTEXT_FILE:-/files/contesto/contesto.json}
     ASPECTS_FILE: ${ASPECTS_FILE:-/files/aspetti/aspetti_fissi.json}
     RISCOPRI_ASPETTI: ${RISCOPRI_ASPETTI:-false}
     FORZA_REVISIONE_ELENCO: ${FORZA_REVISIONE_ELENCO:-false}
+    AGGIORNA_ELENCO: ${AGGIORNA_ELENCO:-true}
     # lettura automatica dallo store (sempre attiva negli avvii programmati del lunedi')
     SCARICA_STORE: ${SCARICA_STORE:-false}
     APP_STORE_ID: ${APP_STORE_ID:-}
     STORE_PAESE: ${STORE_PAESE:-it}
+    # iOS: paesi da leggere; se il feed pubblico e' vuoto si usa l'API di App Store Connect (chiave nel .env)
+    STORE_PAESI: ${STORE_PAESI:-it}
+    APPLE_API_GIORNI: ${APPLE_API_GIORNI:-45}
+    APPLE_ISSUER_ID: ${APPLE_ISSUER_ID:-}
+    APPLE_KEY_ID: ${APPLE_KEY_ID:-}
+    APPLE_P8_B64: ${APPLE_P8_B64:-}
     # Android (API ufficiale di Google Play): pacchetto dell'app e account di servizio della Play Console,
     # il file JSON dell'account va nel .env codificato in base64 (vedi README)
     GOOGLE_PLAY_PACKAGE: ${GOOGLE_PLAY_PACKAGE:-}
@@ -63,7 +74,9 @@ x-n8n-comune: &n8n-comune
     N8N_PERSONALIZATION_ENABLED: "false"
     N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "false"
   volumes:
-    - ./data:/files
+    # cartella dei dati (archivio, memoria, risultati): sul server sta FUORI dal codice (DATA_DIR nel .env),
+    # cosi' gli aggiornamenti del codice non la toccano mai
+    - ${DATA_DIR:-./data}:/files
     - ./workflow:/workflow:ro
     - ./docker:/avvio:ro
     - n8n_recensioni_app:/home/node/.n8n
@@ -73,8 +86,11 @@ services:
   # pubblicato (attivo), cosi' l'avvio programmato del lunedi' alle 8 parte da solo finche' n8n e' acceso
   n8n:
     <<: *n8n-comune
+    # riparte da solo dopo un riavvio del computer o del server (serve per il giro del lunedi')
+    restart: unless-stopped
+    # interfaccia raggiungibile solo dalla macchina stessa (sul server: tunnel SSH se serve)
     ports:
-      - "${N8N_PORT:-5679}:5678"
+      - "127.0.0.1:${N8N_PORT:-5679}:5678"
     entrypoint: ["/bin/sh", "-c", "mkdir -p \"$$OUTPUT_DIR\" && node /avvio/crea_credenziale.js && n8n import:credentials --input=/tmp/credenziale.json && rm -f /tmp/credenziale.json && n8n import:workflow --separate --input=/workflow && n8n publish:workflow --id=appRecensioni001 && n8n publish:workflow --id=appAvvisoErr01 && exec n8n start"]
 
   # esecuzione completa senza interfaccia: prepara e lancia il workflow

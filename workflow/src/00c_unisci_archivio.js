@@ -15,8 +15,19 @@ try {
 }
 const COLONNE = ['id_store', 'title', 'rating', 'travelDate', 'publishedDate', 'text', 'piattaforma', 'versione', 'paese'];
 const visti = new Set(archivio.map((r) => `${r.piattaforma}|${r.id_store}`));
+// iOS: feed pubblico e API di App Store Connect hanno identificativi DIVERSI per la stessa recensione. Si riconosce
+// anche dal contenuto: paese, data, voto, titolo e inizio del testo (con il solo titolo due persone diverse che
+// scrivono «Top» lo stesso giorno diventerebbero una: errore gia' visto il 14/11).
+const norma = (s, n) => String(s ?? '').trim().toLowerCase().replace(/\s+/g, ' ').slice(0, n);
+const contenuto = (r) => r.piattaforma === 'ios' ? `ios|${r.paese || 'it'}|${String(r.publishedDate).slice(0, 10)}|${r.rating}|${norma(r.title, 200)}|${norma(r.text, 80)}` : null;
+const vistiContenuto = new Set(archivio.map(contenuto).filter(Boolean));
 // una recensione arrivata due volte nello stesso giro (per esempio dall'API e dal report mensile) entra una volta sola
-const nuove = scaricate.filter((r) => { const k = `${r.piattaforma}|${r.id_store}`; if (visti.has(k)) return false; visti.add(k); return true; });
+const nuove = scaricate.filter((r) => {
+  const k = `${r.piattaforma}|${r.id_store}`, c = contenuto(r);
+  if (visti.has(k) || (c && vistiContenuto.has(c))) return false;
+  visti.add(k); if (c) vistiContenuto.add(c);
+  return true;
+});
 const tutte = [...nuove, ...archivio].map((r) => Object.fromEntries(COLONNE.map((c) => [c, r[c] ?? ''])));
 // CSV con virgolette su ogni campo (testi con virgole, a capo e virgolette)
 const campo = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';

@@ -1,7 +1,7 @@
 {
-  "inizio": "2026-11-16T20:20:52.222Z",
-  "fine": "2026-11-16T20:21:07.506Z",
-  "durata_minuti": 0.3,
+  "inizio": "2026-11-17T14:18:09.978Z",
+  "fine": "2026-11-17T14:18:20.491Z",
+  "durata_minuti": 0.2,
   "modello": "gpt-4.1-mini",
   "prezzi_usd_per_milione_di_token": {
     "input": 0.4,
@@ -33,10 +33,10 @@
       "costo_usd": 0
     },
     "digest": {
-      "chiamate": 2,
-      "token_input": 9532,
-      "token_output": 1187,
-      "costo_usd": 0.0057
+      "chiamate": 1,
+      "token_input": 4200,
+      "token_output": 585,
+      "costo_usd": 0.0026
     },
     "aggiornamento_elenco": {
       "chiamate": 0,
@@ -46,17 +46,17 @@
     }
   },
   "misurato_totale": {
-    "token_input": 9532,
-    "token_output": 1187,
-    "costo_usd": 0.0057
+    "token_input": 4200,
+    "token_output": 585,
+    "costo_usd": 0.0026
   },
   "guardrail_stimato": {
     "chiamate": 1,
-    "token_input": 2310,
+    "token_input": 2249,
     "token_output": 30,
     "nota": "STIMA: token calcolati dalla lunghezza dei testi, n8n non li espone per i nodi Guardrails",
-    "costo_usd": 0.001
+    "costo_usd": 0.0009
   },
-  "costo_totale_usd_misurato_piu_stimato": 0.0067,
-  "costo_per_1000_recensioni_usd": 0.1861
+  "costo_totale_usd_misurato_piu_stimato": 0.0035,
+  "costo_per_1000_recensioni_usd": 0.0972
 }

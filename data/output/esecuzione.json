@@ -4,6 +4,10 @@
     "scarica_store": false,
     "app_store_id": "",
     "store_paese": "it",
+    "store_paesi": [
+      "it"
+    ],
+    "apple_api_giorni": 45,
     "play_package": "",
     "play_lingue": [
       "it"
@@ -20,19 +24,24 @@
     "min_reviews_per_period": 50,
     "aspects_file": "/files/aspetti/aspetti_fissi.json",
     "forza_revisione_elenco": false,
+    "aggiorna_elenco": true,
     "riscopri_aspetti": false,
     "granularita": "mese",
     "min_reviews_per_version": 30,
     "grappolo_minimo": 3,
     "grappolo_giorni": 7,
-    "grappolo_oggi": "2026-11-06",
+    "grappolo_oggi": null,
+    "avvisi_giorni": 14,
+    "voto_paesi": [
+      "it"
+    ],
     "min_mentions_rate_ranking": 30,
     "prezzo_input_usd_per_milione": 0.4,
     "prezzo_output_usd_per_milione": 1.6,
     "seed": 42,
-    "started_at": "2026-11-16T20:20:52.222Z"
+    "started_at": "2026-11-17T14:18:09.978Z"
   },
-  "terminata_il": "2026-11-16T20:21:07.504Z",
+  "terminata_il": "2026-11-17T14:18:20.489Z",
   "file": "36 righe lette da /files/input/recensioni_inventate.csv",
   "anomalie_del_file": [],
   "guardrail_ingresso": {
@@ -119,13 +128,6 @@
       "tentativi": [
         {
           "tentativo": 1,
-          "ok": false,
-          "problemi": [
-            "il campo sintesi parla di lingue, ma le recensioni sono quasi tutte in una sola lingua e non c'e' stato nessun confronto: togli la frase sulle lingue"
-          ]
-        },
-        {
-          "tentativo": 2,
           "ok": true,
           "problemi": []
         }
@@ -138,7 +140,7 @@
     "testo_del_modello_scartato": null
   },
   "fatti_dati_al_modello_per_il_digest": {
-    "frase_sintesi": "Sono state analizzate 35 recensioni pubblicate tra il 02/09/2026 e il 06/11/2026. Il voto medio e' 2,97 su 5. Il 40% delle recensioni e' positivo, l'11% misto, il 46% negativo e il 3% neutro.",
+    "frase_sintesi": "Sono state analizzate 35 recensioni pubblicate tra il 02/09/2026 e il 06/11/2026. Il voto medio delle recensioni scritte e' 2,97 su 5 (non e' il voto dello store, che conta anche chi da' solo le stelle). Il 40% delle recensioni e' positivo, l'11% misto, il 46% negativo e il 3% neutro.",
     "recensioni_analizzate": "35",
     "dal_anno": "2026",
     "al_anno": "2026",
@@ -160,14 +162,6 @@
       {
         "aspetto": "grafica e widget",
         "frase_numeri": "3 recensioni su 35 ne danno un giudizio positivo (il 9% del totale); tra le 4 recensioni che ne parlano, i giudizi positivi sono il 75%"
-      },
-      {
-        "aspetto": "condivisione e collaborazione",
-        "frase_numeri": "2 recensioni su 35 ne danno un giudizio positivo (il 6% del totale); tra le 4 recensioni che ne parlano, i giudizi positivi sono il 50%"
-      },
-      {
-        "aspetto": "sincronizzazione",
-        "frase_numeri": "1 recensioni su 35 ne danno un giudizio positivo (il 3% del totale); tra le 2 recensioni che ne parlano, i giudizi positivi sono il 50%"
       }
     ],
     "aspetti_piu_criticati": [
@@ -194,8 +188,8 @@
     ],
     "lingue_confrontate": false,
     "frasi_piattaforme": [
-      "Android: 14 recensioni, voto medio 2,57, il 29% positive e il 57% negative; l'aspetto piu' criticato e' fatturazione e abbonamento",
-      "iOS: 21 recensioni, voto medio 3,24, il 48% positive e il 38% negative; l'aspetto piu' criticato e' fatturazione e abbonamento"
+      "Android: 14 recensioni, voto medio delle recensioni 2,57, il 29% positive e il 57% negative; l'aspetto piu' criticato e' fatturazione e abbonamento",
+      "iOS: 21 recensioni, voto medio delle recensioni 3,24, il 48% positive e il 38% negative; l'aspetto piu' criticato e' fatturazione e abbonamento"
     ],
     "aspetti_piu_divisivi": [],
     "periodi": [
@@ -217,7 +211,8 @@
     "cambiamenti_significativi": [],
     "confronti_nel_tempo_eseguiti": "0",
     "confronti_nel_tempo_significativi": "0",
-    "frase_segnalate": "Le recensioni segnalate sono 17 (il 47% del totale): 4 con priorita' alta, 11 media e 2 bassa.",
+    "frase_segnalate_recenti": "Negli ultimi 14 giorni le recensioni da guardare sono 5: 3 con un problema preciso, di cui 0 con priorita' alta.",
+    "frase_segnalate": "In tutto l'archivio le recensioni segnalate sono 17 (il 47% del totale): 4 con priorita' alta, 11 media e 2 bassa.",
     "frase_campagne": "Controllo delle campagne coordinate: nessun gruppo di testi lunghi quasi identici e nessun picco anomalo di recensioni da 1 stella.",
     "segnalate_da_mostrare": [
       {
@@ -302,23 +297,8 @@
           "performance e stabilità dell'app",
           "grafica e widget"
         ],
-        "versioni": [
-          {
-            "versione": "3.1.0",
-            "recensioni": "3",
-            "nota": "troppe poche recensioni per avere statistiche"
-          },
-          {
-            "versione": "3.2.0",
-            "recensioni": "7",
-            "nota": "troppe poche recensioni per avere statistiche"
-          },
-          {
-            "versione": "3.2.1",
-            "recensioni": "4",
-            "nota": "troppe poche recensioni per avere statistiche"
-          }
-        ],
+        "versioni_non_mostrate": "3",
+        "versioni": [],
         "confronti_ultima_versione_eseguiti": "0",
         "cambiamenti_ultima_versione": []
       },
@@ -338,28 +318,14 @@
           "condivisione e collaborazione",
           "performance e stabilità dell'app"
         ],
-        "versioni": [
-          {
-            "versione": "3.1.0",
-            "recensioni": "8",
-            "nota": "troppe poche recensioni per avere statistiche"
-          },
-          {
-            "versione": "3.2.0",
-            "recensioni": "6",
-            "nota": "troppe poche recensioni per avere statistiche"
-          },
-          {
-            "versione": "3.2.1",
-            "recensioni": "7",
-            "nota": "troppe poche recensioni per avere statistiche"
-          }
-        ],
+        "versioni_non_mostrate": "3",
+        "versioni": [],
         "confronti_ultima_versione_eseguiti": "0",
         "cambiamenti_ultima_versione": []
       }
     ],
     "lingue_con_abbastanza_recensioni": [],
+    "frase_lingue": null,
     "differenze_tra_lingue_significative": [],
     "citazioni_disponibili": [
       {
@@ -461,9 +427,9 @@
     ]
   },
   "registro_giro": {
-    "inizio": "2026-11-16T20:20:52.222Z",
-    "fine": "2026-11-16T20:21:07.506Z",
-    "durata_minuti": 0.3,
+    "inizio": "2026-11-17T14:18:09.978Z",
+    "fine": "2026-11-17T14:18:20.491Z",
+    "durata_minuti": 0.2,
     "modello": "gpt-4.1-mini",
     "prezzi_usd_per_milione_di_token": {
       "input": 0.4,
@@ -495,10 +461,10 @@
         "costo_usd": 0
       },
       "digest": {
-        "chiamate": 2,
-        "token_input": 9532,
-        "token_output": 1187,
-        "costo_usd": 0.0057
+        "chiamate": 1,
+        "token_input": 4200,
+        "token_output": 585,
+        "costo_usd": 0.0026
       },
       "aggiornamento_elenco": {
         "chiamate": 0,
@@ -508,19 +474,19 @@
       }
     },
     "misurato_totale": {
-      "token_input": 9532,
-      "token_output": 1187,
-      "costo_usd": 0.0057
+      "token_input": 4200,
+      "token_output": 585,
+      "costo_usd": 0.0026
     },
     "guardrail_stimato": {
       "chiamate": 1,
-      "token_input": 2310,
+      "token_input": 2249,
       "token_output": 30,
       "nota": "STIMA: token calcolati dalla lunghezza dei testi, n8n non li espone per i nodi Guardrails",
-      "costo_usd": 0.001
+      "costo_usd": 0.0009
     },
-    "costo_totale_usd_misurato_piu_stimato": 0.0067,
-    "costo_per_1000_recensioni_usd": 0.1861
+    "costo_totale_usd_misurato_piu_stimato": 0.0035,
+    "costo_per_1000_recensioni_usd": 0.0972
   },
   "aggiornamento_elenco": {
     "versione_in_uso": "v1",
@@ -528,12 +494,24 @@
     "controllo": {
       "da_rivedere": false,
       "temi_candidati": [],
-      "confronto_con_la_linea_di_base": {
-        "pct_oggi": 17.1,
-        "pct_linea_di_base": 17.1,
-        "z": 0,
-        "sopra_la_linea_di_base": false
-      }
+      "confronto_con_la_linea_di_base": [
+        {
+          "gruppo": "ios|it",
+          "recensioni_dopo_la_linea_di_base": 0,
+          "pct_dopo": null,
+          "pct_linea_di_base": 14.3,
+          "sopra_la_linea_di_base": false,
+          "esito": "pochi dati: servono almeno 100 recensioni pubblicate dopo il 2026-11-06"
+        },
+        {
+          "gruppo": "android|it",
+          "recensioni_dopo_la_linea_di_base": 0,
+          "pct_dopo": null,
+          "pct_linea_di_base": 21.4,
+          "sopra_la_linea_di_base": false,
+          "esito": "pochi dati: servono almeno 100 recensioni pubblicate dopo il 2026-11-06"
+        }
+      ]
     },
     "esito": "nessun aggiornamento: il controllo non e' scattato"
   }

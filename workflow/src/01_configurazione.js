@@ -23,6 +23,9 @@ return [{
     scarica_store: programmato || String(env('SCARICA_STORE') || '').toLowerCase() === 'true',
     app_store_id: env('APP_STORE_ID') || '',
     store_paese: env('STORE_PAESE') || 'it',
+    // iOS: paesi dell'App Store da leggere (feed pubblico, oppure API di App Store Connect se il feed e' vuoto)
+    store_paesi: String(env('STORE_PAESI') || env('STORE_PAESE') || 'it').split(',').map((x) => x.trim().toLowerCase()).filter(Boolean),
+    apple_api_giorni: numero(env('APPLE_API_GIORNI'), 45),
     // Android: nome del pacchetto su Google Play e lingue da tenere (l'API non dice il paese, solo la lingua)
     play_package: env('GOOGLE_PLAY_PACKAGE') || '',
     play_lingue: String(env('PLAY_LINGUE') ?? 'it').split(',').map((x) => x.trim().toLowerCase()).filter(Boolean),
@@ -47,6 +50,9 @@ return [{
     aspects_file: env('ASPECTS_FILE') || '/files/aspetti/aspetti_fissi.json',
     // solo per le prove: fa partire la revisione dell'elenco anche senza segnale
     forza_revisione_elenco: String(env('FORZA_REVISIONE_ELENCO') || '').toLowerCase() === 'true',
+    // AGGIORNA_ELENCO=false sospende l'aggiornamento automatico dell'elenco per un giro (il controllo si calcola e si
+    // scrive lo stesso): serve quando entra un blocco di recensioni di composizione diversa (altra lingua, altro store)
+    aggiorna_elenco: String(env('AGGIORNA_ELENCO') || 'true').toLowerCase() !== 'false',
     riscopri_aspetti: String(env('RISCOPRI_ASPETTI') || '').toLowerCase() === 'true',
     // unita' di tempo dell'andamento: anno, trimestre o mese (le unita' con poche
     // recensioni vengono unite alle successive fino al minimo qui sopra)
@@ -59,6 +65,10 @@ return [{
     grappolo_minimo: numero(env('GRAPPOLO_MINIMO'), 3),
     grappolo_giorni: numero(env('GRAPPOLO_GIORNI'), 7),
     grappolo_oggi: /^\d{4}-\d{2}-\d{2}$/.test(String(env('GRAPPOLO_OGGI') ?? '')) ? env('GRAPPOLO_OGGI') : null,
+    // avvisi urgenti su Telegram solo per recensioni pubblicate negli ultimi AVVISI_GIORNI giorni (lo storico no)
+    avvisi_giorni: numero(env('AVVISI_GIORNI'), 14),
+    // voto negli store: paesi da leggere (codici a due lettere; Apple per paese, Google dai report per paese)
+    voto_paesi: String(env('VOTO_PAESI') || 'it').split(',').map((x) => x.trim().toLowerCase()).filter(Boolean),
     // minimo di menzioni per entrare nelle classifiche "per tasso"
     min_mentions_rate_ranking: numero(env('MIN_MENTIONS_RATE_RANKING'), 30),
     // prezzi del modello in dollari per milione di token (listino da verificare quando cambia)

@@ -290,7 +290,18 @@ collega(modello("Modello per il guardrail del digest", 880, Y4 + 200), "Guardrai
 collega(code("Usa digest di riserva", "11_digest_riserva.js", 1100, Y4 + 160), "Prepara file")
 collega(code("Prepara file", "12_prepara_file.js", 1320, Y4), "Scrivi file")
 collega(nodo("Scrivi file", "n8n-nodes-base.readWriteFile", 1, 1540, Y4,
-     {"operation": "write", "fileName": "={{ $json.path }}", "dataPropertyName": "data", "options": {}}), "Telegram: riassunto, digest e avvisi")
+     {"operation": "write", "fileName": "={{ $json.path }}", "dataPropertyName": "data", "options": {}}), "Leggi storico voti")
+# voto negli store per mercato (Apple per paese + report di Google), con lo storico delle istantanee iOS
+collega(nodo("Leggi storico voti", "n8n-nodes-base.readWriteFile", 1, 1540, Y4 - 300,
+             {"fileSelector": "={{ $('Configurazione').first().json.output_dir + '/storico_voti.json' }}", "options": {}},
+             executeOnce=True, alwaysOutputData=True, onError="continueRegularOutput"), "Estrai storico voti")
+collega(nodo("Estrai storico voti", "n8n-nodes-base.extractFromFile", 1, 1760, Y4 - 300,
+             {"operation": "fromJson", "options": {}},
+             executeOnce=True, alwaysOutputData=True, onError="continueRegularOutput"), "Voto negli store")
+collega(nodo("Voto negli store", "n8n-nodes-base.code", 2, 1980, Y4 - 300, {"jsCode": codice("19_voto_store.js")}, onError="continueRegularOutput"), "Scrivi storico voti")
+collega(nodo("Scrivi storico voti", "n8n-nodes-base.readWriteFile", 1, 2200, Y4 - 300,
+             {"operation": "write", "fileName": "={{ $json.path }}", "dataPropertyName": "data", "options": {}}, onError="continueRegularOutput"),
+        "Telegram: riassunto, digest e avvisi")
 collega(nodo("Telegram: riassunto, digest e avvisi", "n8n-nodes-base.code", 2, 1760, Y4, {"jsCode": codice("15_telegram.js")}, onError="continueRegularOutput"), "Telegram configurato?")
 nodo("Telegram configurato?", "n8n-nodes-base.if", 2.2, 1980, Y4, {
     "conditions": {

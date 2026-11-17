@@ -2,28 +2,26 @@
 
 ## In sintesi
 
-Sono state analizzate 35 recensioni pubblicate tra il 02/09/2026 e il 06/11/2026. Il voto medio e' 2,97 su 5. Il 40% delle recensioni e' positivo, l'11% misto, il 46% negativo e il 3% neutro.
+Sono state analizzate 35 recensioni pubblicate tra il 02/09/2026 e il 06/11/2026. Il voto medio delle recensioni scritte è 2,97 su 5 (non è il voto dello store, che conta anche chi dà solo le stelle). Il 40% delle recensioni è positivo, l'11% misto, il 46% negativo e il 3% neutro.
 
 Per piattaforma (iOS e Android non si confrontano tra loro):
 
-- Android: 14 recensioni, voto medio 2,57, il 29% positive e il 57% negative; l'aspetto piu' criticato e' fatturazione e abbonamento.
-- iOS: 21 recensioni, voto medio 3,24, il 48% positive e il 38% negative; l'aspetto piu' criticato e' fatturazione e abbonamento.
+- Android: 14 recensioni, voto medio delle recensioni 2,57, il 29% positive e il 57% negative; l'aspetto più criticato è fatturazione e abbonamento.
+- iOS: 21 recensioni, voto medio delle recensioni 3,24, il 48% positive e il 38% negative; l'aspetto più criticato è fatturazione e abbonamento.
 
-Le recensioni dell'app mostrano un giudizio complessivamente diviso, con una parte significativa di utenti che apprezza l'usabilità e l'utilità, mentre molti criticano soprattutto la fatturazione e l'abbonamento. La grafica e i widget ricevono apprezzamenti, ma anche qualche critica, così come la condivisione e collaborazione che risultano aspetti controversi. I dati non mostrano cambiamenti significativi nel tempo.
+L'app riceve un giudizio complessivamente basso, con quasi metà delle recensioni negative e meno della metà positive. Gli utenti apprezzano soprattutto l'usabilità, l'utilità e la grafica con i widget. Le critiche più frequenti riguardano la fatturazione e l'abbonamento, seguiti da problemi di performance e stabilità e dalla condivisione e collaborazione. I cambiamenti nel tempo non mostrano variazioni significative.
 
-## Cosa apprezzano di piu'
+## Cosa apprezzano di più
 
 - **usabilità**: 5 recensioni su 35 ne danno un giudizio positivo (il 14% del totale); tra le 6 recensioni che ne parlano, i giudizi positivi sono l'83%.
 - **utilità**: 4 recensioni su 35 ne danno un giudizio positivo (l'11% del totale); tra le 5 recensioni che ne parlano, i giudizi positivi sono l'80%.
 - **grafica e widget**: 3 recensioni su 35 ne danno un giudizio positivo (il 9% del totale); tra le 4 recensioni che ne parlano, i giudizi positivi sono il 75%.
-- **condivisione e collaborazione**: 2 recensioni su 35 ne danno un giudizio positivo (il 6% del totale); tra le 4 recensioni che ne parlano, i giudizi positivi sono il 50%.
-- **sincronizzazione**: 1 recensioni su 35 ne danno un giudizio positivo (il 3% del totale); tra le 2 recensioni che ne parlano, i giudizi positivi sono il 50%.
 
-Gli utenti apprezzano soprattutto l'usabilità dell'app, trovandola facile da usare e ben progettata. Anche l'utilità è riconosciuta, con molti che trovano l'app funzionale per le loro esigenze. La grafica e i widget sono considerati piacevoli e utili, contribuendo a una buona esperienza d'uso.
+Gli aspetti più apprezzati dell'app sono l'usabilità, che convince la maggior parte di chi ne parla, e l'utilità, considerata positiva da molti utenti. Anche la grafica e i widget ricevono giudizi favorevoli da chi li menziona, contribuendo a un'esperienza visiva e funzionale gradita.
 
 > «Acquistato l'abbonamento, soldi scalati dalla carta, ma l'app non lo riconosce.» (Rae4265af5b)
 
-## Cosa criticano di piu'
+## Cosa criticano di più
 
 - **fatturazione e abbonamento**: 8 recensioni su 35 ne danno un giudizio negativo (il 23% del totale); tra le 8 recensioni che ne parlano, i giudizi negativi sono il 100%.
 - **performance e stabilità dell'app**: 4 recensioni su 35 ne danno un giudizio negativo (l'11% del totale); tra le 4 recensioni che ne parlano, i giudizi negativi sono il 100%.
@@ -31,53 +29,51 @@ Gli utenti apprezzano soprattutto l'usabilità dell'app, trovandola facile da us
 - **assistenza clienti**: 2 recensioni su 35 ne danno un giudizio negativo (il 6% del totale); tra le 2 recensioni che ne parlano, i giudizi negativi sono il 100%.
 - **versione gratuita**: 2 recensioni su 35 ne danno un giudizio negativo (il 6% del totale); tra le 2 recensioni che ne parlano, i giudizi negativi sono il 100%.
 
-Le critiche più frequenti riguardano la fatturazione e l'abbonamento, un aspetto che viene giudicato negativamente da tutti coloro che ne parlano, indicando un problema diffuso e condiviso. Altri aspetti criticati sono le performance e la stabilità dell'app, e la condivisione e collaborazione, che risultano meno frequentemente menzionati ma comunque problematici per chi li segnala. La differenza tra questi aspetti è che la fatturazione è criticata da molti utenti in assoluto, mentre gli altri aspetti sono criticati da una parte consistente di chi li cita.
+La fatturazione e l'abbonamento sono l'aspetto più criticato in assoluto, con tutte le recensioni che ne parlano che esprimono giudizi negativi. Altri aspetti come le performance e la stabilità dell'app sono criticati da un numero minore di recensioni, ma sempre con giudizi negativi unanimi. La condivisione e collaborazione è meno criticata in termini assoluti, ma metà di chi ne parla la valuta negativamente. La differenza sta nel fatto che la fatturazione è un problema ampiamente segnalato, mentre la condivisione divide maggiormente gli utenti che la menzionano.
 
 > «Dopo l'aggiornamento l'app si chiude appena apro una lista condivisa.» (R7267fe2309)
 
 ## Come cambiano le cose nel tempo
 
-Le recensioni sono raggruppate in periodi con abbastanza recensioni per un confronto. Sono stati fatti 0 confronti tra l'ultimo periodo e i precedenti: 0 risultano significativi dopo la correzione per confronti multipli.
+Le recensioni sono raggruppate in periodi con abbastanza recensioni per un confronto. Italiano e inglese sono confrontati separatamente, perché la quota di recensioni in inglese cambia nel tempo. Sono stati fatti 0 confronti tra l'ultimo periodo e i precedenti: 0 risultano significativi dopo la correzione per confronti multipli.
 
-Versioni dell'app su android:
+Versioni dell'app su Android (le ultime con abbastanza recensioni per le statistiche):
 
-- versione 3.1.0: 3 recensioni, troppe poche recensioni per avere statistiche.
-- versione 3.2.0: 7 recensioni, troppe poche recensioni per avere statistiche.
-- versione 3.2.1: 4 recensioni, troppe poche recensioni per avere statistiche.
+- altre 3 versioni (più vecchie o con poche recensioni): nel foglio Versioni dell'Excel.
 
-Versioni dell'app su ios:
+Versioni dell'app su iOS (le ultime con abbastanza recensioni per le statistiche):
 
-- versione 3.1.0: 8 recensioni, troppe poche recensioni per avere statistiche.
-- versione 3.2.0: 6 recensioni, troppe poche recensioni per avere statistiche.
-- versione 3.2.1: 7 recensioni, troppe poche recensioni per avere statistiche.
+- altre 3 versioni (più vecchie o con poche recensioni): nel foglio Versioni dell'Excel.
 
-Non sono emersi cambiamenti significativi nelle recensioni tra i periodi analizzati, quindi non si possono evidenziare variazioni importanti nel giudizio degli utenti nel tempo.
+Non sono emersi cambiamenti significativi nelle recensioni tra i periodi analizzati. La distribuzione di giudizi positivi e negativi rimane stabile, così come gli aspetti più apprezzati e criticati.
 
 Andamento per periodo:
 
-- Nel periodo 2026-09 / 2026-11 (35 recensioni) il voto medio e' 2,97 su 5, con il 40% di recensioni positive e il 46% di negative.
+- Nel periodo 2026-09 / 2026-11 (35 recensioni) il voto medio è 2,97 su 5, con il 40% di recensioni positive e il 46% di negative.
 
 ## Recensioni da guardare
 
-Le recensioni segnalate sono 17 (il 47% del totale): 4 con priorita' alta, 11 media e 2 bassa.
+Negli ultimi 14 giorni le recensioni da guardare sono 5: 3 con un problema preciso, di cui 0 con priorità alta.
+
+In tutto l'archivio le recensioni segnalate sono 17 (il 47% del totale): 4 con priorità alta, 11 media e 2 bassa.
 
 Controllo delle campagne coordinate: nessun gruppo di testi lunghi quasi identici e nessun picco anomalo di recensioni da 1 stella.
 
-- Rfe5d2c08d6 (2026-10-28, voto 1 su 5, priorita' alta): privacy e dati personali: L'utente dice che qualcuno è entrato nel suo account e ha cancellato tutte le liste.; voto molto basso (1 su 5)
-- Rd9156eb1ca (2026-10-20, voto 2 su 5, priorita' alta): addebiti e abbonamenti: L'utente dice che ha pagato due volte l'abbonamento e il rimborso è stato negato.; voto molto basso (2 su 5)
-- R107b66f0ac (2026-10-06, voto 1 su 5, priorita' alta): privacy e dati personali: L'utente dice che ha chiesto di cancellare account e dati ma continua a ricevere email.; voto molto basso (1 su 5)
-- R5def8d1939 (2026-09-05, voto 1 su 5, priorita' alta): addebiti e abbonamenti: L'utente dice che gli è stato addebitato l'abbonamento annuale dopo averlo disdetto.; reclamo non risolto: L'utente dice di aver scritto due volte all'assistenza senza ricevere risposta.; voto molto basso (1 su 5)
-- Rae4265af5b (2026-11-06, voto 1 su 5, priorita' media): acquisto pagato ma non ricevuto: L'utente dice che ha acquistato l'abbonamento ma l'app non lo riconosce.; reclamo non risolto: L'utente dice che l'assistenza non risponde.; voto molto basso (1 su 5)
-- Rcdf22c0ce8 (2026-11-05, voto 5 su 5, priorita' media): possibile testo manipolatorio rilevato dal guardrail (customRegex): verificare, esclusa dai conteggi
-- Rfff1f1c0a9 (2026-11-05, voto 2 su 5, priorita' media): acquisto pagato ma non ricevuto: L'utente dice che ha acquistato l'abbonamento, soldi scalati ma l'app non lo riconosce.; voto molto basso (2 su 5)
-- R795ef0b270 (2026-11-04, voto 1 su 5, priorita' media): acquisto pagato ma non ricevuto: L'utente dice che ha pagato ma risulta ancora con la versione gratuita.; voto molto basso (1 su 5)
+- Rfe5d2c08d6 (2026-10-28, voto 1 su 5, priorità alta): privacy e dati personali: L'utente dice che qualcuno è entrato nel suo account e ha cancellato tutte le liste; voto molto basso (1 su 5)
+- Rd9156eb1ca (2026-10-20, voto 2 su 5, priorità alta): addebiti e abbonamenti: L'utente dice che ha pagato due volte l'abbonamento e il rimborso è stato negato; voto molto basso (2 su 5)
+- R107b66f0ac (2026-10-06, voto 1 su 5, priorità alta): privacy e dati personali: L'utente dice che ha chiesto di cancellare account e dati ma continua a ricevere email; voto molto basso (1 su 5)
+- R5def8d1939 (2026-09-05, voto 1 su 5, priorità alta): addebiti e abbonamenti: L'utente dice che gli è stato addebitato l'abbonamento annuale dopo averlo disdetto; reclamo non risolto: L'utente dice di aver scritto due volte all'assistenza senza ricevere risposta; voto molto basso (1 su 5)
+- Rae4265af5b (2026-11-06, voto 1 su 5, priorità media): acquisto pagato ma non ricevuto: L'utente dice che ha acquistato l'abbonamento ma l'app non lo riconosce; reclamo non risolto: L'utente dice che l'assistenza non risponde; voto molto basso (1 su 5)
+- Rcdf22c0ce8 (2026-11-05, voto 5 su 5, priorità media): possibile testo manipolatorio rilevato dal guardrail (customRegex): verificare, esclusa dai conteggi
+- Rfff1f1c0a9 (2026-11-05, voto 2 su 5, priorità media): acquisto pagato ma non ricevuto: L'utente dice che ha acquistato l'abbonamento, soldi scalati ma l'app non lo riconosce; voto molto basso (2 su 5)
+- R795ef0b270 (2026-11-04, voto 1 su 5, priorità media): acquisto pagato ma non ricevuto: L'utente dice che ha pagato ma risulta ancora con la versione gratuita; voto molto basso (1 su 5)
 
-Le recensioni segnalate evidenziano problemi importanti legati alla privacy e ai dati personali, come accessi non autorizzati e difficoltà nella cancellazione dell'account. Ci sono anche segnalazioni di problemi con addebiti e abbonamenti, inclusi pagamenti doppi e mancati rimborsi. Questi temi meritano attenzione per migliorare la soddisfazione degli utenti.
+Tra le recensioni da guardare emergono problemi importanti legati alla privacy e ai dati personali, oltre a difficoltà con addebiti e abbonamenti. Alcuni utenti segnalano anche mancanza di risposta dall'assistenza, rendendo queste segnalazioni prioritarie per un intervento.
 
 > «Qualcuno e' entrato nel mio account e ha cancellato tutte le liste.» (Rfe5d2c08d6)
 
 ## Come sono stati ottenuti questi numeri
 
-Ogni recensione e' stata letta da un modello linguistico, nella sua lingua, che ne ha indicato il giudizio complessivo e il giudizio sugli aspetti di un elenco fisso. Tutti i numeri di questo testo sono conteggi calcolati dal sistema su quelle analisi; i cambiamenti nel tempo sono indicati solo quando superano la soglia statistica dopo la correzione per confronti multipli. Le segnalazioni seguono criteri fissati in anticipo e ognuna ha una frase di prova presa dalla recensione.
+Ogni recensione è stata letta da un modello linguistico, nella sua lingua, che ne ha indicato il giudizio complessivo e il giudizio sugli aspetti di un elenco fisso. Tutti i numeri di questo testo sono conteggi calcolati dal sistema su quelle analisi; i cambiamenti nel tempo sono indicati solo quando superano la soglia statistica dopo la correzione per confronti multipli. Le segnalazioni seguono criteri fissati in anticipo e ognuna ha una frase di prova presa dalla recensione.
 
-I commenti a parole e la scelta delle citazioni sono del modello; ogni citazione e' stata controllata parola per parola sulla recensione originale.
+I commenti a parole e la scelta delle citazioni sono del modello; ogni citazione è stata controllata parola per parola sulla recensione originale.

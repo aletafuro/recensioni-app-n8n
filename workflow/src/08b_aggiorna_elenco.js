@@ -38,9 +38,17 @@ let nuovoElenco = null;      // contenuto del file della nuova versione, se adot
 let lineaDiBase = null;      // linea di base da scrivere nell'elenco in uso, se mancava
 
 // --- linea di base: se la versione in uso non ce l'ha, si misura adesso
-if (tax.origine_aspetti === 'elenco fisso' && !tax.linea_di_base) {
-  const con = valide.filter((r) => (r.unmapped ?? []).length > 0).length;
-  lineaDiBase = { recensioni_con_temi_fuori_elenco: con, recensioni: valide.length, pct: Math.round((1000 * con) / valide.length) / 10, misurata_il: new Date().toISOString().slice(0, 10), giro: 'primo giro della versione ' + tax.versione_aspetti };
+// (dal 17/11 per piattaforma e lingua, senza i temi generici: la misura la fa l'Aggregazione; una linea di base
+// nel formato vecchio, unica per tutto l'archivio, si rimisura e resta scritta come «precedente»)
+if (tax.origine_aspetti === 'elenco fisso' && !tax.linea_di_base?.per_gruppo) {
+  lineaDiBase = {
+    per_gruppo: ea.misura_per_gruppo,
+    dati_fino_al: ea.dati_fino_al,
+    misurata_il: new Date().toISOString().slice(0, 10),
+    giro: 'primo giro della versione ' + tax.versione_aspetti + (tax.linea_di_base ? ' con la linea di base per piattaforma e lingua' : ''),
+    regola: 'gruppi piattaforma|lingua; temi generici esclusi; si confrontano poi solo le recensioni pubblicate dopo dati_fino_al',
+    precedente: tax.linea_di_base ?? null,
+  };
   rapporto.linea_di_base_misurata = lineaDiBase;
 }
 
@@ -57,6 +65,8 @@ if (tax.origine_aspetti !== 'elenco fisso') {
   rapporto.esito = 'non applicabile: gli aspetti di questo giro vengono dalla scoperta, non da un elenco fisso';
 } else if (!ea.da_rivedere && !cfg.forza_revisione_elenco) {
   rapporto.esito = 'nessun aggiornamento: il controllo non e\' scattato';
+} else if (cfg.aggiorna_elenco === false) {
+  rapporto.esito = 'aggiornamento sospeso per questo giro (AGGIORNA_ELENCO=false): il controllo e\' scritto qui sopra, decide una persona';
 } else {
   // --- temi candidati: quelli del controllo, oppure i piu' frequenti fuori elenco
   const conteggio = new Map();

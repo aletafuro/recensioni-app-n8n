@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generato_il": "2026-11-16T20:20:54.185Z",
+    "generato_il": "2026-11-17T14:18:12.273Z",
     "modello": "gpt-4.1-mini",
     "file_input": "/files/input/recensioni_inventate.csv",
     "righe_nel_file": 36,
@@ -18,16 +18,42 @@
       "versione": "v1",
       "origine": "elenco fisso",
       "recensioni_con_temi_fuori_elenco_pct": 17.1,
-      "confronto_con_la_linea_di_base": {
-        "pct_oggi": 17.1,
-        "pct_linea_di_base": 17.1,
-        "z": 0,
-        "sopra_la_linea_di_base": false
+      "misura_per_gruppo": {
+        "ios|it": {
+          "recensioni": 21,
+          "recensioni_con_temi_fuori_elenco": 3,
+          "pct": 14.3
+        },
+        "android|it": {
+          "recensioni": 14,
+          "recensioni_con_temi_fuori_elenco": 3,
+          "pct": 21.4
+        }
       },
+      "dati_fino_al": "2026-11-06",
+      "linea_di_base_da_misurare": false,
+      "confronto_con_la_linea_di_base": [
+        {
+          "gruppo": "ios|it",
+          "recensioni_dopo_la_linea_di_base": 0,
+          "pct_dopo": null,
+          "pct_linea_di_base": 14.3,
+          "sopra_la_linea_di_base": false,
+          "esito": "pochi dati: servono almeno 100 recensioni pubblicate dopo il 2026-11-06"
+        },
+        {
+          "gruppo": "android|it",
+          "recensioni_dopo_la_linea_di_base": 0,
+          "pct_dopo": null,
+          "pct_linea_di_base": 21.4,
+          "sopra_la_linea_di_base": false,
+          "esito": "pochi dati: servono almeno 100 recensioni pubblicate dopo il 2026-11-06"
+        }
+      ],
       "soglia_temi_candidati_recensioni": 5,
       "temi_candidati": [],
       "da_rivedere": false,
-      "regola": "da rivedere se la quota di recensioni con temi fuori elenco supera la linea di base di almeno 2 errori standard, oppure se un tema fuori elenco compare in almeno il 2% delle recensioni"
+      "regola": "temi generici esclusi (giudizi senza argomento); per piattaforma e lingua, le recensioni pubblicate dopo la data della linea di base contro la linea di base (almeno 100 recensioni): da rivedere se la quota con temi fuori elenco supera la linea di base di almeno 2 errori standard e di almeno 5 punti, oppure se un tema fuori elenco compare in almeno il 2% delle recensioni"
     },
     "granularita": "mese",
     "regola_periodi": "unita' di tempo (mese) di pubblicazione unite finche' ogni periodo ha almeno 50 recensioni",
@@ -671,7 +697,19 @@
           ],
           "saldo": 0.6
         }
-      }
+      },
+      "per_lingua": [
+        {
+          "lingua": "it",
+          "recensioni": 35,
+          "pct_negative": 45.7
+        },
+        {
+          "lingua": "en",
+          "recensioni": 0,
+          "pct_negative": null
+        }
+      ]
     }
   ],
   "andamento": [],
@@ -915,7 +953,8 @@
           "sotto_il_minimo": true
         }
       ],
-      "andamento_ultima_versione": []
+      "andamento_ultima_versione": [],
+      "negative_ultima_versione": null
     },
     {
       "piattaforma": "ios",
@@ -1167,7 +1206,8 @@
           "sotto_il_minimo": true
         }
       ],
-      "andamento_ultima_versione": []
+      "andamento_ultima_versione": [],
+      "negative_ultima_versione": null
     }
   ],
   "serie_annuale": [
@@ -1437,88 +1477,29 @@
   "controllo_campagne": {
     "regole": {
       "testi_quasi_identici": "almeno 8 parole; somiglianza di Jaccard sulle terne di parole >= 0,8; al massimo 14 giorni di distanza",
-      "picchi_una_stella": "recensioni da 1 stella al giorno contro il ritmo degli altri giorni (Poisson, una coda), Benjamini-Hochberg FDR 10% su 66 giorni; solo giorni con quota di 1 stella sopra la media (27.8%)"
+      "picchi_una_stella": "per piattaforma: recensioni da 1 stella al giorno contro il ritmo dei 30 giorni prima e dopo (Poisson, una coda), Benjamini-Hochberg FDR 10% su 129 giorni-piattaforma; solo giorni con almeno 3 recensioni da 1 stella e quota di 1 stella sopra quella dei giorni intorno; giorni con meno di 10 recensioni intorno non messi alla prova (pochi dati)"
     },
     "recensioni_controllate": 36,
     "testi_quasi_identici": [],
-    "giorni_controllati": 66,
-    "una_stella_al_giorno_in_media": 0.15,
+    "giorni_controllati": 129,
+    "una_stella_al_giorno_in_media": 0.08,
     "picchi_una_stella": [],
-    "giorni_piu_vicini_alla_soglia": [
-      {
-        "data": "2026-09-05",
-        "una_stella": 1,
-        "attese_una_stella": 0.14,
-        "p_value": 0.129
-      },
-      {
-        "data": "2026-09-16",
-        "una_stella": 1,
-        "attese_una_stella": 0.14,
-        "p_value": 0.129
-      },
-      {
-        "data": "2026-09-25",
-        "una_stella": 1,
-        "attese_una_stella": 0.14,
-        "p_value": 0.129
-      }
-    ],
+    "giorni_piu_vicini_alla_soglia": [],
     "esito": "nessun segnale"
   },
   "avviso_a_grappolo": {
-    "regola": "almeno 3 recensioni con la stessa segnalazione, stessa piattaforma e stessa versione, pubblicate dal 2026-10-31 al 2026-11-06 (7 giorni); escluse le sospette e i duplicati; due recensioni con lo stesso titolo e un testo contenuto nell'altro contano una volta sola (probabilmente la stessa persona)",
-    "dal": "2026-10-31",
-    "al": "2026-11-06",
-    "grappoli": [
-      {
-        "piattaforma": "android",
-        "versione": "3.2.0",
-        "categoria": "purchase_not_received",
-        "nome_categoria": "acquisto pagato ma non ricevuto",
-        "recensioni": [
-          {
-            "review_id": "R758dc1ec4b",
-            "chiave_store": "android|DEMO-ANDROID-031",
-            "data": "2026-11-03",
-            "voto": 1,
-            "sintesi": "L'utente dice che ha pagato la versione Pro ma le funzioni non si sono sbloccate.",
-            "evidenza": "Ho pagato la versione Pro ma le funzioni non si sono sbloccate."
-          },
-          {
-            "review_id": "R795ef0b270",
-            "chiave_store": "android|DEMO-ANDROID-032",
-            "data": "2026-11-04",
-            "voto": 1,
-            "sintesi": "L'utente dice che ha pagato ma risulta ancora con la versione gratuita.",
-            "evidenza": "Pagamento andato a buon fine su Google Play, ma risulto ancora con la versione gratuita."
-          },
-          {
-            "review_id": "Rae4265af5b",
-            "chiave_store": "android|DEMO-ANDROID-034",
-            "data": "2026-11-06",
-            "voto": 1,
-            "sintesi": "L'utente dice che ha acquistato l'abbonamento ma l'app non lo riconosce.",
-            "evidenza": "Acquistato l'abbonamento, soldi scalati dalla carta, ma l'app non lo riconosce.",
-            "contata_anche": [
-              "Rfff1f1c0a9"
-            ]
-          }
-        ],
-        "quante": 3,
-        "dal": "2026-11-03",
-        "al": "2026-11-06",
-        "versione_piu_recente_vista": "3.2.1",
-        "e_la_versione_piu_recente": false
-      }
-    ]
+    "regola": "almeno 3 recensioni con la stessa segnalazione, stessa piattaforma e stessa versione, pubblicate dal 2026-11-11 al 2026-11-17 (7 giorni); escluse le sospette e i duplicati; due recensioni con lo stesso titolo e un testo contenuto nell'altro contano una volta sola (probabilmente la stessa persona)",
+    "dal": "2026-11-11",
+    "al": "2026-11-17",
+    "grappoli": []
   },
   "periodi_di_calendario": {
-    "regola": "quota di recensioni negative di ogni periodo contro il periodo subito prima; test su due proporzioni solo con almeno 20 recensioni in tutti e due i periodi, correzione Benjamini-Hochberg (FDR 10%) per serie; periodi di due settimane da lunedi' a domenica, a partire dal 6/1/2020; il periodo in corso e' incompleto",
-    "oggi": "2026-11-06",
+    "regola": "serie separate per piattaforma e per lingua (italiano, inglese); quota di recensioni negative di ogni periodo contro il periodo subito prima; test su due proporzioni solo con almeno 20 recensioni in tutti e due i periodi, correzione Benjamini-Hochberg (FDR 10%) per serie; periodi di due settimane da lunedi' a domenica, a partire dal 6/1/2020; il periodo in corso e' incompleto",
+    "oggi": "2026-11-17",
     "mesi": [
       {
         "piattaforma": "android",
+        "lingua": "it",
         "periodi": [
           {
             "periodo": "2026-09",
@@ -1572,6 +1553,7 @@
       },
       {
         "piattaforma": "ios",
+        "lingua": "it",
         "periodi": [
           {
             "periodo": "2026-09",
@@ -1627,6 +1609,7 @@
     "due_settimane": [
       {
         "piattaforma": "android",
+        "lingua": "it",
         "periodi": [
           {
             "periodo": "2026-08-24 / 2026-09-06",
@@ -1714,7 +1697,7 @@
           },
           {
             "periodo": "2026-11-02 / 2026-11-15",
-            "in_corso": true,
+            "in_corso": false,
             "dati_solo_dal": null,
             "recensioni": 5,
             "voto_medio": 1.8,
@@ -1729,11 +1712,30 @@
               "differenza_punti": 30,
               "esito": "pochi dati"
             }
+          },
+          {
+            "periodo": "2026-11-16 / 2026-11-29",
+            "in_corso": true,
+            "dati_solo_dal": null,
+            "recensioni": 0,
+            "voto_medio": null,
+            "positive": 0,
+            "negative": 0,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": null,
+            "confronto": {
+              "periodo_prima": "2026-11-02 / 2026-11-15",
+              "pct_negative_prima": 80,
+              "differenza_punti": null,
+              "esito": "pochi dati"
+            }
           }
         ]
       },
       {
         "piattaforma": "ios",
+        "lingua": "it",
         "periodi": [
           {
             "periodo": "2026-08-24 / 2026-09-06",
@@ -1821,7 +1823,7 @@
           },
           {
             "periodo": "2026-11-02 / 2026-11-15",
-            "in_corso": true,
+            "in_corso": false,
             "dati_solo_dal": null,
             "recensioni": 1,
             "voto_medio": 2,
@@ -1834,6 +1836,24 @@
               "periodo_prima": "2026-10-19 / 2026-11-01",
               "pct_negative_prima": 33.3,
               "differenza_punti": 66.7,
+              "esito": "pochi dati"
+            }
+          },
+          {
+            "periodo": "2026-11-16 / 2026-11-29",
+            "in_corso": true,
+            "dati_solo_dal": null,
+            "recensioni": 0,
+            "voto_medio": null,
+            "positive": 0,
+            "negative": 0,
+            "miste": 0,
+            "neutre": 0,
+            "pct_negative": null,
+            "confronto": {
+              "periodo_prima": "2026-11-02 / 2026-11-15",
+              "pct_negative_prima": 100,
+              "differenza_punti": null,
               "esito": "pochi dati"
             }
           }

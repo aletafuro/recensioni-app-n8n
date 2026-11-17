@@ -109,6 +109,14 @@ const classifiche = {
   piu_criticati_per_tasso: numera(classifica(statTotali, 'pct_negative_su_menzioni', (s) => s.menzioni >= minM).map(conNeg)),
 };
 
+// --- lingue nei confronti nel tempo (17/11): l'italiano e l'inglese restano SEMPRE separati, come iOS e Android.
+// Se la quota di recensioni in inglese cresce nel tempo e l'inglese e' meno negativo (come nei dati veri dell'autrice),
+// un confronto con tutte le lingue insieme scambierebbe il cambio di composizione per un miglioramento.
+// Le altre lingue sono poche: restano nei conteggi ma non nei confronti nel tempo.
+const LINGUE_TEMPO = ['it', 'en'];
+const inLingua = (lista, l) => lista.filter((r) => r.language === l);
+const negOMisteN = (l) => l.filter((r) => r.overall_sentiment === 'negative' || r.overall_sentiment === 'mixed').length;
+
 // --- periodi
 // unita' di tempo scelta in configurazione (anno, trimestre o mese), dalla data
 // di pubblicazione. Le unita' con poche recensioni si uniscono alle successive
@@ -171,6 +179,10 @@ const periodi = periodiGrezzi.map((p) => {
     piu_apprezzati: classifica(stat, 'positive').slice(0, 5).map((s) => s.aspect),
     piu_criticati: classifica(stat, 'negative').slice(0, 5).map((s) => s.aspect),
     aspetti: stat,
+    per_lingua: LINGUE_TEMPO.map((l) => {
+      const ll = inLingua(lista, l);
+      return { lingua: l, recensioni: ll.length, pct_negative: pct(ll.filter((r) => r.overall_sentiment === 'negative').length, ll.length) };
+    }),
   };
 });
 
@@ -218,9 +230,11 @@ const andamento = [];
 if (periodi.length >= 2) {
   const ultimo = periodi[periodi.length - 1];
   const penultimo = periodi[periodi.length - 2];
-  const listaUltimo = valide.filter((r) => nelPeriodo(r, ultimo));
-  const listaPrima = valide.filter((r) => idx(r) >= 0 && idx(r) < ultimo.i0);
-  const listaPenultimo = valide.filter((r) => nelPeriodo(r, penultimo));
+  // un confronto per lingua (stessi periodi di calendario); confronta() salta le liste sotto 30 recensioni
+  for (const lingua of LINGUE_TEMPO) {
+  const listaUltimo = valide.filter((r) => r.language === lingua && nelPeriodo(r, ultimo));
+  const listaPrima = valide.filter((r) => r.language === lingua && idx(r) >= 0 && idx(r) < ultimo.i0);
+  const listaPenultimo = valide.filter((r) => r.language === lingua && nelPeriodo(r, penultimo));
   const confronti = [
     { contro: 'tutti_i_periodi_precedenti', etichetta: `${periodi[0].dal} / ${penultimo.al}`, lista: listaPrima },
     { contro: 'periodo_precedente', etichetta: penultimo.periodo, lista: listaPenultimo },
@@ -228,6 +242,9 @@ if (periodi.length >= 2) {
   for (const c of confronti) {
     for (const x of confronta(listaUltimo, c.lista)) {
       andamento.push({
+        lingua,
+        recensioni_ultimo_periodo: listaUltimo.length,
+        recensioni_periodo_di_confronto: c.lista.length,
         aspect: x.aspect,
         nome: x.nome,
         misura: x.misura,
@@ -242,13 +259,14 @@ if (periodi.length >= 2) {
       });
     }
   }
-  benjaminiHochberg(andamento);
+  }
+  benjaminiHochberg(andamento); // correzione su tutti i confronti insieme, delle due lingue
 }
 
 // --- per piattaforma e per versione dell'app
 // iOS e Android restano sempre separati: le versioni sono numerate in modo
 // indipendente sulle due piattaforme. Per ogni piattaforma si confronta l'ultima
-// versione con abbastanza recensioni con tutte le versioni precedenti.
+// versione con abbastanza recensioni con la versione prima (anch'essa con abbastanza recensioni).
 function ordineVersione(a, b) {
   const pa = String(a).split('.').map((x) => parseInt(x, 10));
   const pb = String(b).split('.').map((x) => parseInt(x, 10));
@@ -277,12 +295,25 @@ const perPiattaforma = [...new Set(valide.map((r) => r.piattaforma ?? 'non indic
     };
   });
   const conDati = versioni.filter((v) => !v.sotto_il_minimo);
-  let andamentoVersioni = [];
+  // ultima versione con abbastanza recensioni contro la versione PRIMA (17/11: prima si confrontava con tutte le
+  // versioni dal 2019, che non dice se l'ultima va peggio di quella che ha sostituito)
+  let andamentoVersioni = [], negativeUltimaVersione = null;
   if (conDati.length >= 2) {
-    const ultima = conDati[conDati.length - 1].versione;
-    const lu = lista.filter((r) => r.versione === ultima);
-    const lp = lista.filter((r) => r.versione && ordineVersione(r.versione, ultima) < 0);
-    andamentoVersioni = benjaminiHochberg(confronta(lu, lp).map((x) => ({ ...x, ultima_versione: ultima, confrontata_con: 'tutte le versioni precedenti' })));
+    const ultima = conDati[conDati.length - 1].versione, precedente = conDati[conDati.length - 2].versione;
+    // per lingua (17/11): due versioni possono avere quote di inglese diverse
+    const perL = LINGUE_TEMPO.map((lingua) => ({ lingua, lu: lista.filter((r) => r.versione === ultima && r.language === lingua), lp: lista.filter((r) => r.versione === precedente && r.language === lingua) }));
+    andamentoVersioni = benjaminiHochberg(perL.flatMap(({ lingua, lu, lp }) => confronta(lu, lp).map((x) => ({ ...x, lingua, ultima_versione: ultima, confrontata_con: `la versione ${precedente}` }))));
+    // quota di recensioni negative o miste: un test per lingua, solo con almeno 30 recensioni per versione;
+    // correzione di Benjamini-Hochberg sui test delle due lingue
+    const testNeg = perL.map(({ lingua, lu, lp }) => {
+      const x = { lingua, recensioni_ultima: lu.length, recensioni_prima: lp.length, pct_negative_ultima: pct(negOMisteN(lu), lu.length), pct_negative_prima: pct(negOMisteN(lp), lp.length) };
+      if (lu.length < 30 || lp.length < 30) return { ...x, esito: 'pochi dati' };
+      const t = dueProporzioni(negOMisteN(lu), lu.length, negOMisteN(lp), lp.length);
+      return { ...x, p_value: Math.round(10000 * t.p_value) / 10000, differenza_punti: Math.round(10 * (x.pct_negative_ultima - x.pct_negative_prima)) / 10 };
+    });
+    benjaminiHochberg(testNeg.filter((x) => x.p_value !== undefined));
+    for (const x of testNeg) if (x.p_value !== undefined) x.esito = x.significativo ? 'oltre il rumore' : 'entro il rumore';
+    negativeUltimaVersione = { ultima_versione: ultima, versione_prima: precedente, per_lingua: testNeg };
   }
   return {
     piattaforma: pf,
@@ -294,6 +325,7 @@ const perPiattaforma = [...new Set(valide.map((r) => r.piattaforma ?? 'non indic
     aspetti: stat,
     versioni,
     andamento_ultima_versione: andamentoVersioni,
+    negative_ultima_versione: negativeUltimaVersione,
   };
 });
 
@@ -308,14 +340,15 @@ const conteggioLingue = new Map();
 for (const r of valide) conteggioLingue.set(r.language, (conteggioLingue.get(r.language) ?? 0) + 1);
 const perLingua = [...conteggioLingue].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([lingua, n]) => {
   const lista = valide.filter((r) => r.language === lingua);
-  const altre = valide.filter((r) => r.language !== lingua);
+  // «und» (lingua non riconosciuta: solo emoji, «Top»...) non e' una lingua: resta fuori dai confronti (17/11)
+  const altre = valide.filter((r) => r.language !== lingua && r.language !== 'und');
   const base = {
     lingua,
     recensioni: n,
     voto_medio: media(lista.filter((r) => r.rating !== null).map((r) => r.rating)),
     sentiment_complessivo: contaSentiment(lista),
   };
-  if (n < MIN_LINGUA || altre.length < 30) return { ...base, confronto_con_le_altre_lingue: null };
+  if (lingua === 'und' || n < MIN_LINGUA || altre.length < 30) return { ...base, confronto_con_le_altre_lingue: null };
   const k1 = negativeOMiste(lista);
   const k0 = negativeOMiste(altre);
   const t = dueProporzioni(k1, n, k0, altre.length);
@@ -402,16 +435,54 @@ const date = valide.map((r) => r.published_date).filter(Boolean).sort();
 // (test su due proporzioni, regola dei 2 errori standard) e si cercano i temi fuori
 // elenco abbastanza frequenti da meritare un aspetto (almeno il 2% delle recensioni).
 // Se una delle due condizioni scatta, l'elenco va rivisto da una persona (nuova versione).
+// Dal 17/11 (dopo l'arrivo delle recensioni in inglese e la verifica con Fable):
+// - i temi GENERICI non contano: giudizi senza argomento («general satisfaction», «great site», «bello», «ok»),
+//   riconosciuti perche' TUTTE le loro parole sono parole di giudizio; «chat cost» o «bots» restano temi;
+// - una linea di base per piattaforma e lingua (italiano, inglese), misurata su tutto l'archivio fino a una data;
+// - si controllano solo le recensioni pubblicate DOPO quella data (non l'archivio, che contiene la linea di base),
+//   e solo con almeno 100 recensioni nel gruppo; «sopra» = almeno 2 errori standard E almeno 5 punti in piu'.
+const PAROLE_DI_GIUDIZIO = new Set(('general overall generic satisfaction dissatisfaction satisfied impression impressions initial early first ' +
+  'positive negative comment comments short text evaluation recommendation recommend recommended exclamation good great nice cool wow ' +
+  'amazing awesome excellent fantastic perfect best love it ok okay so far interesting interest app application site website bello bella ' +
+  'top carino carina fantastico fantastica simpatico simpatica ottimo ottima buono buona hope expectation expectations gratitude thanks ' +
+  'experience new user users potential enjoyment emoji uncertainty days day quality feedback opinion review rating stars star ' +
+  'praise fun funny like liked enjoy enjoying').split(' '));
+const temaGenerico = (t) => { const w = String(t).toLowerCase().split(/[^a-zàèéìòù]+/).filter(Boolean); return w.length > 0 && w.every((x) => PAROLE_DI_GIUDIZIO.has(x)); };
+const temiVeri = (r) => (r.unmapped ?? []).filter((t) => !temaGenerico(t));
 const elencoAspetti = (() => {
-  const conFuori = valide.filter((r) => (r.unmapped ?? []).length > 0).length;
-  const base = tax.linea_di_base;
+  const SCARTO_MINIMO = 5, MIN_DOPO = 100;
+  const gruppoDi = (r) => `${r.piattaforma ?? 'non indicata'}|${r.language}`;
+  const conFuori = valide.filter((r) => temiVeri(r).length > 0).length;
+  const datiFinoAl = String(date[date.length - 1] ?? '').slice(0, 10);
+  // misura di oggi per gruppo, su tutto l'archivio: diventa la linea di base quando manca (la scrive il nodo dopo)
+  const misura = {};
+  for (const r of valide) {
+    if (!LINGUE_TEMPO.includes(r.language)) continue;
+    const g = gruppoDi(r);
+    misura[g] ??= { recensioni: 0, recensioni_con_temi_fuori_elenco: 0 };
+    misura[g].recensioni++;
+    if (temiVeri(r).length) misura[g].recensioni_con_temi_fuori_elenco++;
+  }
+  for (const m of Object.values(misura)) m.pct = pct(m.recensioni_con_temi_fuori_elenco, m.recensioni);
+  const base = tax.linea_di_base?.per_gruppo ? tax.linea_di_base : null;
   let confronto = null;
-  if (base?.recensioni) {
-    const t = dueProporzioni(conFuori, N, base.recensioni_con_temi_fuori_elenco, base.recensioni);
-    confronto = { pct_oggi: pct(conFuori, N), pct_linea_di_base: base.pct, z: t.z, sopra_la_linea_di_base: t.z >= 2 };
+  if (base) {
+    confronto = Object.entries(base.per_gruppo).map(([g, b]) => {
+      const dopo = valide.filter((r) => gruppoDi(r) === g && r.published_date && String(r.published_date).slice(0, 10) > base.dati_fino_al);
+      const con = dopo.filter((r) => temiVeri(r).length).length;
+      const c = { gruppo: g, recensioni_dopo_la_linea_di_base: dopo.length, pct_dopo: pct(con, dopo.length), pct_linea_di_base: b.pct, sopra_la_linea_di_base: false };
+      if (dopo.length < MIN_DOPO) c.esito = `pochi dati: servono almeno ${MIN_DOPO} recensioni pubblicate dopo il ${base.dati_fino_al}`;
+      else {
+        const t = dueProporzioni(con, dopo.length, b.recensioni_con_temi_fuori_elenco, b.recensioni);
+        c.z = t.z;
+        c.sopra_la_linea_di_base = t.z >= 2 && c.pct_dopo - b.pct >= SCARTO_MINIMO;
+        c.esito = c.sopra_la_linea_di_base ? 'sopra la linea di base' : 'nella norma';
+      }
+      return c;
+    });
   }
   const conteggio = new Map();
-  for (const r of valide) for (const u of new Set(r.unmapped ?? [])) conteggio.set(u, (conteggio.get(u) ?? 0) + 1);
+  for (const r of valide) for (const u of new Set(temiVeri(r))) conteggio.set(u, (conteggio.get(u) ?? 0) + 1);
   const soglia = Math.max(5, Math.ceil(0.02 * N));
   const candidati = [...conteggio].filter(([, n]) => n >= soglia).sort((a, b) => b[1] - a[1])
     .map(([tema, n]) => ({ tema, recensioni: n, pct: pct(n, N) }));
@@ -420,11 +491,14 @@ const elencoAspetti = (() => {
     versione: tax.versione_aspetti,
     origine: tax.origine_aspetti,
     recensioni_con_temi_fuori_elenco_pct: pct(conFuori, N),
+    misura_per_gruppo: misura,
+    dati_fino_al: datiFinoAl,
+    linea_di_base_da_misurare: !base,
     confronto_con_la_linea_di_base: confronto,
     soglia_temi_candidati_recensioni: soglia,
     temi_candidati: candidati,
-    da_rivedere: fisso && (!!confronto?.sopra_la_linea_di_base || candidati.length > 0),
-    regola: "da rivedere se la quota di recensioni con temi fuori elenco supera la linea di base di almeno 2 errori standard, oppure se un tema fuori elenco compare in almeno il 2% delle recensioni",
+    da_rivedere: fisso && ((confronto ?? []).some((c) => c.sopra_la_linea_di_base) || candidati.length > 0),
+    regola: "temi generici esclusi (giudizi senza argomento); per piattaforma e lingua, le recensioni pubblicate dopo la data della linea di base contro la linea di base (almeno 100 recensioni): da rivedere se la quota con temi fuori elenco supera la linea di base di almeno 2 errori standard e di almeno 5 punti, oppure se un tema fuori elenco compare in almeno il 2% delle recensioni",
   };
 })();
 
@@ -435,11 +509,14 @@ const elencoAspetti = (() => {
 // Qui si cercano:
 // A. testi quasi identici: almeno 8 parole, somiglianza di Jaccard sulle terne di parole
 //    >= 0,8, pubblicati a non piu' di 14 giorni di distanza;
-// B. picchi di recensioni da 1 stella: per ogni giorno, il numero di recensioni da 1 stella
-//    contro il ritmo degli altri giorni (test di Poisson a una coda), correzione
-//    Benjamini-Hochberg (FDR 10%) su tutti i giorni; conta come picco solo se anche la quota
-//    di 1 stella del giorno supera quella media (un giorno con tante recensioni di ogni voto,
-//    per esempio dopo un aggiornamento, non e' una campagna).
+// B. picchi di recensioni da 1 stella: per ogni piattaforma e ogni giorno, il numero di recensioni da 1 stella
+//    contro il ritmo LOCALE (i 30 giorni prima e i 30 dopo, escluso il giorno; test di Poisson a una
+//    coda), correzione Benjamini-Hochberg (FDR 10%) su tutti i giorni; conta come picco solo con almeno
+//    3 recensioni da 1 stella e se anche la quota di 1 stella del giorno supera quella dei giorni intorno
+//    (un giorno con tante recensioni di ogni voto, per esempio dopo un aggiornamento, non e' una campagna).
+//    Correzione del 17/11: prima il ritmo era la media di TUTTO l'archivio e di tutte e due le piattaforme;
+//    con lo storico Android (2019-2026, volumi cresciuti molto) segnava 16 «picchi», tutti negli anni con
+//    piu' recensioni: il confronto era con un ritmo di anni prima, non con quello del momento.
 // Il controllo segnala, non esclude: decide chi legge.
 const campagne = (() => {
   const grezze = $('Recensioni pronte').all().map((i) => i.json).filter((r) => !r.duplicato_di && !r.vuota);
@@ -471,50 +548,70 @@ const campagne = (() => {
     };
   }).sort((a, b) => b.recensioni - a.recensioni);
 
-  // B. picchi di recensioni da 1 stella
-  const conData = grezze.filter((r) => r.published_date && r.rating !== null);
-  const perGiorno = new Map();
-  for (const r of conData) {
-    const g = giorno(r.published_date);
-    const x = perGiorno.get(g) ?? { tutte: 0, una: 0 };
-    x.tutte++; if (r.rating === ctx.voto.minimo) x.una++;
-    perGiorno.set(g, x);
-  }
-  const giorni = [...perGiorno.keys()];
-  const primo = Math.min(...giorni), ultimo = Math.max(...giorni);
-  const nGiorni = ultimo - primo + 1;
-  const totUna = conData.filter((r) => r.rating === ctx.voto.minimo).length;
-  const quotaMedia = conData.length ? totUna / conData.length : 0;
+  // B. picchi di recensioni da 1 stella (per piattaforma, contro il ritmo locale)
+  const FINESTRA = 30, MIN_UNA = 3, MIN_INTORNO = 10; // sotto 10 recensioni intorno: pochi dati, il giorno non si mette alla prova
   const codaPoisson = (k, l) => { // P(X >= k) con X ~ Poisson(l)
     if (k <= 0) return 1;
+    if (l <= 0) return 0;
     let termine = Math.exp(-l), somma = termine;
     for (let i = 1; i < k; i++) { termine *= l / i; somma += termine; }
     return Math.max(0, 1 - somma);
   };
+  const conData = grezze.filter((r) => r.published_date && r.rating !== null);
   const test = [];
-  for (let g = primo; g <= ultimo; g++) {
-    const x = perGiorno.get(g) ?? { tutte: 0, una: 0 };
-    const atteso = nGiorni > 1 ? (totUna - x.una) / (nGiorni - 1) : 0; // ritmo degli altri giorni
-    test.push({ data: new Date(g * 86400000).toISOString().slice(0, 10), una_stella: x.una, recensioni_del_giorno: x.tutte, attese_una_stella: Math.round(100 * atteso) / 100, p_value: codaPoisson(x.una, atteso) });
+  let nGiorni = 0;
+  for (const pf of [...new Set(conData.map((r) => r.piattaforma ?? 'non indicata'))].sort()) {
+    const perGiorno = new Map();
+    for (const r of conData.filter((x) => (x.piattaforma ?? 'non indicata') === pf)) {
+      const g = giorno(r.published_date);
+      const x = perGiorno.get(g) ?? { tutte: 0, una: 0 };
+      x.tutte++; if (r.rating === ctx.voto.minimo) x.una++;
+      perGiorno.set(g, x);
+    }
+    const giorni = [...perGiorno.keys()];
+    const primo = Math.min(...giorni), ultimo = Math.max(...giorni);
+    nGiorni += ultimo - primo + 1;
+    // somme cumulate per contare in fretta le recensioni dei giorni intorno
+    const cumUna = [0], cumTutte = [0];
+    for (let g = primo; g <= ultimo; g++) {
+      const x = perGiorno.get(g) ?? { tutte: 0, una: 0 };
+      cumUna.push(cumUna[cumUna.length - 1] + x.una);
+      cumTutte.push(cumTutte[cumTutte.length - 1] + x.tutte);
+    }
+    const somma = (c, a, b) => c[b - primo + 1] - c[a - primo]; // giorni da a a b compresi
+    for (let g = primo; g <= ultimo; g++) {
+      const x = perGiorno.get(g) ?? { tutte: 0, una: 0 };
+      const a = Math.max(primo, g - FINESTRA), b = Math.min(ultimo, g + FINESTRA);
+      const giorniIntorno = b - a; // la finestra senza il giorno stesso
+      const unaIntorno = somma(cumUna, a, b) - x.una, tutteIntorno = somma(cumTutte, a, b) - x.tutte;
+      const atteso = giorniIntorno > 0 ? unaIntorno / giorniIntorno : 0;
+      test.push({
+        piattaforma: pf, data: new Date(g * 86400000).toISOString().slice(0, 10), una_stella: x.una, recensioni_del_giorno: x.tutte,
+        attese_una_stella: Math.round(100 * atteso) / 100, quota_una_stella_intorno: tutteIntorno ? unaIntorno / tutteIntorno : 0,
+        p_value: tutteIntorno >= MIN_INTORNO ? codaPoisson(x.una, atteso) : 1,
+      });
+    }
   }
   const ord = [...test].sort((a, b) => a.p_value - b.p_value);
   let soglia = -1;
   ord.forEach((x, i) => { if (x.p_value <= ((i + 1) / ord.length) * 0.1) soglia = i; });
   ord.forEach((x, i) => { x.significativo_dopo_correzione = i <= soglia; });
-  const picchi = test.filter((x) => x.significativo_dopo_correzione && x.una_stella / x.recensioni_del_giorno > quotaMedia)
-    .map((x) => ({ ...x, quota_una_stella_del_giorno: pct(x.una_stella, x.recensioni_del_giorno), p_value: Number(x.p_value.toPrecision(3)) }));
+  const picchi = test.filter((x) => x.significativo_dopo_correzione && x.una_stella >= MIN_UNA && x.una_stella / x.recensioni_del_giorno > x.quota_una_stella_intorno)
+    .map((x) => ({ ...x, quota_una_stella_del_giorno: pct(x.una_stella, x.recensioni_del_giorno), quota_una_stella_intorno: pct(Math.round(1000 * x.quota_una_stella_intorno), 1000), p_value: Number(x.p_value.toPrecision(3)) }));
+  const totUna = conData.filter((r) => r.rating === ctx.voto.minimo).length;
 
   return {
     regole: {
       testi_quasi_identici: 'almeno 8 parole; somiglianza di Jaccard sulle terne di parole >= 0,8; al massimo 14 giorni di distanza',
-      picchi_una_stella: `recensioni da ${ctx.voto.minimo} stella al giorno contro il ritmo degli altri giorni (Poisson, una coda), Benjamini-Hochberg FDR 10% su ${nGiorni} giorni; solo giorni con quota di ${ctx.voto.minimo} stella sopra la media (${pct(totUna, conData.length)}%)`,
+      picchi_una_stella: `per piattaforma: recensioni da ${ctx.voto.minimo} stella al giorno contro il ritmo dei ${FINESTRA} giorni prima e dopo (Poisson, una coda), Benjamini-Hochberg FDR 10% su ${nGiorni} giorni-piattaforma; solo giorni con almeno ${MIN_UNA} recensioni da ${ctx.voto.minimo} stella e quota di ${ctx.voto.minimo} stella sopra quella dei giorni intorno; giorni con meno di ${MIN_INTORNO} recensioni intorno non messi alla prova (pochi dati)`,
     },
     recensioni_controllate: grezze.length,
     testi_quasi_identici: testiQuasiIdentici,
     giorni_controllati: nGiorni,
     una_stella_al_giorno_in_media: nGiorni ? Math.round((100 * totUna) / nGiorni) / 100 : null,
     picchi_una_stella: picchi,
-    giorni_piu_vicini_alla_soglia: ord.slice(0, 3).map((x) => ({ data: x.data, una_stella: x.una_stella, attese_una_stella: x.attese_una_stella, p_value: Number(x.p_value.toPrecision(3)) })),
+    // solo giorni che potrebbero essere picchi (almeno MIN_UNA recensioni da 1 stella)
+    giorni_piu_vicini_alla_soglia: ord.filter((x) => x.una_stella >= MIN_UNA).slice(0, 3).map((x) => ({ piattaforma: x.piattaforma, data: x.data, una_stella: x.una_stella, attese_una_stella: x.attese_una_stella, p_value: Number(x.p_value.toPrecision(3)) })),
     esito: testiQuasiIdentici.length || picchi.length ? 'da guardare' : 'nessun segnale',
   };
 })();
@@ -679,9 +776,10 @@ const periodiCalendario = (() => {
   const piattaforme = [...new Set(valide.map((r) => r.piattaforma ?? 'non indicata'))].sort();
   // iOS e Android sempre separati: una serie «tutte» mescolerebbe l'andamento con il cambio di composizione
   // (per esempio quando arriva lo storico di una sola piattaforma). Dubbio della verifica alla cieca del 16/11.
-  const perTipo = (tipo) => piattaforme.map((pf) => ({ piattaforma: pf, periodi: serie(valide.filter((r) => (r.piattaforma ?? 'non indicata') === pf), tipo) }));
+  // e, dal 17/11, italiano e inglese separati: stessa ragione (la quota di inglese cambia nel tempo)
+  const perTipo = (tipo) => piattaforme.flatMap((pf) => LINGUE_TEMPO.map((lingua) => ({ piattaforma: pf, lingua, periodi: serie(valide.filter((r) => (r.piattaforma ?? 'non indicata') === pf && r.language === lingua), tipo) }))).filter((s) => s.periodi.length);
   return {
-    regola: `quota di recensioni negative di ogni periodo contro il periodo subito prima; test su due proporzioni solo con almeno ${MIN_RECENSIONI_CONFRONTO} recensioni in tutti e due i periodi, correzione Benjamini-Hochberg (FDR 10%) per serie; periodi di due settimane da lunedi' a domenica, a partire dal 6/1/2020; il periodo in corso e' incompleto`,
+    regola: `serie separate per piattaforma e per lingua (italiano, inglese); quota di recensioni negative di ogni periodo contro il periodo subito prima; test su due proporzioni solo con almeno ${MIN_RECENSIONI_CONFRONTO} recensioni in tutti e due i periodi, correzione Benjamini-Hochberg (FDR 10%) per serie; periodi di due settimane da lunedi' a domenica, a partire dal 6/1/2020; il periodo in corso e' incompleto`,
     oggi,
     mesi: perTipo('mese'),
     due_settimane: perTipo('due_settimane'),

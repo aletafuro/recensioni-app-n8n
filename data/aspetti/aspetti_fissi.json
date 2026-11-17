@@ -5,11 +5,29 @@
   "modifiche_rispetto_alla_versione_precedente": [],
   "controlli_superati": [],
   "linea_di_base_temi_fuori_elenco": {
-    "recensioni_con_temi_fuori_elenco": 6,
-    "recensioni": 35,
-    "pct": 17.1,
-    "misurata_il": "2026-11-16",
-    "giro": "primo giro della versione v1"
+    "per_gruppo": {
+      "ios|it": {
+        "recensioni": 21,
+        "recensioni_con_temi_fuori_elenco": 3,
+        "pct": 14.3
+      },
+      "android|it": {
+        "recensioni": 14,
+        "recensioni_con_temi_fuori_elenco": 3,
+        "pct": 21.4
+      }
+    },
+    "dati_fino_al": "2026-11-06",
+    "misurata_il": "2026-11-17",
+    "giro": "primo giro della versione v1 con la linea di base per piattaforma e lingua",
+    "regola": "gruppi piattaforma|lingua; temi generici esclusi; si confrontano poi solo le recensioni pubblicate dopo dati_fino_al",
+    "precedente": {
+      "recensioni_con_temi_fuori_elenco": 6,
+      "recensioni": 35,
+      "pct": 17.1,
+      "misurata_il": "2026-11-16",
+      "giro": "primo giro della versione v1"
+    }
   },
   "temi_non_aspetti": [],
   "aspetti": [

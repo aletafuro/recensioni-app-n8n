@@ -95,6 +95,12 @@ const aggregazioneFatti = $('Aggregazione').first().json.aggregazione;
 
 function controlla(o) {
   if (!o) return ['la risposta non e\' un JSON valido'];
+  // una citazione troppo lunga si ACCORCIA da sola alle prime 30 parole con «...» (resta copiata parola per parola):
+  // il 17/11 il modello ha scelto tre volte la stessa citazione lunga e tutto il commento e' stato scartato
+  for (const c of Array.isArray(o.citazioni) ? o.citazioni : []) {
+    const parole = String(c.testo ?? '').trim().split(/\s+/);
+    if (parole.length > 30) c.testo = parole.slice(0, 30).join(' ').replace(/[,;:]$/, '') + '...';
+  }
   const problemi = [];
   for (const k of COMMENTI) {
     const t = String(o[k] ?? '').trim();
@@ -116,6 +122,11 @@ function controlla(o) {
       problemi.push(`la citazione «${String(c.testo).slice(0, 60)}...» non e' copiata parola per parola dalla recensione ${c.review_id}: copia frasi consecutive senza cambiare parole, oppure segna con "..." le parti saltate`);
     }
     if (String(c.testo).split(/\s+/).length > 40) problemi.push(`la citazione della recensione ${c.review_id} supera 30 parole`);
+    // un frammento troppo corto non dice niente a chi legge
+    // ...ma se la recensione intera e' corta, la citazione puo' essere tutta la recensione
+    const paroleCit = String(c.testo).replace(/\.{3,}/g, ' ').trim().split(/\s+/).length;
+    const paroleRec = String(testo).trim().split(/\s+/).length;
+    if (paroleCit < 6 && paroleRec > paroleCit + 2) problemi.push(`la citazione della recensione ${c.review_id} e' troppo corta: scegli una frase di almeno 8 parole che si capisca da sola`);
     const numeriCitazione = new Set(String(c.testo).match(/\d+/g) ?? []);
     for (const n of String(c.traduzione ?? '').match(/\d+/g) ?? []) {
       if (!numeriCitazione.has(n)) problemi.push(`la traduzione della citazione ${c.review_id} contiene il numero ${n}, che non e' nella citazione`);
@@ -131,9 +142,11 @@ function controlla(o) {
 
 // --- citazioni per la versione di riserva: una frase della recensione che contiene una parola dell'aspetto
 function fraseSullAspetto(testo, paroleChiave) {
-  const frasi = testo.split(/(?<=[.!?])\s+|\n+/).map((s) => s.trim()).filter((s) => s.split(/\s+/).length >= 4);
+  // frasi di almeno 8 parole: un frammento corto non si capisce da solo (17/11)
+  const frasi = testo.split(/(?<=[.!?])\s+|\n+/).map((s) => s.trim()).filter((s) => s.split(/\s+/).length >= 8);
   const scelta = frasi.find((s) => paroleChiave.some((k) => s.toLowerCase().includes(k))) ?? frasi[0] ?? testo;
-  return scelta.split(/\s+/).slice(0, 30).join(' ');
+  const parole = scelta.split(/\s+/);
+  return parole.length > 30 ? parole.slice(0, 30).join(' ').replace(/[,;:]$/, '') + '...' : scelta;
 }
 function citazioniDiRiserva(sezione) {
   const giaCitate = new Set();
@@ -149,6 +162,17 @@ function citazioniDiRiserva(sezione) {
     .filter(Boolean);
 }
 
+// accenti veri al posto dell'apostrofo («e'» -> «è», «perche'» -> «perché»), solo FUORI dalle citazioni «...»,
+// che restano copiate parola per parola (17/11: nello stesso testo c'erano «e'» del codice e «è» del modello)
+const ACUTE = new Set(['perche', 'poiche', 'affinche', 'benche', 'finche', 'giacche', 'nonche', 'sicche', 'ne']);
+const GRAVE = { a: 'à', e: 'è', i: 'ì', o: 'ò', u: 'ù', A: 'À', E: 'È', I: 'Ì', O: 'Ò', U: 'Ù' };
+const accentaPezzo = (s) => s.replace(/(^|[^A-Za-zÀ-ÿ'])([A-Za-zÀ-ÿ]*?)([aeiouAEIOU])'(?=[\s.,;:!?)\]]|$)/g, (m, prima, radice, v) => {
+  const parola = (radice + v).toLowerCase();
+  if (parola === 'po') return m;
+  return prima + radice + (ACUTE.has(parola) && v.toLowerCase() === 'e' ? (v === 'E' ? 'É' : 'é') : GRAVE[v]);
+});
+const conAccenti = (testo) => String(testo).split(/(«[^»]*»)/).map((p) => (p.startsWith('«') ? p : accentaPezzo(p))).join('');
+
 // --- composizione del digest
 function componi(o) {
   const f = fatti;
@@ -161,9 +185,9 @@ function componi(o) {
 
   r.push('## In sintesi', '', f.frase_sintesi, '');
   if ((f.frasi_piattaforme ?? []).length) { r.push('Per piattaforma (iOS e Android non si confrontano tra loro):', ''); for (const x of f.frasi_piattaforme) r.push(`- ${x}.`); r.push(''); }
-  for (const l of f.differenze_tra_lingue_significative ?? []) r.push(maiusc(l.frase_numeri) + '.', '');
+  // lingue: una frase sola (17/11: prima una riga per lingua, ripetitive, e anche la lingua «und»)
+  if (f.frase_lingue) r.push(f.frase_lingue, '');
   if (o) r.push(o.sintesi.trim(), '');
-  else if (f.lingue_confrontate && !(f.differenze_tra_lingue_significative ?? []).length) r.push('Le recensioni nelle diverse lingue non mostrano differenze distinguibili dal caso.', '');
 
   r.push("## Cosa apprezzano di piu'", '');
   for (const x of f.aspetti_piu_apprezzati) r.push(`- **${x.aspetto}**: ${x.frase_numeri}.`);
@@ -175,7 +199,7 @@ function componi(o) {
   for (const x of f.aspetti_piu_criticati) r.push(`- **${x.aspetto}**: ${x.frase_numeri}.`);
   r.push('');
   if (f.aspetti_piu_divisivi.length) {
-    r.push("Gli aspetti piu' divisivi, cioe' criticati da una parte grande di chi ne parla:", '');
+    r.push("Gli aspetti piu' divisivi, cioe' con pareri spaccati tra chi ne parla (tra il 30% e il 70% di giudizi negativi):", '');
     for (const x of f.aspetti_piu_divisivi) r.push(`- **${x.aspetto}**: ${x.frase_numeri}.`);
     r.push('');
   }
@@ -183,25 +207,32 @@ function componi(o) {
   r.push(...citazioni('criticati'));
 
   r.push('## Come cambiano le cose nel tempo', '');
-  r.push(`Le recensioni sono raggruppate in periodi con abbastanza recensioni per un confronto. Sono stati fatti ${f.confronti_nel_tempo_eseguiti} confronti tra l'ultimo periodo e i precedenti: ${f.confronti_nel_tempo_significativi} risultano significativi dopo la correzione per confronti multipli.`, '');
+  r.push(`Le recensioni sono raggruppate in periodi con abbastanza recensioni per un confronto. Italiano e inglese sono confrontati separatamente, perche' la quota di recensioni in inglese cambia nel tempo. Sono stati fatti ${f.confronti_nel_tempo_eseguiti} confronti tra l'ultimo periodo e i precedenti: ${f.confronti_nel_tempo_significativi} risultano significativi dopo la correzione per confronti multipli.`, '');
   for (const x of f.cambiamenti_significativi) r.push(`- ${x.frase_numeri}.`);
   if (f.cambiamenti_significativi.length) r.push('');
+  // versioni: solo le ultime con abbastanza recensioni (prima erano decine di righe); tutte nel foglio Versioni
+  const NOME_PF = { ios: 'iOS', android: 'Android' };
   for (const p of f.per_piattaforma ?? []) {
-    r.push(`Versioni dell'app su ${p.piattaforma}:`, '');
+    r.push(`Versioni dell'app su ${NOME_PF[p.piattaforma] ?? p.piattaforma} (le ultime con abbastanza recensioni per le statistiche):`, '');
     for (const v of p.versioni) {
       r.push(v.nota ? `- versione ${v.versione}: ${v.recensioni} recensioni, ${v.nota}.` : `- versione ${v.versione}: ${v.recensioni} recensioni, voto medio ${v.voto_medio}, positive ${v.positive}, negative ${v.negative}.`);
     }
-    for (const x of p.cambiamenti_ultima_versione) r.push(`- ${x.aspetto}: ${x.misura} in ${x.direzione}, ${x.valore_ultima_versione} nella versione ${x.ultima_versione} contro ${x.valore_di_confronto} nelle versioni precedenti.`);
+    if (p.versioni_non_mostrate && p.versioni_non_mostrate !== '0') r.push(`- altre ${p.versioni_non_mostrate} versioni (piu' vecchie o con poche recensioni): nel foglio Versioni dell'Excel.`);
+    for (const x of p.cambiamenti_ultima_versione) r.push(`- ${x.aspetto}${x.lingua ? ` (recensioni in ${x.lingua})` : ''}: ${x.misura} in ${x.direzione}, ${x.valore_ultima_versione} nella versione ${x.ultima_versione} contro ${x.valore_di_confronto} nella ${String(x.confrontata_con).replace(/^la /, '')}.`);
     r.push('');
   }
   if (o) r.push(o.commento_tempo.trim(), '');
-  r.push('Andamento per periodo:', '');
-  for (const p of f.periodi) r.push(`- ${maiusc(p.frase_numeri)}.`);
+  // periodi: gli ultimi 12 (prima erano decine di righe); tutti nei fogli Mesi e Due settimane dell'Excel
+  const ULTIMI_PERIODI = 12;
+  r.push(f.periodi.length > ULTIMI_PERIODI ? `Andamento per periodo (gli ultimi ${ULTIMI_PERIODI}; quelli prima sono nell'Excel, fogli Mesi e Due settimane):` : 'Andamento per periodo:', '');
+  for (const p of f.periodi.slice(-ULTIMI_PERIODI)) r.push(`- ${maiusc(p.frase_numeri)}.`);
   r.push('');
 
-  r.push('## Recensioni da guardare', '', f.frase_segnalate, '');
+  r.push('## Recensioni da guardare', '');
+  if (f.frase_segnalate_recenti) r.push(f.frase_segnalate_recenti, '');
+  r.push(f.frase_segnalate, '');
   if (f.frase_campagne) r.push(f.frase_campagne, '');
-  for (const s of f.segnalate_da_mostrare) r.push(`- ${s.review_id} (${s.data}${s.voto ? `, voto ${s.voto}` : ''}, priorita' ${s.priorita}): ${s.motivo}`);
+  for (const s of f.segnalate_da_mostrare) r.push(`- ${s.review_id} (${s.data}${s.voto ? `, voto ${s.voto}` : ''}, priorita' ${s.priorita}): ${String(s.motivo ?? '').replace(/\.\s*;/g, ';')}`);
   r.push('');
   if (o) r.push(o.commento_segnalate.trim(), '');
   r.push(...citazioni('segnalate'));
@@ -212,7 +243,8 @@ function componi(o) {
   r.push(o
     ? "I commenti a parole e la scelta delle citazioni sono del modello; ogni citazione e' stata controllata parola per parola sulla recensione originale."
     : "Questa versione non contiene i commenti del modello, perche' non hanno superato i controlli automatici; le citazioni sono scelte dal sistema.");
-  return r.join('\n');
+  // le righe delle citazioni («> ...») restano come sono; nelle altre accenti veri (fuori dalle «»)
+  return r.map((riga) => (riga.startsWith('>') ? riga : conAccenti(riga))).join('\n');
 }
 
 // --- chiamata al modello con le correzioni
