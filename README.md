@@ -211,3 +211,7 @@ strumenti/                  storico iOS (API di Apple) e Android (report), prove
                             prova_campagne.js (controllo delle campagne), prova_voto_store.js (voto per paese)
 valutazione/                misure di qualità in Python
 ```
+
+## Licenza
+
+Il codice è distribuito con licenza MIT (vedi `LICENSE`). Le recensioni in `data/input/` sono inventate.
