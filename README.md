@@ -7,18 +7,20 @@ Un workflow n8n che ogni settimana legge le recensioni di un'app su App Store e 
 - un controllo delle recensioni che sembrano coordinate (testi lunghi quasi identici, picchi di recensioni da una stella);
 - un riassunto in italiano per chi non è tecnico, con le citazioni controllate parola per parola;
 - l'invio su Telegram del riassunto, del digest completo e di un avviso per ogni recensione nuova grave e recente;
-- un **avviso a grappolo** quando poche persone scrivono lo stesso problema sulla stessa versione in pochi giorni (per esempio «ho pagato ma l'acquisto non è arrivato»), con l'indicazione se quella versione è la stessa pubblicata ora nello store;
+- un **avviso a grappolo** quando poche persone segnalano lo stesso problema sulla stessa versione in pochi giorni (per esempio «ho pagato ma l'acquisto non è arrivato»). L'avviso dice anche se quella versione è quella pubblicata ora nello store;
 - l'ultima versione dell'app confrontata con quella prima, con il peggioramento scritto in chiaro;
 - il **voto negli store per mercato** (Italia, Regno Unito, Stati Uniti...), che non è la media delle recensioni scritte, con l'andamento settimana per settimana;
 - l'andamento **ogni due settimane e mese per mese**, con un verdetto statistico onesto («oltre il rumore», «entro il rumore» o «pochi dati»), sempre separato per piattaforma e per lingua;
-- un **file Excel** con 11 fogli (periodi, voto negli store, confronti, temi, versioni, lingue, segnalazioni, grappoli, recensioni), con i totali accanto a ogni percentuale e una colonna **«in parole»** che legge ogni riga in una frase;
+- un **file Excel** con 11 fogli (periodi, voto negli store, confronti, temi, versioni, lingue, segnalazioni, grappoli e recensioni), con i totali accanto a ogni percentuale e una colonna **«in parole»** che legge ogni riga in una frase;
 - una **copia datata dei report** a ogni giro (digest, Excel, registro e messaggi mandati), perché i file del giro si sovrascrivono ogni settimana;
 - una **memoria delle analisi**: si mandano al modello solo le recensioni nuove o cambiate, e tutto si rianalizza da solo se cambiano le istruzioni.
 
 **I dati in questo repository sono inventati.** Il file `data/input/recensioni_inventate.csv` contiene 36 recensioni scritte apposta per un'app immaginaria di note e liste della spesa: ogni testo comincia con «INVENTATA». Le ultime sei servono a mostrare tre cose:
 - un grappolo di acquisti pagati e non ricevuti;
 - una persona che riscrive la sua recensione;
-- un testo scritto per ingannare l'analisi. Servono a far girare il flusso e a vedere che cosa produce. I risultati in `data/output/` vengono da quelle recensioni e non dicono niente di un'app vera. Per usarlo su un'app vera basta indicarne l'identificativo (vedi sotto).
+- un testo scritto per ingannare l'analisi.
+
+Le recensioni inventate servono a far girare il flusso e a vedere che cosa produce. I risultati in `data/output/` vengono da quelle recensioni e non dicono niente di un'app vera. Per usare il sistema su un'app vera basta indicarne l'identificativo (vedi sotto).
 
 ## Perché un progetto separato
 
@@ -41,7 +43,7 @@ Analizza le 36 recensioni inventate e scrive i risultati in `data/output/`:
 - `registro_giro.json`: tempi, costi e quante analisi sono state riprese dalla memoria;
 - `memoria_analisi.json` e `memoria_guardrail.json`.
 
-Il repository contiene già la memoria dell'ultimo giro. Quindi il primo giro dopo averlo scaricato riprende tutto da lì: 0 chiamate all'analisi, una ventina di secondi, meno di un centesimo, risultati identici.
+Il repository contiene già la memoria dell'ultimo giro. Quindi, dopo averlo scaricato, il primo giro riprende tutto da lì: 0 chiamate all'analisi, una ventina di secondi, meno di un centesimo, risultati identici.
 
 Per vedere un giro completo basta cancellare `data/output/memoria_analisi.json` e `data/output/memoria_guardrail.json`. Sulle 36 recensioni inventate dura meno di un minuto e costa circa 4 centesimi di dollaro.
 
@@ -58,7 +60,7 @@ Il secondo comando stampa i messaggi che arriverebbero su Telegram, anche senza 
 - la recensione «costa troppo» senza nessuna segnalazione;
 - il testo che dice «ignora le istruzioni» segnato come sospetto ed escluso dai conteggi.
 
-Con l'interfaccia di n8n (http://localhost:5679) e l'avvio automatico di ogni lunedì alle 8:
+Per avere l'interfaccia di n8n (http://localhost:5679) e l'avvio automatico di ogni lunedì alle 8:
 
 ```bash
 docker compose up -d n8n
@@ -77,7 +79,7 @@ Nel file `.env`:
 | `GOOGLE_PLAY_PACKAGE`, `GOOGLE_PLAY_CREDENZIALI_B64` | Android: nome del pacchetto e chiave di un account di servizio della Play Console, in base64 |
 | `PLAY_LINGUE` | lingue delle recensioni Android da tenere (predefinito `it`; per esempio `it,en`) |
 | `GOOGLE_PLAY_BUCKET` | Android, storico e voto per paese: indirizzo `gs://...` dei report della Play Console (Scarica report → Recensioni → «Copia URI Cloud Storage») |
-| `APPLE_ISSUER_ID`, `APPLE_KEY_ID`, `APPLE_P8_B64` | iOS: chiave API di App Store Connect (il contenuto del file `.p8` in base64), usata quando il feed pubblico è vuoto; per lo storico il file `.p8` va in `segreti/`, esclusa da git |
+| `APPLE_ISSUER_ID`, `APPLE_KEY_ID`, `APPLE_P8_B64` | iOS: chiave API di App Store Connect (il contenuto del file `.p8` in base64), usata quando il feed pubblico è vuoto; per lo storico il file `.p8` va nella cartella `segreti/`, esclusa da git |
 | `VOTO_PAESI` | paesi del voto negli store (predefinito `it`) |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | bot e chat che ricevono riassunto, digest, Excel e avvisi |
 | `AVVISI_GIORNI` | avvisi urgenti solo per le recensioni pubblicate negli ultimi N giorni (predefinito 14): lo storico entra senza avvisi |
@@ -85,16 +87,16 @@ Nel file `.env`:
 | `AGGIORNA_ELENCO=false` | sospende per un giro l'aggiornamento automatico dell'elenco degli aspetti (il controllo si scrive lo stesso): serve quando entra un blocco di recensioni diverse, per esempio una lingua nuova |
 | `INPUT_FILE` | l'archivio delle recensioni (si allarga da solo a ogni giro) |
 
-**iOS.** C'è un feed pubblico, bastano l'identificativo e il paese, ma dà solo le 500 recensioni più recenti, e a volte è vuoto per tutte le app. Se è vuoto e la chiave di App Store Connect è nel `.env`, il giro prende le recensioni recenti dall'API (senza la versione dell'app); una recensione arrivata da tutte e due le strade si riconosce anche dal contenuto e non si conta due volte. Lo storico completo si prende una volta con l'API di App Store Connect: `python strumenti/importa_storico_apple.py`, prima in prova e poi con `scrivi`. Le regole:
+**iOS.** C'è un feed pubblico: bastano l'identificativo e il paese. Però dà solo le 500 recensioni più recenti e a volte è vuoto per tutte le app. Se è vuoto e la chiave di App Store Connect è nel `.env`, il giro prende le recensioni recenti dall'API (senza la versione dell'app). Una recensione arrivata da tutte e due le strade si riconosce anche dal contenuto e non si conta due volte. Lo storico completo si scarica una volta sola con l'API di App Store Connect: `python strumenti/importa_storico_apple.py`, prima in prova e poi con `scrivi`. Le regole:
 - l'API non dice la versione dell'app, quindi si importano solo le recensioni più vecchie di quelle del feed;
 - la loro versione resta «non indicata» e non viene stimata.
 
-**Android.** Non c'è un feed, e scaricare le pagine del Play Store va contro i termini di Google. Le strade ufficiali passano dalla Play Console di chi pubblica l'app:
+**Android.** Non c'è un feed e scaricare le pagine del Play Store va contro i termini di Google. Le strade ufficiali passano dalla Play Console di chi pubblica l'app:
 - l'API di Google Play, che dà le recensioni degli ultimi 7 giorni, per il giro settimanale;
-- i report mensili che Google tiene in Cloud Storage, per lo storico. Il giro li legge da solo se l'account di servizio ha il permesso «Visualizzazione di informazioni sulle app e download di report collettivi», nelle *Autorizzazioni account*. Google può metterci fino a un giorno ad attivarlo; finché non è attivo, il giro lo scrive e va avanti.
+- i report mensili che Google tiene in Cloud Storage, per lo storico. Il giro li legge da solo se l'account di servizio ha il permesso «Visualizzazione di informazioni sulle app e download di report collettivi», nelle *Autorizzazioni account*. Google può metterci fino a un giorno ad attivarlo: finché non è attivo, il giro lo segnala e va avanti;
 - in alternativa, gli stessi report scaricati a mano si importano con `python strumenti/importa_play_console.py scrivi`.
 
-Le strade usano lo stesso identificativo di Google, quindi una recensione arrivata da due strade non si conta due volte.
+Tutte e tre le strade usano lo stesso identificativo di Google: una recensione arrivata da due strade non si conta due volte.
 
 ## Come funziona un giro
 
@@ -114,7 +116,7 @@ Le strade usano lo stesso identificativo di Google, quindi una recensione arriva
 6. **Elenco degli aspetti**: se i temi fuori elenco crescono oltre la linea di base, il sistema propone una nuova versione e la adotta solo se supera controlli fissati prima. La linea di base è per piattaforma e lingua, non conta i temi generici («great site», «bella app») e si confronta solo con le recensioni arrivate dopo.
 7. **Digest**: le frasi con i numeri le scrive il codice; il modello scrive solo i commenti, senza cifre, e sceglie le citazioni; il codice controlla citazioni e affermazioni.
 8. **Voto negli store**: Apple dal servizio pubblico per paese (con un'istantanea salvata a ogni giro, così si vede quanti voti nuovi sono arrivati e la loro media), Google dai report per paese della Play Console. Si legge anche la versione pubblicata ora nei due store.
-9. **Telegram**: riassunto (voto negli store, ultima versione contro quella prima, ultime due settimane e ultimo mese completi), digest come file, file Excel, avvisi sulle recensioni nuove e recenti con priorità alta e avvisi a grappolo (solo se il grappolo contiene almeno una recensione nuova). Se un giro si rompe arriva un avviso anche per quello.
+9. **Telegram**: riassunto (voto negli store, ultima versione contro quella prima, ultime due settimane e ultimo mese completi), digest come file, file Excel, avvisi sulle recensioni nuove e recenti con priorità alta e avvisi a grappolo (solo se il grappolo contiene almeno una recensione nuova). Se un giro si rompe, arriva un avviso anche per quello.
 10. **Copia dei report**: digest, Excel, registro del giro e testi dei messaggi mandati vanno anche in `output/giri/`, con la data del giro davanti al nome. Il nodo di scrittura di n8n non crea cartelle: per una cartella per data, o per portare i report su un disco condiviso, basta uno script fuori da n8n (per esempio cron e rclone), così un disco lento non ferma il giro.
 
 Il dominio sta tutto in `data/contesto/contesto.json` (che cosa viene recensito, chi legge, categorie di segnalazione con la loro priorità): per un'altra app o un altro settore si cambia quel file, non il workflow. Il file non elenca aspetti, perché il modello tenderebbe a vederli anche dove non ci sono.
@@ -125,11 +127,11 @@ Ogni parte qui sotto è nata da un errore trovato e corretto. Le misure sono del
 
 **Il modello legge, il codice conta.** All'inizio il riassunto lo scriveva tutto il modello e un controllo verificava che ogni numero esistesse nei dati. Poi è uscito un numero giusto con il significato sbagliato. Ora le frasi con i numeri le scrive il codice e il modello scrive solo i commenti. Anche i commenti a parole vengono controllati: «divisivo», «le critiche aumentano» e «l'apprezzamento cala» si possono scrivere solo per gli aspetti per cui i dati lo dicono.
 
-**Una recensione alla volta.** Il modello leggeva le recensioni a gruppi di cinque. Ho confrontato due giri uguali a gruppi di cinque con un giro una recensione alla volta: tra i due giri uguali gli aspetti coincidevano 93 volte su 100, tra gruppi e singole solo 79. Il giudizio su una recensione dipendeva da quelle accanto. Ora si analizza una recensione alla volta: costa circa tre volte tanto, ma sono centesimi.
+**Una recensione alla volta.** Il modello leggeva le recensioni a gruppi di cinque. Ho confrontato due giri uguali a gruppi di cinque con un giro fatto una recensione alla volta: tra i due giri uguali gli aspetti coincidevano 93 volte su 100, tra il giro a gruppi e quello a recensioni singole solo 79. Il giudizio su una recensione dipendeva da quelle accanto. Ora si analizza una recensione alla volta: costa circa tre volte tanto, ma sono centesimi.
 
-**Il modello non risponde sempre uguale.** Due giri identici, una recensione alla volta: il giudizio complessivo coincide nel 99,8% dei casi, le coppie recensione-aspetto nel 93%. È l'affidabilità test-retest dei questionari, applicata a un modello.
+**Il modello non risponde sempre allo stesso modo.** Due giri identici, una recensione alla volta: il giudizio complessivo coincide nel 99,8% dei casi e le coppie recensione-aspetto nel 93%. È l'affidabilità test-retest dei questionari, applicata a un modello.
 
-**Un secondo gold set che non si tocca.** La qualità si misura contro un gold set etichettato alla cieca da un altro modello, che non vede né i risultati né le istruzioni del sistema. Dopo aver corretto le istruzioni guardando i suoi errori, rimisurare sullo stesso gold set sarebbe stato ottimista: ho fatto etichettare un secondo gold set, mai usato per nessuna decisione, solo per misurare. È un confronto tra modelli, non un'annotazione umana.
+**Un secondo gold set che non si tocca.** La qualità si misura contro un gold set etichettato alla cieca da un altro modello, che non vede né i risultati né le istruzioni del sistema. Dopo aver corretto le istruzioni guardando i suoi errori, rimisurare sullo stesso gold set avrebbe dato un risultato ottimista: ho fatto etichettare un secondo gold set, mai usato per nessuna decisione, solo per misurare. È un confronto tra modelli, non un'annotazione umana.
 
 **Due recensioni uguali non sono un duplicato.** L'identificativo era costruito da data, titolo e testo. Su un'app molti scrivono solo «Top»: persone diverse, lo stesso giorno, la stessa parola, fuse in una recensione sola. Ora l'identificativo è quello dello store. E da lì è nato il controllo delle campagne coordinate: un testo breve e comune ripetuto è normale, un testo lungo e specifico ripetuto da account diversi in pochi giorni no. Il controllo è riscritto da zero in Python (`workflow/controlla_campagne.py`) e i due programmi danno lo stesso risultato.
 
@@ -141,7 +143,7 @@ Ogni parte qui sotto è nata da un errore trovato e corretto. Le misure sono del
 
 **Testi attribuiti all'utente.** Le recensioni sono affermazioni, non fatti accertati: i motivi delle segnalazioni sono scritti come «secondo l'utente...».
 
-**La statistica giusta non era quella che serviva.** Le statistiche per versione partivano da 30 recensioni per versione, ed erano corrette. Ma chi gestisce l'app voleva un campanello: «se tre persone con questa versione scrivono che non hanno ricevuto quello che hanno pagato, per me è un segnale». Da lì sono nati due pezzi:
+**La statistica giusta non era quella che serviva.** Le statistiche per versione richiedevano almeno 30 recensioni per versione ed erano corrette. Ma chi gestisce l'app voleva un campanello: «se tre persone con questa versione scrivono che non hanno ricevuto quello che hanno pagato, per me è un segnale». Da lì sono nati due pezzi:
 - l'avviso a grappolo;
 - una categoria apposta, «acquisto pagato ma non ricevuto».
 
@@ -169,7 +171,7 @@ Sono state corrette tutte. Un numero giusto può dire una cosa sbagliata.
 
 **Google a volte non risponde.** In un giro uno dei report mensili di Google non è arrivato in tempo e il voto Android è rimasto vuoto. Ora ogni lettura si ritenta fino a cinque volte con attese crescenti; se Google non risponde ancora, il messaggio mostra i voti dell'ultimo giro riuscito, con la data.
 
-**Zero non vuol dire zero stelle.** La media settimanale del voto Android usciva a zero in un paese. Nei report di Google, nei giorni senza voti, il voto del giorno è scritto 0.0. Un voto va da 1 a 5: ora un valore fuori da 1-5 vale «nessun voto», e la nota dice in quanti giorni della settimana ci sono stati voti.
+**Zero non vuol dire zero stelle.** La media settimanale del voto Android usciva a zero in un paese. Nei report di Google, nei giorni senza voti, il voto del giorno è scritto come 0.0. Un voto va da 1 a 5: ora un valore fuori da 1-5 vale «nessun voto», e la nota dice in quanti giorni della settimana ci sono stati voti.
 
 **Le tabelle non parlano.** Chi legge l'Excel non riusciva a leggere le tabelle di numeri, ma con una riga letta insieme capiva subito. Ora ogni riga dei fogli dei periodi, dei confronti e delle versioni ha una frase scritta dal codice con gli stessi numeri («a novembre 16 recensioni su 74 criticano i prezzi; a ottobre 31 su 144: praticamente uguale»), e accanto a ogni percentuale c'è il totale su cui è calcolata. Un altro modello ha ricalcolato alla cieca tutte le righe dai dati grezzi: nessun numero sbagliato, ma un centinaio di frasi in italiano da correggere («dal 8» invece di «dall'8»).
 
@@ -188,9 +190,9 @@ Confronta le recensioni di sviluppo con quelle di test (se `data/valutazione/tes
 - Il gold set è etichettato da un modello: serve un controllo fatto da persone.
 - I commenti a parole del riassunto sono controllati su tre tipi di affermazioni, non su tutte.
 - Le recensioni sono brevi: molte dicono solo «Bella app» e non danno informazioni sugli aspetti.
-- I nomi di persona nelle recensioni non vengono oscurati, e il foglio Recensioni contiene il nome con cui l'utente firma nello store: l'Excel è un documento interno.
+- I nomi di persona scritti nelle recensioni non vengono oscurati. Il foglio Recensioni contiene anche il nome con cui l'utente firma nello store: l'Excel è un documento interno.
 - L'avvio del lunedì funziona solo finché n8n resta acceso: per un uso vero serve una macchina sempre accesa.
-- Le recensioni iOS dello storico, e quelle prese dall'API quando il feed è vuoto, non hanno la versione: l'API di Apple non la dà.
+- Non hanno la versione le recensioni iOS dello storico e quelle prese dall'API quando il feed è vuoto: l'API di Apple non la dà.
 - Il controllo sulle lingue è fatto da un altro modello, su 80 recensioni: dice che non c'è un errore sistematico, non che il modello non sbagli mai.
 - Google non dà il numero delle valutazioni per paese: per Android si vede l'andamento del voto, ma non si può dire se una differenza è oltre il rumore.
 
