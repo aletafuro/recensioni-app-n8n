@@ -86,6 +86,8 @@ let recensioni = righe.map((r, i) => {
     // colonne facoltative: piattaforma (ios/android) e versione dell'app
     piattaforma: pulisci(r.piattaforma ?? r.platform ?? '').toLowerCase() || 'non indicata',
     versione: pulisci(r.versione ?? r.version ?? '') || null,
+    // nome dell'autore nello store: solo per il foglio Recensioni dell'Excel, al modello non va (19/11)
+    autore: pulisci(r.autore ?? '') || null,
     duplicato_di,
     vuota,
   };

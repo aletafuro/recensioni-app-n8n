@@ -343,6 +343,13 @@ nodo("Telegram: file Excel", "n8n-nodes-base.telegram", 1.2, 2420, Y4 + 420,
      {"resource": "message", "operation": "sendDocument", "chatId": "={{ $env.TELEGRAM_CHAT_ID }}", "binaryData": True,
       "binaryPropertyName": "data", "additionalFields": {"caption": "Tabelle per Excel: periodi, confronti, versioni, lingue, segnalazioni, recensioni", "fileName": "recensioni_app.xlsx"}},
      credentials={"telegramApi": {"id": "telegramRecensApp", "name": "Telegram (da .env)"}}, onError="continueRegularOutput")
+# copia dei report con la data (output/giri/AAAA-MM-GG_nome): terzo ramo dopo «Scrivi Excel», piu' in basso, cosi' parte
+# dopo l'invio dell'Excel e dei messaggi (dei messaggi tiene il testo).
+collega("Scrivi Excel", "Copia dei report con la data")
+collega(nodo("Copia dei report con la data", "n8n-nodes-base.code", 2, 2200, Y4 + 640, {"jsCode": codice("20_copia_report.js")}, onError="continueRegularOutput"),
+        "Scrivi copia dei report")
+nodo("Scrivi copia dei report", "n8n-nodes-base.readWriteFile", 1, 2420, Y4 + 640,
+     {"operation": "write", "fileName": "={{ $json.path }}", "dataPropertyName": "data", "options": {}}, onError="continueRegularOutput")
 
 def salva(id_workflow, nome, file, impostazioni=None):
     workflow = {

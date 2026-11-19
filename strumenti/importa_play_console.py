@@ -13,7 +13,7 @@ Regole:
 - l'identificativo e' il reviewId di Google (dal link della recensione, parametro reviewid): e' lo stesso
   che restituisce l'API, quindi una recensione arrivata da tutte e due le strade non si conta due volte;
 - si tengono solo le lingue in PLAY_LINGUE (predefinito: it), come nel giro settimanale;
-- l'autore non c'e' nei file della Play Console e comunque non servirebbe;
+- l'autore non c'e' nei file della Play Console: la colonna autore resta vuota (i nomi gia' nell'archivio restano);
 - se una recensione e' stata modificata, la data e' quella dell'ultima modifica (come nell'API).
 """
 import csv
@@ -28,7 +28,7 @@ from urllib.parse import parse_qs, urlparse
 A = Path(__file__).resolve().parent.parent
 CARTELLA = A / "data" / "input" / "play_console"
 ARCHIVIO = A / "data" / "input" / "recensioni_inventate.csv"
-COLONNE = ["id_store", "title", "rating", "travelDate", "publishedDate", "text", "piattaforma", "versione", "paese"]
+COLONNE = ["id_store", "title", "rating", "travelDate", "publishedDate", "text", "piattaforma", "versione", "paese", "autore"]  # senza autore, riscrivendo l'archivio si perderebbero i nomi
 LINGUE = [x.strip().lower() for x in os.environ.get("PLAY_LINGUE", "it").split(",") if x.strip()]
 
 

@@ -11,7 +11,8 @@ Un workflow n8n che ogni settimana legge le recensioni di un'app su App Store e 
 - l'ultima versione dell'app confrontata con quella prima, con il peggioramento scritto in chiaro;
 - il **voto negli store per mercato** (Italia, Regno Unito, Stati Uniti...), che non è la media delle recensioni scritte, con l'andamento settimana per settimana;
 - l'andamento **ogni due settimane e mese per mese**, con un verdetto statistico onesto («oltre il rumore», «entro il rumore» o «pochi dati»), sempre separato per piattaforma e per lingua;
-- un **file Excel** con 11 fogli (periodi, voto negli store, confronti, temi, versioni, lingue, segnalazioni, grappoli, recensioni);
+- un **file Excel** con 11 fogli (periodi, voto negli store, confronti, temi, versioni, lingue, segnalazioni, grappoli, recensioni), con i totali accanto a ogni percentuale e una colonna **«in parole»** che legge ogni riga in una frase;
+- una **copia datata dei report** a ogni giro (digest, Excel, registro e messaggi mandati), perché i file del giro si sovrascrivono ogni settimana;
 - una **memoria delle analisi**: si mandano al modello solo le recensioni nuove o cambiate, e tutto si rianalizza da solo se cambiano le istruzioni.
 
 **I dati in questo repository sono inventati.** Il file `data/input/recensioni_inventate.csv` contiene 36 recensioni scritte apposta per un'app immaginaria di note e liste della spesa: ogni testo comincia con «INVENTATA». Le ultime sei servono a mostrare tre cose:
@@ -114,6 +115,7 @@ Le strade usano lo stesso identificativo di Google, quindi una recensione arriva
 7. **Digest**: le frasi con i numeri le scrive il codice; il modello scrive solo i commenti, senza cifre, e sceglie le citazioni; il codice controlla citazioni e affermazioni.
 8. **Voto negli store**: Apple dal servizio pubblico per paese (con un'istantanea salvata a ogni giro, così si vede quanti voti nuovi sono arrivati e la loro media), Google dai report per paese della Play Console. Si legge anche la versione pubblicata ora nei due store.
 9. **Telegram**: riassunto (voto negli store, ultima versione contro quella prima, ultime due settimane e ultimo mese completi), digest come file, file Excel, avvisi sulle recensioni nuove e recenti con priorità alta e avvisi a grappolo (solo se il grappolo contiene almeno una recensione nuova). Se un giro si rompe arriva un avviso anche per quello.
+10. **Copia dei report**: digest, Excel, registro del giro e testi dei messaggi mandati vanno anche in `output/giri/`, con la data del giro davanti al nome. Il nodo di scrittura di n8n non crea cartelle: per una cartella per data, o per portare i report su un disco condiviso, basta uno script fuori da n8n (per esempio cron e rclone), così un disco lento non ferma il giro.
 
 Il dominio sta tutto in `data/contesto/contesto.json` (che cosa viene recensito, chi legge, categorie di segnalazione con la loro priorità): per un'altra app o un altro settore si cambia quel file, non il workflow. Il file non elenca aspetti, perché il modello tenderebbe a vederli anche dove non ci sono.
 
@@ -167,6 +169,12 @@ Sono state corrette tutte. Un numero giusto può dire una cosa sbagliata.
 
 **Google a volte non risponde.** In un giro uno dei report mensili di Google non è arrivato in tempo e il voto Android è rimasto vuoto. Ora ogni lettura si ritenta fino a cinque volte con attese crescenti; se Google non risponde ancora, il messaggio mostra i voti dell'ultimo giro riuscito, con la data.
 
+**Zero non vuol dire zero stelle.** La media settimanale del voto Android usciva a zero in un paese. Nei report di Google, nei giorni senza voti, il voto del giorno è scritto 0.0. Un voto va da 1 a 5: ora un valore fuori da 1-5 vale «nessun voto», e la nota dice in quanti giorni della settimana ci sono stati voti.
+
+**Le tabelle non parlano.** Chi legge l'Excel non riusciva a leggere le tabelle di numeri, ma con una riga letta insieme capiva subito. Ora ogni riga dei fogli dei periodi, dei confronti e delle versioni ha una frase scritta dal codice con gli stessi numeri («a novembre 16 recensioni su 74 criticano i prezzi; a ottobre 31 su 144: praticamente uguale»), e accanto a ogni percentuale c'è il totale su cui è calcolata. Un altro modello ha ricalcolato alla cieca tutte le righe dai dati grezzi: nessun numero sbagliato, ma un centinaio di frasi in italiano da correggere («dal 8» invece di «dall'8»).
+
+**Il nome giusto o nessun nome.** Per ritrovare chi scrive nel servizio clienti serve il nome con cui firma nello store. Apple lo dà per tutto lo storico, Google solo per le recensioni recenti. Il nome va solo nel foglio Recensioni, mai al modello. Le recensioni già in archivio si riconoscono anche dal contenuto, ma la revisione ha trovato due coppie di persone diverse con la stessa recensione lo stesso giorno: il nome di una finiva sull'altra. Ora, se il contenuto non basta a distinguerle, il nome resta vuoto.
+
 ## Verifica
 
 ```bash
@@ -180,7 +188,7 @@ Confronta le recensioni di sviluppo con quelle di test (se `data/valutazione/tes
 - Il gold set è etichettato da un modello: serve un controllo fatto da persone.
 - I commenti a parole del riassunto sono controllati su tre tipi di affermazioni, non su tutte.
 - Le recensioni sono brevi: molte dicono solo «Bella app» e non danno informazioni sugli aspetti.
-- I nomi di persona nelle recensioni non vengono oscurati.
+- I nomi di persona nelle recensioni non vengono oscurati, e il foglio Recensioni contiene il nome con cui l'utente firma nello store: l'Excel è un documento interno.
 - L'avvio del lunedì funziona solo finché n8n resta acceso: per un uso vero serve una macchina sempre accesa.
 - Le recensioni iOS dello storico, e quelle prese dall'API quando il feed è vuoto, non hanno la versione: l'API di Apple non la dà.
 - Il controllo sulle lingue è fatto da un altro modello, su 80 recensioni: dice che non c'è un errore sistematico, non che il modello non sbagli mai.

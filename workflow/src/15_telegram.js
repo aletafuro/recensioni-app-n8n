@@ -29,9 +29,9 @@ const esiti = [];
 async function invia(testo) {
   try {
     const r = await helpers.httpRequest({ method: 'POST', url: api('sendMessage'), body: { chat_id: chat, text: conAccenti(testo).slice(0, 4000), disable_web_page_preview: true }, json: true, timeout: 30000 });
-    esiti.push({ tipo: 'messaggio', ok: !!r.ok });
+    esiti.push({ tipo: 'messaggio', ok: !!r.ok, testo: conAccenti(testo).slice(0, 4000) });  // il testo serve alla copia dei report
   } catch (e) {
-    esiti.push({ tipo: 'messaggio', ok: false, errore: e.message });
+    esiti.push({ tipo: 'messaggio', ok: false, errore: e.message, testo: conAccenti(testo).slice(0, 4000) });
   }
 }
 // accenti veri al posto dell'apostrofo («e'» -> «è», «perche'» -> «perché»), solo FUORI dalle citazioni «...»,

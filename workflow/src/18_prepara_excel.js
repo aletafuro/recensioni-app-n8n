@@ -27,16 +27,17 @@ fogli.push({
   nome: 'Leggimi',
   colonne: ['foglio', 'che cosa contiene'],
   righe: [
-    ['Due settimane', 'Per ogni periodo di due settimane (da lunedì a domenica): recensioni, voto medio, sentiment e confronto con le due settimane prima.'],
+    ['Due settimane', 'Per ogni periodo di due settimane (da lunedì a domenica): recensioni, voto medio, sentiment e confronto con le due settimane prima (anche le recensioni e le negative del periodo prima, su cui si calcola la sua percentuale).'],
     ['Mesi', 'Lo stesso, mese per mese.'],
-    ['Confronti', 'Temi: ultimo periodo contro i precedenti e ultima versione dell\'app contro la versione prima (solo con abbastanza recensioni).'],
+    ['Confronti', 'Temi: questo mese contro il mese prima e contro tutti i mesi prima, e ultima versione dell\'app contro la versione prima (solo con abbastanza recensioni). Per ogni lato: quante recensioni ci sono, quante criticano (o apprezzano) il tema e la percentuale che ne viene.'],
     ['Temi per mese', 'Per ogni mese e tema: quante recensioni lo apprezzano e quante lo criticano.'],
     ['Versioni', 'Recensioni per versione dell\'app, con la quota di negative.'],
     ['Lingue', 'Recensioni per lingua, con la quota di negative.'],
     ['Segnalazioni', 'Le recensioni da guardare: categoria, priorità, che cosa dice l\'utente e la sua frase.'],
     ['Grappoli', 'Avvisi a grappolo: stesso problema, stessa piattaforma e versione, in pochi giorni.'],
-    ['Voto negli store', 'Il voto che si vede negli store (tutte le valutazioni, anche senza testo) per mercato. iOS: una rilevazione a ogni giro (Apple dà solo il voto di oggi), con i voti nuovi tra una rilevazione e la precedente e la loro media. Android: il voto di ogni settimana dai report di Google (dal 2019; Google non dà il numero delle valutazioni).'],
-    ['Recensioni', 'Una riga per recensione: dati, sentiment, temi, segnalazioni, testo.'],
+    ['Voto negli store', 'Il voto che si vede negli store (tutte le valutazioni, anche senza testo) per mercato. iOS: una rilevazione a ogni giro (Apple dà solo il voto di oggi), con i voti nuovi tra una rilevazione e la precedente e la loro media. Android: il voto di ogni domenica dai report di Google (dal 2019) e, in «media dei voti nuovi», la media dei voti dati in quella settimana (da lunedì a domenica). Google dà la media dei voti di ogni giorno ma non quanti sono, quindi la media della settimana è la media semplice dei giorni con voti: un giorno con 1 voto pesa come un giorno con 100, e la nota dice quando i giorni con voti sono meno di 7. Senza il numero dei voti, per Android non si può dire se una differenza è oltre il rumore.'],
+    ['Recensioni', "Una riga per recensione: dati, sentiment, temi, segnalazioni, nome dell'utente nello store, testo. Il nome c'è per iOS; su Android solo per le recensioni recenti, da metà novembre 2026 (i report mensili di Google non lo danno)."],
+    ['in parole', 'Nei fogli Due settimane, Mesi, Confronti e Versioni la colonna «in parole» legge la riga in una frase, con gli stessi numeri della riga (la scrive il programma, non l\'intelligenza artificiale). Si può leggere solo quella: le altre colonne servono per controllare o fare grafici.'],
     ['', ''],
     ['Come leggere i confronti', '«oltre il rumore» = la differenza è troppo grande per essere un caso (test su due proporzioni con correzione per i confronti multipli). «entro il rumore» = può essere un caso. «pochi dati» = uno dei due periodi ha meno di 20 recensioni: si vedono i numeri ma non si dà un verdetto.'],
     ['Verdetto', 'Il verdetto tiene già conto che nella stessa tabella si fanno tanti confronti, e che qualche differenza esce grande per caso (correzione di Benjamini-Hochberg, al massimo 10% di falsi allarmi attesi). Il p-value non è nei fogli perché da solo inganna: chi vuole ricontrollare il calcolo lo trova in aggregazione.json.'],
@@ -51,14 +52,63 @@ fogli.push({
 });
 
 const LINGUA_X = { it: 'italiano', en: 'inglese' };
-const NOMI_LINGUA_X = { it: 'italiano', en: 'inglese', es: 'spagnolo', fr: 'francese', de: 'tedesco', pt: 'portoghese', ro: 'rumeno', und: 'non riconosciuta', altre: 'altre lingue' };
-const righePeriodi = (serie) => serie.flatMap((s) => s.periodi.map((p) => [
-  PF[s.piattaforma] ?? s.piattaforma, LINGUA_X[s.lingua] ?? s.lingua ?? '', p.periodo, p.in_corso ? 'in corso: incompleto' : p.dati_solo_dal ? `incompleto: dati solo dal ${p.dati_solo_dal}` : '', p.recensioni, p.voto_medio, p.positive, p.negative, p.miste, p.neutre,
-  p.pct_negative, p.confronto?.pct_negative_prima ?? null, p.confronto?.differenza_punti ?? null, p.confronto?.esito ?? '',
+const NOMI_LINGUA_X = { it: 'italiano', en: 'inglese', es: 'spagnolo', fr: 'francese', de: 'tedesco', pt: 'portoghese', ro: 'rumeno', pl: 'polacco', ru: 'russo', nl: 'olandese', tr: 'turco', ar: 'arabo', uk: 'ucraino', sq: 'albanese', el: 'greco', cs: 'ceco', hu: 'ungherese', sv: 'svedese', zh: 'cinese', ja: 'giapponese', und: 'non riconosciuta', altre: 'altre lingue' };
+
+// --- colonna «in parole» (richiesta del 18/11: chi legge non riesce a leggere le tabelle di numeri, ma capisce
+// subito una riga letta insieme). La frase la scrive il CODICE con gli stessi numeri della riga, non il modello.
+const MESI_IT = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+const dataIt = (d) => `${Number(String(d).slice(8, 10))}/${Number(String(d).slice(5, 7))}/${String(d).slice(0, 4)}`;
+// «dall'8/12», «all'11/11», «dell'1/8»: i giorni 1, 8 e 11 cominciano con una vocale (uno, otto, undici)
+const conVocale = (d) => [1, 8, 11].includes(Number(String(d).slice(8, 10)));
+const dalData = (d) => `${conVocale(d) ? "dall'" : 'dal '}${dataIt(d)}`;
+const alData = (d) => `${conVocale(d) ? "all'" : 'al '}${dataIt(d)}`;
+const delData = (d) => `${conVocale(d) ? "dell'" : 'del '}${dataIt(d)}`;
+const nomePeriodo = (per) => {
+  const s = String(per);
+  if (s.includes(' / ')) { const [a, b] = s.split(' / '); return /^\d{4}-\d{2}$/.test(a) ? `da ${nomePeriodo(a)} a ${nomePeriodo(b)}` : `${dalData(a)} ${alData(b)}`; }
+  return /^\d{4}-\d{2}$/.test(s) ? `${MESI_IT[Number(s.slice(5, 7)) - 1]} ${s.slice(0, 4)}` : s;
+};
+const num = (x) => String(x).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const pc = (x) => `${String(x).replace('.', ',')}%`;
+const punti = (d) => `${String(Math.abs(d)).replace('.', ',')} ${Math.abs(d) === 1 ? 'punto' : 'punti'}`;
+const verdetto = (esito, diff, cosa) => {
+  if (esito === 'pochi dati') return 'Troppo poche recensioni per dire se è cambiato qualcosa.';
+  if (esito === 'oltre il rumore') return `${cosa} ${diff > 0 ? 'aumentate' : 'diminuite'} di ${punti(diff)}: troppo per essere un caso, vale la pena guardare che cosa è successo.`;
+  if (diff === null || Math.abs(diff) < 1) return 'Praticamente uguale.';
+  return `${punti(diff)} in ${diff > 0 ? 'più' : 'meno'}: può essere un caso.`;
+};
+const fraseperiodo = (s, p, tipo) => {
+  const primaDi = tipo === 'mesi' ? 'Nel mese prima' : 'Nelle due settimane prima';
+  const chi = `${PF[s.piattaforma] ?? s.piattaforma} in ${LINGUA_X[s.lingua] ?? s.lingua}`;
+  const quando = `${nomePeriodo(p.periodo)}${p.in_corso ? ' (periodo non ancora finito)' : ''}`;
+  if (!p.recensioni) return `${chi}, ${quando}: nessuna recensione.`;
+  let f = `${chi}, ${quando}: negative ${p.negative} su ${num(p.recensioni)} (${pc(p.pct_negative)}).`;
+  const c = p.confronto;
+  if (!c) return f + (p.dati_solo_dal ? ` Primo periodo: le recensioni partono ${dalData(p.dati_solo_dal)}.` : ' Primo periodo: non c\'è niente prima con cui confrontarlo.');
+  f += c.recensioni_prima ? ` ${primaDi} ${c.negative_prima} su ${num(c.recensioni_prima)} (${pc(c.pct_negative_prima)}).` : ` ${primaDi} nessuna recensione.`;
+  return `${f} ${verdetto(c.esito, c.differenza_punti, 'Negative')}`;
+};
+const recensioniLe = (k, n, verbo) => `${num(k)} ${k === 1 ? 'recensione' : 'recensioni'} su ${num(n)} lo ${k === 1 ? verbo : verbo === 'critica' ? 'criticano' : 'apprezzano'}`;
+const fraseConfronto = (x) => {
+  const verbo = x.misura === 'pct_recensioni_che_lo_criticano' ? 'critica' : 'apprezza';
+  const v = x.significativo ? 'oltre il rumore' : 'entro il rumore';
+  const fine = v === 'oltre il rumore' ? `Differenza di ${punti(x.differenza_punti)}: troppo grande per essere un caso.` : verdetto(v, x.differenza_punti);
+  if (x.ultimo_periodo) {
+    const ora = nomePeriodo(x.ultimo_periodo) + (x.ultimo_periodo === meseInCorso ? ' (mese non ancora finito)' : '');
+    const prima = x.confronto_con === 'periodo_precedente' ? `a ${nomePeriodo(x.periodo_di_confronto)}` : `nei mesi ${nomePeriodo(x.periodo_di_confronto)}`;
+    return `${x.nome}, in ${LINGUA_X[x.lingua] ?? x.lingua} (iOS e Android insieme). A ${ora}: ${recensioniLe(x.quante_ultimo_periodo, x.recensioni_ultimo_periodo, verbo)} (${pc(x.valore_ultimo_periodo)}). ${prima.charAt(0).toUpperCase() + prima.slice(1)}: ${num(x.quante_periodo_di_confronto)} su ${num(x.recensioni_periodo_di_confronto)} (${pc(x.valore_periodo_di_confronto)}). ${fine}`;
+  }
+  return `${x.nome}, ${x.chi}. Con la versione ${x.ultima_versione}: ${recensioniLe(x.quante_nuove, x.recensioni_nuove, verbo)} (${pc(x.valore_nuovo)}). Con ${x.confrontata_con}: ${num(x.quante_confronto)} su ${num(x.recensioni_confronto)} (${pc(x.valore_confronto)}). ${fine}`;
+};
+const meseInCorso = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' }).slice(0, 7);
+
+const righePeriodi = (serie, tipo) => serie.flatMap((s) => s.periodi.map((p) => [
+  PF[s.piattaforma] ?? s.piattaforma, LINGUA_X[s.lingua] ?? s.lingua ?? '', p.periodo, p.in_corso ? 'in corso: incompleto' : p.dati_solo_dal ? `incompleto: dati solo dal ${p.dati_solo_dal}` : '', fraseperiodo(s, p, tipo), p.recensioni, p.voto_medio, p.positive, p.negative, p.miste, p.neutre,
+  p.pct_negative, p.confronto?.recensioni_prima ?? null, p.confronto?.negative_prima ?? null, p.confronto?.pct_negative_prima ?? null, p.confronto?.differenza_punti ?? null, p.confronto?.esito ?? '',
 ]));
-const colPeriodi = ['piattaforma', 'lingua', 'periodo', 'nota', 'recensioni', 'voto medio', 'positive', 'negative', 'miste', 'neutre', '% negative', '% negative periodo prima', 'differenza (punti)', 'confronto'];
-fogli.push({ nome: 'Due settimane', colonne: colPeriodi, righe: righePeriodi(R?.due_settimane ?? []) });
-fogli.push({ nome: 'Mesi', colonne: colPeriodi, righe: righePeriodi(R?.mesi ?? []) });
+const colPeriodi = ['piattaforma', 'lingua', 'periodo', 'nota', 'in parole', 'recensioni', 'voto medio', 'positive', 'negative', 'miste', 'neutre', '% negative', 'recensioni periodo prima', 'negative periodo prima', '% negative periodo prima', 'differenza (punti)', 'confronto'];
+fogli.push({ nome: 'Due settimane', colonne: colPeriodi, righe: righePeriodi(R?.due_settimane ?? [], 'due_settimane') });
+fogli.push({ nome: 'Mesi', colonne: colPeriodi, righe: righePeriodi(R?.mesi ?? [], 'mesi') });
 
 // voto negli store per mercato (nodo «Voto negli store»)
 let VS = null;
@@ -76,15 +126,21 @@ if (VS) {
       mediaOk ? Math.round(100 * Math.min(5, Math.max(1, media))) / 100 : null,
       !prima ? 'prima rilevazione' : nuove !== null && nuove <= 0 ? 'nessun voto nuovo (o valutazioni azzerate)' : media !== null && !mediaOk ? 'media non calcolabile: dati di Apple non coerenti' : '']);
   });
-  for (const x of VS.android?.serie_settimanale ?? []) righeVoto.push(['Android', x.nome, x.settimana_fino_al, x.voto, null, null, null, x.dati_del !== x.settimana_fino_al ? `ultimo dato disponibile: ${x.dati_del}` : '']);
+  for (const x of VS.android?.serie_settimanale ?? []) {
+    // media dei voti della settimana: media semplice dei giorni con voti (Google non dice quanti voti per giorno)
+    const note = [];
+    if (x.giorni_con_voti !== undefined && x.giorni_con_voti < x.giorni_della_settimana) note.push(x.giorni_con_voti === 0 ? `nessun voto nella settimana` : `voti in ${x.giorni_con_voti} ${x.giorni_con_voti === 1 ? 'giorno' : 'giorni'} su ${x.giorni_della_settimana}`);
+    if (x.dati_del !== x.settimana_fino_al) note.push(`ultimo dato disponibile: ${x.dati_del}`);
+    righeVoto.push(['Android', x.nome, x.settimana_fino_al, x.voto, null, null, x.media_voti_settimana ?? null, note.join('; ')]);
+  }
 }
 fogli.push({ nome: 'Voto negli store', colonne: ['piattaforma', 'mercato', 'data', 'voto', 'valutazioni', 'voti nuovi dalla rilevazione prima', 'media dei voti nuovi', 'nota'], righe: righeVoto });
 
 const confronti = [
-  ...(A.andamento ?? []).map((x) => [`iOS e Android insieme, ${LINGUA_X[x.lingua] ?? x.lingua ?? ''}`, 'periodo', `${x.ultimo_periodo} contro ${x.periodo_di_confronto}`, x.nome, MISURA[x.misura] ?? x.misura, x.valore_ultimo_periodo, x.valore_periodo_di_confronto, x.differenza_punti, x.significativo ? 'oltre il rumore' : 'entro il rumore']),
-  ...(A.per_piattaforma ?? []).flatMap((p) => (p.andamento_ultima_versione ?? []).map((x) => [`${PF[p.piattaforma] ?? p.piattaforma}, ${LINGUA_X[x.lingua] ?? x.lingua ?? ''}`, 'versione', `${x.ultima_versione} contro ${x.confrontata_con}`, x.nome, MISURA[x.misura] ?? x.misura, x.valore_nuovo, x.valore_confronto, x.differenza_punti, x.significativo ? 'oltre il rumore' : 'entro il rumore'])),
+  ...(A.andamento ?? []).map((x) => [`iOS e Android insieme, ${LINGUA_X[x.lingua] ?? x.lingua ?? ''}`, 'periodo', `${x.ultimo_periodo} contro ${x.periodo_di_confronto}`, x.nome, MISURA[x.misura] ?? x.misura, fraseConfronto(x), x.recensioni_ultimo_periodo ?? null, x.quante_ultimo_periodo ?? null, x.valore_ultimo_periodo, x.recensioni_periodo_di_confronto ?? null, x.quante_periodo_di_confronto ?? null, x.valore_periodo_di_confronto, x.differenza_punti, x.significativo ? 'oltre il rumore' : 'entro il rumore']),
+  ...(A.per_piattaforma ?? []).flatMap((p) => (p.andamento_ultima_versione ?? []).map((x) => [`${PF[p.piattaforma] ?? p.piattaforma}, ${LINGUA_X[x.lingua] ?? x.lingua ?? ''}`, 'versione', `${x.ultima_versione} contro ${x.confrontata_con}`, x.nome, MISURA[x.misura] ?? x.misura, fraseConfronto({ ...x, chi: `${PF[p.piattaforma] ?? p.piattaforma} in ${LINGUA_X[x.lingua] ?? x.lingua}` }), x.recensioni_nuove ?? null, x.quante_nuove ?? null, x.valore_nuovo, x.recensioni_confronto ?? null, x.quante_confronto ?? null, x.valore_confronto, x.differenza_punti, x.significativo ? 'oltre il rumore' : 'entro il rumore'])),
 ];
-fogli.push({ nome: 'Confronti', colonne: ['piattaforma', 'tipo', 'confronto', 'tema', 'misura', 'valore nuovo', 'valore di confronto', 'differenza (punti)', 'esito'], righe: confronti });
+fogli.push({ nome: 'Confronti', colonne: ['piattaforma', 'tipo', 'confronto', 'tema', 'misura', 'in parole', 'recensioni (nuovo)', 'quante (nuovo)', 'valore nuovo (%)', 'recensioni (confronto)', 'quante (confronto)', 'valore di confronto (%)', 'differenza (punti)', 'esito'], righe: confronti });
 
 // temi per mese (conteggi semplici sulle recensioni nei conteggi)
 const temiMese = new Map();
@@ -131,12 +187,16 @@ const piuRecente = {};
 for (const k of versioni.keys()) { const [pf, v] = k.split('|'); if (v && (!piuRecente[pf] || ordineVersione(v, piuRecente[pf]) > 0)) piuRecente[pf] = v; }
 fogli.push({
   nome: 'Versioni',
-  colonne: ['piattaforma', 'versione', 'la più recente vista', 'nello store ora', 'recensioni', 'voto medio', 'negative', '% negative', 'prima recensione', 'ultima recensione'],
+  colonne: ['piattaforma', 'versione', 'la più recente vista', 'nello store ora', 'in parole', 'recensioni', 'voto medio', 'negative', '% negative', 'prima recensione', 'ultima recensione'],
   righe: [...versioni.entries()].map(([k, l]) => {
     const [pf, v] = k.split('|');
     const d = l.map((r) => r.published_date).filter(Boolean).sort();
     const neg = l.filter((r) => r.overall_sentiment === 'negative').length;
-    return [PF[pf] ?? pf, v || 'non indicata', v && v === piuRecente[pf] ? 'sì' : '', v && v === VS?.versione_pubblicata?.[pf] ? 'sì' : '', l.length, media(l.filter((r) => r.rating !== null).map((r) => r.rating)), neg, pct(neg, l.length), d[0] ?? '', d[d.length - 1] ?? ''];
+    const nelloStore = v && v === VS?.versione_pubblicata?.[pf];
+    const frase = !v
+      ? `${PF[pf] ?? pf}, recensioni senza versione indicata: negative ${neg} su ${num(l.length)} (${pc(pct(neg, l.length))}), recensioni ${d.length ? `${dalData(d[0])} ${alData(d[d.length - 1])}` : 'senza data'}. Non è una versione: sono le recensioni per cui lo store non dice la versione.`
+      : `${PF[pf] ?? pf}, versione ${v}${nelloStore ? ' (quella che si scarica oggi)' : ''}: negative ${neg} su ${num(l.length)} (${pc(pct(neg, l.length))}), recensioni ${d.length ? (d[0] === d[d.length - 1] ? delData(d[0]) : `${dalData(d[0])} ${alData(d[d.length - 1])}`) : 'senza data'}.${l.length < 20 ? ' Troppo poche recensioni per dire qualcosa su questa versione.' : ''}`;
+    return [PF[pf] ?? pf, v || 'non indicata', v && v === piuRecente[pf] ? 'sì' : '', nelloStore ? 'sì' : '', frase, l.length, media(l.filter((r) => r.rating !== null).map((r) => r.rating)), neg, pct(neg, l.length), d[0] ?? '', d[d.length - 1] ?? ''];
   }).sort((a, b) => a[0].localeCompare(b[0]) || (a[1] === 'non indicata') - (b[1] === 'non indicata') || ordineVersione(b[1], a[1])),
 });
 
@@ -160,7 +220,7 @@ fogli.push({
 
 fogli.push({
   nome: 'Recensioni',
-  colonne: ['data', 'piattaforma', 'versione', 'lingua', 'voto', 'sentiment', 'temi (giudizio)', 'segnalazioni', 'nei conteggi', 'titolo', 'testo', 'review_id'],
+  colonne: ['data', 'piattaforma', 'versione', 'lingua', 'voto', 'sentiment', 'temi (giudizio)', 'segnalazioni', 'nei conteggi', 'nome utente', 'titolo', 'testo', 'review_id'],
   righe: analisi.map((r) => {
     const p = pronte.get(r.review_id) ?? {};
     return [
@@ -168,7 +228,7 @@ fogli.push({
       (r.aspects ?? []).map((a) => `${nomeAspetto[a.aspect] ?? a.aspect}: ${SENT[a.sentiment] ?? a.sentiment}`).join('; '),
       [...new Set((r.segnalazioni ?? []).map((s) => s.nome_categoria))].join('; '),
       (r.stato === 'ok' || r.stato === 'ritentata') && !r.sospetta ? 'sì' : 'no',
-      p.title ?? '', p.text ?? '', r.review_id,
+      p.autore ?? '', p.title ?? '', p.text ?? '', r.review_id,
     ];
   }).sort((a, b) => String(b[0]).localeCompare(String(a[0]))),
 });
@@ -184,8 +244,9 @@ const cella = (v, rif, stile) => {
 };
 const foglioXml = (f) => {
   const tutte = [f.colonne, ...f.righe];
-  const larghezze = f.colonne.map((c, j) => Math.min(60, Math.max(10, ...tutte.slice(0, 200).map((r) => String(r[j] ?? '').length + 2))));
-  const righe = tutte.map((r, i) => `<row r="${i + 1}">${r.map((v, j) => cella(v, `${colonna(j)}${i + 1}`, i === 0 ? ' s="1"' : '')).join('')}</row>`).join('');
+  // la colonna «in parole» e' larga e va a capo (stile 2), cosi' la frase si legge tutta
+  const larghezze = f.colonne.map((c, j) => (c === 'in parole' ? 80 : Math.min(60, Math.max(10, ...tutte.slice(0, 200).map((r) => String(r[j] ?? '').length + 2)))));
+  const righe = tutte.map((r, i) => `<row r="${i + 1}">${r.map((v, j) => cella(v, `${colonna(j)}${i + 1}`, i === 0 ? ' s="1"' : f.colonne[j] === 'in parole' ? ' s="2"' : '')).join('')}</row>`).join('');
   const ultima = `${colonna(f.colonne.length - 1)}${Math.max(1, tutte.length)}`;
   return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
     + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
@@ -217,7 +278,7 @@ const file = {
     + '<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>'
     + '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>'
     + '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
-    + '<cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs>'
+    + '<cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment wrapText="1" vertical="top"/></xf></cellXfs>'
     + '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>',
 };
 fogli.forEach((f, i) => { file[`xl/worksheets/sheet${i + 1}.xml`] = foglioXml(f); });

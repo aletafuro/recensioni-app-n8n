@@ -201,6 +201,11 @@ function confronta(listaNuova, listaVecchia) {
         aspect: a.aspect,
         nome: a.nome,
         misura,
+        // totali su cui si calcolano le percentuali (richiesta di chi legge: vedere sempre «quante su quante»)
+        recensioni_nuove: listaNuova.length,
+        quante_nuove: k1,
+        recensioni_confronto: listaVecchia.length,
+        quante_confronto: k0,
         valore_nuovo: pct(k1, listaNuova.length),
         valore_confronto: pct(k0, listaVecchia.length),
         differenza_punti: Math.round(10 * (pct(k1, listaNuova.length) - pct(k0, listaVecchia.length))) / 10,
@@ -251,6 +256,8 @@ if (periodi.length >= 2) {
         ultimo_periodo: ultimo.periodo,
         confronto_con: c.contro,
         periodo_di_confronto: c.etichetta,
+        quante_ultimo_periodo: x.quante_nuove,
+        quante_periodo_di_confronto: x.quante_confronto,
         valore_ultimo_periodo: x.valore_nuovo,
         valore_periodo_di_confronto: x.valore_confronto,
         differenza_punti: x.differenza_punti,
@@ -759,7 +766,7 @@ const periodiCalendario = (() => {
     periodi.forEach((p, i) => {
       if (i === 0) return;
       const q = periodi[i - 1];
-      const c = { periodo_prima: q.periodo, pct_negative_prima: q.pct_negative, differenza_punti: p.pct_negative !== null && q.pct_negative !== null ? Math.round(10 * (p.pct_negative - q.pct_negative)) / 10 : null };
+      const c = { periodo_prima: q.periodo, recensioni_prima: q.recensioni, negative_prima: q.negative, pct_negative_prima: q.pct_negative, differenza_punti: p.pct_negative !== null && q.pct_negative !== null ? Math.round(10 * (p.pct_negative - q.pct_negative)) / 10 : null };
       if (p.recensioni >= MIN_RECENSIONI_CONFRONTO && q.recensioni >= MIN_RECENSIONI_CONFRONTO) {
         Object.assign(c, dueProporzioni(p.negative, p.recensioni, q.negative, q.recensioni));
         c.p_value = Number(c.p_value.toPrecision(3));

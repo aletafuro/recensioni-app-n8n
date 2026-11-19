@@ -114,8 +114,10 @@ else {
         const c = r.split(',');
         const m = perPaese.get(String(c[iC] ?? '').trim());
         if (!m) continue;
+        // nei giorni senza voti Google scrive 0.0 (non lascia vuoto): un valore fuori da 1-5 vuol dire «nessun voto»
         const tot = parseFloat(c[iT]), gio = parseFloat(c[iG]);
-        m.set(String(c[iD]).trim(), { totale: Number.isNaN(tot) ? null : tot, del_giorno: Number.isNaN(gio) ? null : gio });
+        const stelle = (x) => (x >= 1 && x <= 5 ? x : null);
+        m.set(String(c[iD]).trim(), { totale: stelle(tot), del_giorno: stelle(gio) });
       }
     }
     for (const p of paesi) {
@@ -128,12 +130,24 @@ else {
         paese: p, nome: NOMI[p] ?? p, stato: 'ok', dati_fino_al: ultima, voto: r2(m.get(ultima).totale),
         data_prima: prima, voto_prima: prima ? r2(m.get(prima).totale) : null,
       });
-      // serie settimanale: il voto totale di ogni domenica (o dell'ultimo giorno disponibile prima)
+      // serie settimanale: il voto totale di ogni domenica (o dell'ultimo giorno disponibile prima) e la media dei
+      // voti dati nella settimana (lunedi'-domenica; l'ultima riga va dal lunedi' all'ultimo giorno con i dati).
+      // Google da' per ogni giorno la media dei voti di quel giorno ma NON quanti sono: la media della settimana e'
+      // la media semplice dei giorni con voti (un giorno con 1 voto pesa come un giorno con 100). Si scrive anche
+      // in quanti giorni ci sono voti, perche' con pochi giorni la media dice poco.
+      let inizio = giorno(date[0]);
       for (let g = giorno(date[0]); g <= giorno(ultima); g++) {
         const d = comeData(g);
         if (new Date(g * 86400000).getUTCDay() !== 0 && d !== ultima) continue;
         const v = date.filter((x) => x <= d).pop();
-        if (v) android.serie_settimanale.push({ paese: p, nome: NOMI[p] ?? p, settimana_fino_al: d, dati_del: v, voto: r2(m.get(v).totale) });
+        const delGiorno = [];
+        for (let k = inizio; k <= g; k++) { const x = m.get(comeData(k))?.del_giorno; if (x !== null && x !== undefined) delGiorno.push(x); }
+        if (v) android.serie_settimanale.push({
+          paese: p, nome: NOMI[p] ?? p, settimana_fino_al: d, dati_del: v, voto: r2(m.get(v).totale),
+          media_voti_settimana: delGiorno.length ? r2(delGiorno.reduce((a, b) => a + b, 0) / delGiorno.length) : null,
+          giorni_con_voti: delGiorno.length, giorni_della_settimana: g - inizio + 1,
+        });
+        inizio = g + 1;
       }
     }
     android.report_letti = nomi.length;

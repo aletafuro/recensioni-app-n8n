@@ -34,7 +34,7 @@ from cryptography.hazmat.primitives.asymmetric.utils import decode_dss_signature
 
 A = Path(__file__).resolve().parent.parent
 ARCHIVIO = A / "data" / "input" / "recensioni_inventate.csv"
-COLONNE = ["id_store", "title", "rating", "travelDate", "publishedDate", "text", "piattaforma", "versione", "paese"]
+COLONNE = ["id_store", "title", "rating", "travelDate", "publishedDate", "text", "piattaforma", "versione", "paese", "autore"]  # senza autore, riscrivendo l'archivio si perderebbero i nomi
 PAESE = {"ITA": "it", "GBR": "gb", "USA": "us", "ESP": "es", "FRA": "fr", "DEU": "de", "CHE": "ch"}
 
 
@@ -120,7 +120,7 @@ def main():
             continue
         nuove.append({
             "id_store": x["id"], "title": a.get("title") or "", "rating": str(a["rating"]), "travelDate": "",
-            "publishedDate": d, "text": a.get("body") or "", "piattaforma": "ios", "versione": "", "paese": paese,
+            "publishedDate": d, "text": a.get("body") or "", "piattaforma": "ios", "versione": "", "paese": paese, "autore": a.get("reviewerNickname") or "", "autore": a.get("reviewerNickname") or "",
         })
     print(f"Saltate perche' piu' recenti della recensione piu' vecchia del feed del loro paese: {saltate_recenti}")
     print(f"Saltate perche' gia' nell'archivio: {saltate_doppie}")

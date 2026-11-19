@@ -78,6 +78,7 @@ function daRecensioneApi(rec) {
     piattaforma: 'android',
     versione: String(u.appVersionName ?? ''),
     paese: lingua,
+    autore: String(rec.authorName ?? ''),  // solo per il foglio Recensioni: al modello non va
   }];
 }
 
@@ -166,7 +167,7 @@ function daReport(buf) {
     }
     if (!data) data = String(r['Review Submit Date and Time'] ?? '').trim().slice(0, 10);
     out.push({ id_store: id, title: titolo, rating: String(r['Star Rating'] ?? '').trim(), travelDate: '', publishedDate: data, text: testo,
-      piattaforma: 'android', versione: String(r['App Version Name'] ?? '').trim(), paese: lingua });
+      piattaforma: 'android', versione: String(r['App Version Name'] ?? '').trim(), paese: lingua, autore: '' });  // i report non hanno il nome
   }
   return out;
 }

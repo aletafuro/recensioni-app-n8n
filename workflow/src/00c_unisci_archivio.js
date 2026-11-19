@@ -13,7 +13,8 @@ try {
 } catch (e) {
   archivio = [];
 }
-const COLONNE = ['id_store', 'title', 'rating', 'travelDate', 'publishedDate', 'text', 'piattaforma', 'versione', 'paese'];
+// autore: il nome nello store, solo per il foglio Recensioni dell'Excel (19/11); al modello non va
+const COLONNE = ['id_store', 'title', 'rating', 'travelDate', 'publishedDate', 'text', 'piattaforma', 'versione', 'paese', 'autore'];
 const visti = new Set(archivio.map((r) => `${r.piattaforma}|${r.id_store}`));
 // iOS: feed pubblico e API di App Store Connect hanno identificativi DIVERSI per la stessa recensione. Si riconosce
 // anche dal contenuto: paese, data, voto, titolo e inizio del testo (con il solo titolo due persone diverse che
@@ -28,6 +29,30 @@ const nuove = scaricate.filter((r) => {
   visti.add(k); if (c) vistiContenuto.add(c);
   return true;
 });
+// nome dell'autore alle recensioni gia' nell'archivio che non ce l'hanno: dalla stessa recensione scaricata in questo
+// giro (stesso id, o per iOS stesso contenuto) e, per iOS, dai nomi di tutto lo storico letti dall'API.
+// Per contenuto solo se la chiave e' di UNA recensione sola, sia tra le scaricate sia nell'archivio: due persone che
+// scrivono la stessa cosa lo stesso giorno avrebbero lo stesso nome (verifica alla cieca: 2 coppie cosi').
+// Meglio un nome vuoto che il nome di un altro.
+const nomi = new Map();
+const perContenuto = new Map();   // chiave di contenuto -> nomi visti (null se la chiave e' di piu' recensioni)
+const idVisti = new Set();
+for (const r of [...scaricate, ...(ios.autori ?? [])]) {
+  const k = `${r.piattaforma}|${r.id_store}`, c = contenuto(r);
+  if (idVisti.has(k)) continue;   // la stessa recensione letta due volte (feed e API hanno id diversi: qui conta l'id)
+  idVisti.add(k);
+  if (r.autore && !nomi.has(k)) nomi.set(k, r.autore);
+  if (c) perContenuto.set(c, perContenuto.has(c) ? null : (r.autore || null));
+}
+const quanteNellArchivio = new Map();
+for (const r of archivio) { const c = contenuto(r); if (c) quanteNellArchivio.set(c, (quanteNellArchivio.get(c) ?? 0) + 1); }
+let autoriRiempiti = 0;
+for (const r of archivio) {
+  if (r.autore) continue;
+  const c = contenuto(r);
+  const n = nomi.get(`${r.piattaforma}|${r.id_store}`) ?? (c && quanteNellArchivio.get(c) === 1 ? perContenuto.get(c) : null);
+  if (n) { r.autore = n; autoriRiempiti++; }
+}
 const tutte = [...nuove, ...archivio].map((r) => Object.fromEntries(COLONNE.map((c) => [c, r[c] ?? ''])));
 // CSV con virgolette su ogni campo (testi con virgole, a capo e virgolette)
 const campo = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
@@ -47,6 +72,8 @@ return [{
     nuove: nuove.length,
     nuove_id_store: nuove.map((r) => `${r.piattaforma}|${r.id_store}`),
     recensioni_in_archivio_dopo: tutte.length,
+    autori_aggiunti_all_archivio: autoriRiempiti,
+    recensioni_con_autore: tutte.filter((r) => r.autore).length,
   },
   binary: { data: { data: Buffer.from(csv, 'utf8').toString('base64'), mimeType: 'text/csv', fileName: cfg.input_file.split('/').pop() } },
 }];

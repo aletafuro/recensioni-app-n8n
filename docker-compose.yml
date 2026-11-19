@@ -91,19 +91,19 @@ services:
     # interfaccia raggiungibile solo dalla macchina stessa (sul server: tunnel SSH se serve)
     ports:
       - "127.0.0.1:${N8N_PORT:-5679}:5678"
-    entrypoint: ["/bin/sh", "-c", "mkdir -p \"$$OUTPUT_DIR\" && node /avvio/crea_credenziale.js && n8n import:credentials --input=/tmp/credenziale.json && rm -f /tmp/credenziale.json && n8n import:workflow --separate --input=/workflow && n8n publish:workflow --id=appRecensioni001 && n8n publish:workflow --id=appAvvisoErr01 && exec n8n start"]
+    entrypoint: ["/bin/sh", "-c", "mkdir -p \"$$OUTPUT_DIR/giri\" && node /avvio/crea_credenziale.js && n8n import:credentials --input=/tmp/credenziale.json && rm -f /tmp/credenziale.json && n8n import:workflow --separate --input=/workflow && n8n publish:workflow --id=appRecensioni001 && n8n publish:workflow --id=appAvvisoErr01 && exec n8n start"]
 
   # esecuzione completa senza interfaccia: prepara e lancia il workflow
   esegui:
     <<: *n8n-comune
     profiles: ["esegui"]
-    entrypoint: ["/bin/sh", "-c", "mkdir -p \"$$OUTPUT_DIR\" && node /avvio/crea_credenziale.js && n8n import:credentials --input=/tmp/credenziale.json && rm -f /tmp/credenziale.json && n8n import:workflow --separate --input=/workflow && n8n execute --id=appRecensioni001"]
+    entrypoint: ["/bin/sh", "-c", "mkdir -p \"$$OUTPUT_DIR/giri\" && node /avvio/crea_credenziale.js && n8n import:credentials --input=/tmp/credenziale.json && rm -f /tmp/credenziale.json && n8n import:workflow --separate --input=/workflow && n8n execute --id=appRecensioni001"]
 
   # verifica del sistema: metriche sviluppo/test e gold set sui risultati gia' prodotti
   verifica:
     <<: *n8n-comune
     profiles: ["verifica"]
-    entrypoint: ["/bin/sh", "-c", "mkdir -p \"$$OUTPUT_DIR\" && node /avvio/crea_credenziale.js && n8n import:credentials --input=/tmp/credenziale.json && rm -f /tmp/credenziale.json && n8n import:workflow --separate --input=/workflow && n8n execute --id=appVerifica00001"]
+    entrypoint: ["/bin/sh", "-c", "mkdir -p \"$$OUTPUT_DIR/giri\" && node /avvio/crea_credenziale.js && n8n import:credentials --input=/tmp/credenziale.json && rm -f /tmp/credenziale.json && n8n import:workflow --separate --input=/workflow && n8n execute --id=appVerifica00001"]
 
 volumes:
   n8n_recensioni_app:
